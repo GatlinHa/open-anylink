@@ -5,19 +5,19 @@ server:
 spring:
   application:
     name: anylink-groupmng
-  profiles:
-    active: dev # 环境标识
+  #profiles:
+    #active: dev # 环境标识  # 由启动命令指定该参数
 
   cloud:
     nacos:
       config:
-        server-addr: localhost:8848
         file-extension: yaml # 配置文件格式
-        namespace: 9c0bf2b6-220f-4ad5-b2de-514c271bf147
+        #server-addr: xxx # 由启动命令指定该参数
+        #namespace: xxx # 由启动命令指定该参数
 
       discovery:
-        server-addr: localhost:8848
-        namespace: 9c0bf2b6-220f-4ad5-b2de-514c271bf147
+        #server-addr: xxx # 由启动命令指定该参数
+        #namespace: xxx # 由启动命令指定该参数
 
 dubbo:
   application:
@@ -26,6 +26,6 @@ dubbo:
     name: dubbo
     port: -1
   registry:
-    address: nacos://localhost:8848
+    #address: nacos://xxx # 由启动命令指定该参数
     parameters:
-      namespace: 9c0bf2b6-220f-4ad5-b2de-514c271bf147
+      #namespace: xxx # 由启动命令指定该参数
