@@ -12,7 +12,7 @@ spring:
       min-idle: 0
     timeout: 1200
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${spring.kafka.bootstrap-servers}
     producer:
       # producer需要server接收到数据之后发出的确认接收的信号
       # acks=0：设置为0表示producer不需要等待任何确认收到的信息。副本将立即加到socket  buffer并认为已经发送。没有任何保障可以保证此种情况下server已经成功接收数据，同时重试配置不会发生作用（因为客户端不知道是否失败）回馈的offset会总是设置为-1；
