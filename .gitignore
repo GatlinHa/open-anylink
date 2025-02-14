@@ -2,7 +2,7 @@ HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
-!**/src/com.hibob.anyim.agw.test/**/target/
+!**/src/com.hibob.anylink.agw.test/**/target/
 
 ### STS ###
 .apt_generated
@@ -27,7 +27,7 @@ target/
 /.nb-gradle/
 build/
 !**/src/main/**/build/
-!**/src/com.hibob.anyim.agw.test/**/build/
+!**/src/com.hibob.anylink.agw.test/**/build/
 
 ### VS Code ###
 .vscode/
