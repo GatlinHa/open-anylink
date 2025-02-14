@@ -1,4 +1,4 @@
-# AnyIM
+# AnyLink
 ## 简介
 - 一款面向企业的开源免费的IM即时通信项目。
 - 基于Spring Cloud，Netty，WebSocket，Protobuf实现，支持分布式集群化部署的，支持企业级的海量高并发。

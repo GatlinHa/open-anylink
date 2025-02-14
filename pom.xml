@@ -11,11 +11,11 @@
     </parent>
 
     <groupId>com.hibob</groupId>
-    <artifactId>anyim</artifactId>
+    <artifactId>anylink</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>anyim</name>
-    <description>anyim</description>
+    <name>anylink</name>
+    <description>anylink</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -30,13 +30,13 @@
     </properties>
 
     <modules>
-        <module>anyim-agw</module>
-        <module>anyim-common</module>
-        <module>anyim-netty</module>
-        <module>anyim-user</module>
-        <module>anyim-chat</module>
-        <module>anyim-groupmng</module>
-        <module>anyim-mts</module>
+        <module>anylink-agw</module>
+        <module>anylink-common</module>
+        <module>anylink-netty</module>
+        <module>anylink-user</module>
+        <module>anylink-chat</module>
+        <module>anylink-groupmng</module>
+        <module>anylink-mts</module>
     </modules>
 
     <dependencies>
