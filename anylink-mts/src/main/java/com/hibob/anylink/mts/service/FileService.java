@@ -13,8 +13,8 @@ import com.hibob.anylink.mts.entity.MtsObject;
 import com.hibob.anylink.mts.enums.FileType;
 import com.hibob.anylink.mts.mapper.MtsImageMapper;
 import com.hibob.anylink.mts.mapper.MtsObjectMapper;
-import com.hibob.anylink.mts.minio.MinioConfig;
-import com.hibob.anylink.mts.minio.MinioService;
+import com.hibob.anylink.mts.obs.ObsConfig;
+import com.hibob.anylink.mts.obs.ObsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -36,8 +36,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FileService {
 
-    private final MinioConfig minioConfig;
-    private final MinioService minioService;
+    private final ObsConfig obsConfig;
+    private final ObsService obsService;
     private final MtsObjectMapper mtsObjectMapper;
     private final MtsImageMapper mtsImageMapper;
     private SnowflakeId snowflakeId = null;
@@ -64,7 +64,7 @@ public class FileService {
         MultipartFile file = dto.getFile();
         String fileName = file.getOriginalFilename();
         // 大小校验
-        if (file.getSize() > minioConfig.getImageMaxLimit() * 1024 * 1024) {
+        if (file.getSize() > obsConfig.getImageMaxLimit() * 1024 * 1024) {
             return ResultUtil.error(ServiceErrorCode.ERROR_IMAGE_TOO_BIG);
         }
 
@@ -92,18 +92,18 @@ public class FileService {
             return ResultUtil.success(vo);
         }
 
-        String originUrl = minioService.uploadFile(file);
+        String originUrl = obsService.uploadFile(file);
         if (!StringUtils.hasLength(originUrl)) {
             return ResultUtil.error(ServiceErrorCode.ERROR_FILE_UPLOAD_ERROR);
         }
 
         String thumbUrl = originUrl;
-        if (file.getSize() > minioConfig.getImageThumbSize()) {
+        if (file.getSize() > obsConfig.getImageThumbSize()) {
             try {
                 byte[] imageThumb = getImageThumb(file.getBytes());
                 int dotIndex = fileName.lastIndexOf('.'); // 文件名在前面已经校验过了，这里肯定合法
                 fileName = fileName.substring(0, dotIndex) + "-thumb" + fileName.substring(dotIndex);
-                thumbUrl = minioService.uploadFile(imageThumb, file.getContentType(), fileName);
+                thumbUrl = obsService.uploadFile(imageThumb, file.getContentType(), fileName);
             } catch (IOException e) {
                 log.error("file.getBytes() error, exception is {}", e);
             }
@@ -116,7 +116,7 @@ public class FileService {
         mtsImage.setOriginUrl(originUrl);
         mtsImage.setThumbUrl(thumbUrl);
         mtsImage.setCreatedAccount(ReqSession.getSession().getAccount());
-        mtsImage.setExpire(minioConfig.getTtl() * 86400);
+        mtsImage.setExpire(obsConfig.getTtl() * 86400);
         mtsImageMapper.insert(mtsImage);
 
         MtsObject mtsObject = new MtsObject();
@@ -148,7 +148,7 @@ public class FileService {
         byte[] destImageBytes = oriImageBytes;
         double accuracy = getAccuracy(srcSize);
         try {
-            while (destImageBytes.length > minioConfig.getImageThumbSize()) {
+            while (destImageBytes.length > obsConfig.getImageThumbSize()) {
                 ByteArrayInputStream inputStream = new ByteArrayInputStream(destImageBytes);
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream(destImageBytes.length);
                 Thumbnails.of(inputStream)

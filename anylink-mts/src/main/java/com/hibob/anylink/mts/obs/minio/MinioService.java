@@ -1,8 +1,7 @@
-package com.hibob.anylink.mts.minio;
+package com.hibob.anylink.mts.obs.minio;
 
 import com.hibob.anylink.mts.enums.FileType;
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
+import com.hibob.anylink.mts.obs.ObsService;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import lombok.RequiredArgsConstructor;
@@ -19,18 +18,13 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class MinioService {
+public class MinioService implements ObsService {
     private final MinioConfig minioConfig;
     private final MinioClient minioClient;
 
+    @Override
     public String uploadFile(MultipartFile file) {
-
         try {
-            boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioConfig.getBucketName()).build());
-            if (!bucketExists){
-                // 如果不存在，就创建桶
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioConfig.getBucketName()).build());
-            }
             String fileName = file.getOriginalFilename();
             String prefixPath = FileType.determineFileType(fileName).name();
             String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -38,28 +32,22 @@ public class MinioService {
             String fullName = prefixPath + "/" + datePath + "/" + uuidPath + "/" + fileName;
 
             minioClient.putObject(PutObjectArgs.builder()
-                    .bucket(minioConfig.getBucketName())
+                    .bucket(minioConfig.getBucket())
                     .object(fullName)
                     .stream(file.getInputStream(), file.getSize(), -1)
                     .contentType(file.getContentType())
                     .build());
-            return  minioConfig.getUrl() + "/" + minioConfig.getBucketName() + "/" + fullName;
+            return  minioConfig.getEndpoint() + "/" + minioConfig.getBucket() + "/" + fullName;
         }
         catch (Exception e) {
-            log.error("upload file error: {}", e.getMessage());
+            log.error("MinioService upload file error: {}", e.getMessage());
             return "";
         }
     }
 
+    @Override
     public String uploadFile(byte[] fileByte, String contentType, String fileName) {
-
         try {
-            boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioConfig.getBucketName()).build());
-            if (!bucketExists){
-                // 如果不存在，就创建桶
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioConfig.getBucketName()).build());
-            }
-
             String prefixPath = FileType.determineFileType(fileName).name();
             String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             String uuidPath = UUID.randomUUID().toString();
@@ -67,15 +55,15 @@ public class MinioService {
 
             InputStream stream = new ByteArrayInputStream(fileByte);
             minioClient.putObject(PutObjectArgs.builder()
-                    .bucket(minioConfig.getBucketName())
+                    .bucket(minioConfig.getBucket())
                     .object(fullName)
                     .stream(stream, fileByte.length, -1)
                     .contentType(contentType)
                     .build());
-            return  minioConfig.getUrl() + "/" + minioConfig.getBucketName() + "/" + fullName;
+            return  minioConfig.getEndpoint() + "/" + minioConfig.getBucket() + "/" + fullName;
         }
         catch (Exception e) {
-            log.error("upload file error: {}", e.getMessage());
+            log.error("MinioService upload file error: {}", e.getMessage());
             return "";
         }
     }
