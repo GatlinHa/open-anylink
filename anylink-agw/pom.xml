@@ -55,7 +55,6 @@
 
     <build>
         <plugins>
-            <!-- 其他插件配置 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
