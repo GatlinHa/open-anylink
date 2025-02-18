@@ -18,7 +18,7 @@ public class PreHeaderInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        boolean isRefreshToken = request.getRequestURI().equals("/user/refreshToken");
+        boolean isRefreshToken = request.getRequestURI().equals("/api/user/refreshToken");
         String token = isRefreshToken ? request.getHeader("refreshToken") : request.getHeader("accessToken");
         String account = JwtUtil.getAccount(token);
         String clientId = JwtUtil.getInfo(token);

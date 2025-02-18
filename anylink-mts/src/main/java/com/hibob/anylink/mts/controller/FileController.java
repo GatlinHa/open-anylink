@@ -20,7 +20,7 @@ import javax.validation.Valid;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/mts")
+@RequestMapping("/api/mts")
 public class FileController {
 
     private final FileService fileService;

@@ -10,17 +10,17 @@ spring:
         - id: anylink-user
           uri: lb://anylink-user
           predicates:
-            - Path=/user/**
+            - Path=/api/user/**
 
         - id: anylink-chat
           uri: lb://anylink-chat
           predicates:
-            - Path=/chat/**,/groupChat/**
+            - Path=/api/chat/**
 
         - id: anylink-groupmng
           uri: lb://anylink-groupmng
           predicates:
-            - Path=/groupmng/**
+            - Path=/api/groupmng/**
 
         - id: anylink-netty-ws
           uri: lb:ws://anylink-netty-ws
@@ -30,7 +30,7 @@ spring:
         - id: anylink-mts
           uri: lb://anylink-mts
           predicates:
-            - Path=/mts/**
+            - Path=/api/mts/**
 
   main:
 #    解决这个问题：Spring MVC found on classpath, which is incompatible with Spring Cloud Gateway at this time

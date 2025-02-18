@@ -23,9 +23,9 @@ public class MvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         "/error",
-                        "/user/login",
-                        "/user/register",
-                        "/user/validateAccount",
+                        "/api/user/login",
+                        "/api/user/register",
+                        "/api/user/validateAccount",
                         "/swagger-resources/**",
                         "/webjars/**",
                         "/v2/**",

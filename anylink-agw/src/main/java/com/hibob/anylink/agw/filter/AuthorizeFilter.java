@@ -37,9 +37,9 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
     static {
         ignoreAuthUrls.add("/ws");
-        ignoreAuthUrls.add("/user/login");
-        ignoreAuthUrls.add("/user/register");
-        ignoreAuthUrls.add("/user/validateAccount");
+        ignoreAuthUrls.add("/api/user/login");
+        ignoreAuthUrls.add("/api/user/register");
+        ignoreAuthUrls.add("/api/user/validateAccount");
     }
 
     @Override
@@ -49,7 +49,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
 
-        boolean isRefreshToken = exchange.getRequest().getURI().getPath().equals("/user/refreshToken");
+        boolean isRefreshToken = exchange.getRequest().getURI().getPath().equals("/api/user/refreshToken");
         String token = isRefreshToken ?
                 exchange.getRequest().getHeaders().getFirst("refreshToken") :
                 exchange.getRequest().getHeaders().getFirst("accessToken");

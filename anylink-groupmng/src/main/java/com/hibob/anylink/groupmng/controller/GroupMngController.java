@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/groupmng")
+@RequestMapping("/api/groupmng")
 public class GroupMngController {
     private final GroupMngService groupMngService;
 
