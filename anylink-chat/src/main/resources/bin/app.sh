@@ -3,8 +3,8 @@
 SPRING_PROFILES_ACTIVE=prod
 NACOS_CONFIG_NAMESPACE=f76d9839-431e-4bd8-a352-4df2f9da119e
 NACOS_DISCOVERY_NAMESPACE=f76d9839-431e-4bd8-a352-4df2f9da119e
-NACOS_CONFIG_SERVER_ADDR=101.200.183.129:8848
-NACOS_DISCOVERY_SERVER_ADDR=101.200.183.129:8848
+NACOS_CONFIG_SERVER_ADDR=172.21.23.53:8848
+NACOS_DISCOVERY_SERVER_ADDR=172.21.23.53:8848
 
 ##项目路径, 根据实际部署的修改即可,其他的不用修改
 SERVICE_DIR=/opt/hibob/app/chat
@@ -66,7 +66,7 @@ start(){
     echo ">>> starting $JAR_NAME, PID=$! <<<"
 
     # 循环检查 LOG_FILE 中是否包含关键字
-    max_attempts=30
+    max_attempts=60
     attempt=0
     while [ $attempt -lt $max_attempts ]; do
       if [ -f "$LOG_FILE" ] && grep -q "Started .* in [0-9.]* seconds" "$LOG_FILE"; then
