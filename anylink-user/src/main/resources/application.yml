@@ -39,3 +39,6 @@ jwt:
 custom:
   snow-flake:
     worker-datacenter-config: ${worker-datacenter-config}
+
+logging:
+  config: classpath:logback-spring.xml

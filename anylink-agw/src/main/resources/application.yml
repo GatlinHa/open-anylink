@@ -1,5 +1,4 @@
 
-
 spring:
   cloud:
     gateway:
@@ -48,3 +47,6 @@ jwt:
   refreshToken:
     expire: 604800 #7天
     secret: ${jwt.refreshToken.secret}
+
+logging:
+  config: classpath:logback-spring.xml

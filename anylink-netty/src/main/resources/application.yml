@@ -73,3 +73,6 @@ custom:
     max-pool-size: 100
     keep-alive-time: 1000
     queue-size: 200
+
+logging:
+  config: classpath:logback-spring.xml
