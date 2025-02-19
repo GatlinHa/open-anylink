@@ -40,6 +40,12 @@ spring:
 #    ②：如果你在同一个应用中需要Spring MVC和Spring Cloud Gateway，你可以在你的application.yml或application.properties文件中将web应用类型设置为REACTIVE。
     web-application-type: reactive # 它会导致@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})上面的exclude无效
 
+  redis:
+    host: ${spring.redis.host}
+    port: ${spring.redis.port}
+    username: ${spring.redis.username}
+    password: ${spring.redis.password}
+
 jwt:
   accessToken:
     expire: 1800 #半个小时

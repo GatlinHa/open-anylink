@@ -2,6 +2,7 @@
 spring:
   data:
     mongodb:
+      uri: ${spring.data.mongodb.uri}
       host: ${spring.data.mongodb.host}
       port: ${spring.data.mongodb.port}
       database: ${spring.data.mongodb.database}
@@ -20,6 +21,7 @@ spring:
   redis:
     host: ${spring.redis.host}
     port: ${spring.redis.port}
+    username: ${spring.redis.username}
     password: ${spring.redis.password}
     pool:
       max-active: 100

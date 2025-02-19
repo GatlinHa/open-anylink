@@ -19,6 +19,7 @@ spring:
   redis:
     host: ${spring.redis.host}
     port: ${spring.redis.port}
+    username: ${spring.redis.username}
     password: ${spring.redis.password}
     pool:
       max-active: 100
