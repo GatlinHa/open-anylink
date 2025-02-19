@@ -1,5 +1,5 @@
 use `anylink`;
-DROP TABLE `anylink_group_info`;
+DROP TABLE IF EXISTS `anylink_group_info`;
 CREATE TABLE `anylink_group_info`(
     `group_id` VARCHAR(255) NOT NULL COMMENT '群组ID，雪花算法生成',
     `group_type`  TINYINT(1) NOT NULL COMMENT '群类型：1普通群，2其他',
@@ -18,7 +18,7 @@ CREATE TABLE `anylink_group_info`(
     INDEX `idx_creator`(creator)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '群组信息表';
 
-DROP TABLE `anylink_group_member`;
+DROP TABLE IF EXISTS `anylink_group_member`;
 CREATE TABLE `anylink_group_member`(
     `group_id` VARCHAR(255) NOT NULL COMMENT '群组ID，雪花算法生成',
     `account` VARCHAR(255) NOT NULL COMMENT '成员账号',

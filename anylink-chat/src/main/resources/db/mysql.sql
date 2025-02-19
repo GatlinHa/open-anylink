@@ -1,5 +1,5 @@
 use `anylink`;
-DROP TABLE anylink_chat_ref_msgId;
+DROP TABLE IF EXISTS anylink_chat_ref_msgId;
 CREATE TABLE anylink_chat_ref_msgId
 (
     `session_id` VARCHAR(512) NOT NULL COMMENT 'session id，主键',
@@ -7,7 +7,7 @@ CREATE TABLE anylink_chat_ref_msgId
     PRIMARY KEY(`session_id`)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '参考MsgId表';
 
-DROP TABLE `anylink_chat_session`;
+DROP TABLE IF EXISTS `anylink_chat_session`;
 CREATE TABLE `anylink_chat_session`
 (
     `account` VARCHAR(255) NOT NULL COMMENT '账号，联合主键',
@@ -27,7 +27,7 @@ CREATE TABLE `anylink_chat_session`
     PRIMARY KEY(`account`, `session_id`)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '用户的会话信息表';
 
-DROP TABLE `anylink_chat_partition`;
+DROP TABLE IF EXISTS `anylink_chat_partition`;
 CREATE TABLE `anylink_chat_partition`
 (
     `account` VARCHAR(255) NOT NULL COMMENT '账号，联合主键',

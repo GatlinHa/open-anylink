@@ -1,5 +1,5 @@
 use `anylink`;
-drop table `anylink_user_info`;
+drop table IF EXISTS `anylink_user_info`;
 CREATE TABLE `anylink_user_info`(
     `id` BIGINT NOT NULL COMMENT 'id，雪花算法生成',
     `account` VARCHAR(255) NOT NULL COMMENT '账号，用户指定',
@@ -20,7 +20,7 @@ CREATE TABLE `anylink_user_info`(
     INDEX `idx_nick_name`(nick_name)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '用户信息表';
 
-drop table `anylink_user_client`;
+drop table IF EXISTS `anylink_user_client`;
 CREATE TABLE `anylink_user_client`(
     `unique_id` VARCHAR(255) NOT NULL COMMENT '客户端唯一ID，account+@+客户端生成的uuid',
     `account` VARCHAR(255) NOT NULL COMMENT '账号',
@@ -34,7 +34,7 @@ CREATE TABLE `anylink_user_client`(
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '客户端表';
 
 -- TODO 需要做老化处理
-drop table `anylink_user_login`;
+drop table IF EXISTS `anylink_user_login`;
 CREATE TABLE `anylink_user_login`(
     `account` VARCHAR(255) NOT NULL COMMENT '账号',
     `unique_id` VARCHAR(255) NOT NULL COMMENT '客户端唯一ID，account+@+客户端生成的uuid',
@@ -45,7 +45,7 @@ CREATE TABLE `anylink_user_login`(
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '登录记录表';
 
 
-drop table `anylink_user_status`;
+drop table IF EXISTS `anylink_user_status`;
 CREATE TABLE `anylink_user_status`(
     `account` VARCHAR(255) NOT NULL COMMENT '账号',
     `unique_id` VARCHAR(255) NOT NULL COMMENT '客户端唯一ID，account+@+客户端生成的uuid',

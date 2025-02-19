@@ -1,5 +1,5 @@
 use `anylink`;
-drop table `anylink_mts_object`;
+drop table IF EXISTS `anylink_mts_object`;
 CREATE TABLE `anylink_mts_object`
 (
     `object_id` BIGINT NOT NULL COMMENT '富媒体对象唯一ID，采用雪花算法',
@@ -11,7 +11,7 @@ CREATE TABLE `anylink_mts_object`
     INDEX `idx_foreign_id`(foreign_id)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '富媒体对象表，MTS服务的首表';
 
-drop table `anylink_mts_file`;
+drop table IF EXISTS `anylink_mts_file`;
 CREATE TABLE `anylink_mts_file`
 (
     `file_id` VARCHAR(255) NOT NULL COMMENT '文件唯一ID，采用文件md5计算方式',
@@ -24,7 +24,7 @@ CREATE TABLE `anylink_mts_file`
     PRIMARY KEY(`file_id`)
 ) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '文件对象信息表';
 
-drop table `anylink_mts_image`;
+drop table IF EXISTS `anylink_mts_image`;
 CREATE TABLE `anylink_mts_image`
 (
     `image_id` VARCHAR(255) NOT NULL COMMENT '图像唯一ID，采用文件md5计算方式',
