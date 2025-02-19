@@ -1,10 +1,10 @@
 
 spring:
   redis:
-    host: ${spring.redis.host}
-    port: ${spring.redis.port}
-    username: ${spring.redis.username}
-    password: ${spring.redis.password}
+    host: #启动时从配置中心读取
+    port: #启动时从配置中心读取
+    username: #启动时从配置中心读取
+    password: #启动时从配置中心读取
     pool:
       max-active: 100
       # 连接池最大阻塞等待时间（使用负值表示没有限制）
@@ -13,7 +13,7 @@ spring:
       min-idle: 0
     timeout: 1200
   kafka:
-    bootstrap-servers: ${spring.kafka.bootstrap-servers}
+    bootstrap-servers: #启动时从配置中心读取
     producer:
       # producer需要server接收到数据之后发出的确认接收的信号
       # acks=0：设置为0表示producer不需要等待任何确认收到的信息。副本将立即加到socket  buffer并认为已经发送。没有任何保障可以保证此种情况下server已经成功接收数据，同时重试配置不会发生作用（因为客户端不知道是否失败）回馈的offset会总是设置为-1；
@@ -63,7 +63,7 @@ websocket:
   port: 8100
   path: /ws
   log-level: DEBUG  # LoggingHandler的日志级别
-  topic-distribute: ${websocket.topic-distribute}
+  topic-distribute: #启动时从配置中心读取
 
 #自定义配置
 custom:

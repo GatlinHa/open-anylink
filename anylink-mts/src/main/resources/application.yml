@@ -2,9 +2,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${spring.datasource.url}
-    username: ${spring.datasource.username}
-    password: ${spring.datasource.password}
+    url: #启动时从配置中心读取
+    username: #启动时从配置中心读取
+    password: #启动时从配置中心读取
 
   servlet:
     multipart:
@@ -17,10 +17,10 @@ spring:
       matching-strategy: ant_path_matcher
 
   redis:
-    host: ${spring.redis.host}
-    port: ${spring.redis.port}
-    username: ${spring.redis.username}
-    password: ${spring.redis.password}
+    host: #启动时从配置中心读取
+    port: #启动时从配置中心读取
+    username: #启动时从配置中心读取
+    password: #启动时从配置中心读取
     pool:
       max-active: 100
       max-wait: -1 # 连接池最大阻塞等待时间（使用负值表示没有限制）
@@ -33,7 +33,7 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 obs:
-  type: ${obs.type}
+  type: #启动时从配置中心读取
   image:
     max-limit: 10 #单位M
     thumb-size: 51200  #单位B
@@ -42,23 +42,23 @@ obs:
   ttl: 15 #单位天
 
   minio:
-    endpoint: ${minio.endpoint}
-    bucket: ${minio.bucket}
-    username: ${minio.username}
-    password: ${minio.password}
+    endpoint: #启动时从配置中心读取
+    bucket: #启动时从配置中心读取
+    username: #启动时从配置中心读取
+    password: #启动时从配置中心读取
 
   alioss:
-    endpoint: ${obs.alioss.endpoint}
-    endpoint-internal: ${obs.alioss.endpoint-internal}
-    region: ${obs.alioss.region}
-    bucket: ${obs.alioss.bucket}
-    ak: ${obs.alioss.ak}
-    sk: ${obs.alioss.sk}
+    endpoint: #启动时从配置中心读取
+    endpoint-internal: #启动时从配置中心读取
+    region: #启动时从配置中心读取
+    bucket: #启动时从配置中心读取
+    ak: #启动时从配置中心读取
+    sk: #启动时从配置中心读取
 
 #自定义配置
 custom:
   snow-flake:
-    worker-datacenter-config: ${worker-datacenter-config}
+    worker-datacenter-config: #启动时从配置中心读取
 
 logging:
   config: classpath:logback-spring.xml

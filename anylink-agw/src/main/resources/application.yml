@@ -41,18 +41,18 @@ spring:
     web-application-type: reactive # 它会导致@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})上面的exclude无效
 
   redis:
-    host: ${spring.redis.host}
-    port: ${spring.redis.port}
-    username: ${spring.redis.username}
-    password: ${spring.redis.password}
+    host: #启动时从配置中心读取
+    port: #启动时从配置中心读取
+    username: #启动时从配置中心读取
+    password: #启动时从配置中心读取
 
 jwt:
   accessToken:
     expire: 1800 #半个小时
-    secret: ${jwt.accessToken.secret}
+    secret: #启动时从配置中心读取
   refreshToken:
     expire: 604800 #7天
-    secret: ${jwt.refreshToken.secret}
+    secret: #启动时从配置中心读取
 
 logging:
   config: classpath:logback-spring.xml

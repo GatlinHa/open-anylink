@@ -2,9 +2,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${spring.datasource.url}
-    username: ${spring.datasource.username}
-    password: ${spring.datasource.password}
+    url: #启动时从配置中心读取
+    username: #启动时从配置中心读取
+    password: #启动时从配置中心读取
 
 # 解决这个错误：org.springframework.context.ApplicationContextException: Failed to start bean 'documentationPluginsBootstrapper';
   mvc:
@@ -12,10 +12,10 @@ spring:
       matching-strategy: ant_path_matcher
 
 #  redis:
-#    host: ${spring.redis.host}
-#    port: ${spring.redis.port}
-#    username: ${spring.redis.username}
-#    password: ${spring.redis.password}
+#    host: #启动时从配置中心读取
+#    port: #启动时从配置中心读取
+#    username: #启动时从配置中心读取
+#    password: #启动时从配置中心读取
 #    pool:
 #      max-active: 100
 #      max-wait: -1 # 连接池最大阻塞等待时间（使用负值表示没有限制）
@@ -31,7 +31,7 @@ mybatis-plus:
 #自定义配置
 custom:
   snow-flake:
-    worker-datacenter-config: ${worker-datacenter-config}
+    worker-datacenter-config: #启动时从配置中心读取
 
 logging:
   config: classpath:logback-spring.xml
