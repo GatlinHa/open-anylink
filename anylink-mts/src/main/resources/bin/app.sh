@@ -61,7 +61,7 @@ start(){
     # 创建新的 LOG_DIR
     mkdir -p "$LOG_DIR"
 
-    nohup java -Xms256m -Xmx256m -jar $JAR_NAME --spring.profiles.active=$SPRING_PROFILES_ACTIVE --spring.cloud.nacos.config.namespace=$NACOS_CONFIG_NAMESPACE --spring.cloud.nacos.discovery.namespace=$NACOS_DISCOVERY_NAMESPACE --spring.cloud.nacos.config.server-addr=$NACOS_CONFIG_SERVER_ADDR --spring.cloud.nacos.discovery.server-addr=$NACOS_DISCOVERY_SERVER_ADDR >/dev/null 2>&1 &
+    nohup java -Xms512m -Xmx512m -jar $JAR_NAME --spring.profiles.active=$SPRING_PROFILES_ACTIVE --spring.cloud.nacos.config.namespace=$NACOS_CONFIG_NAMESPACE --spring.cloud.nacos.discovery.namespace=$NACOS_DISCOVERY_NAMESPACE --spring.cloud.nacos.config.server-addr=$NACOS_CONFIG_SERVER_ADDR --spring.cloud.nacos.discovery.server-addr=$NACOS_DISCOVERY_SERVER_ADDR >/dev/null 2>&1 &
     echo $! > $PID
     echo ">>> starting $JAR_NAME, PID=$! <<<"
 

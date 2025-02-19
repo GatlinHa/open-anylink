@@ -3,8 +3,10 @@
 SPRING_PROFILES_ACTIVE=prod
 NACOS_CONFIG_NAMESPACE=f76d9839-431e-4bd8-a352-4df2f9da119e
 NACOS_DISCOVERY_NAMESPACE=f76d9839-431e-4bd8-a352-4df2f9da119e
+DUBBO_REGISTRY_PARAMETERS_NAMESPACE=f76d9839-431e-4bd8-a352-4df2f9da119e
 NACOS_CONFIG_SERVER_ADDR=172.21.23.53:8848
 NACOS_DISCOVERY_SERVER_ADDR=172.21.23.53:8848
+DUBBO_REGISTRY_ADDRESS=nacos://172.21.23.53:8848
 
 ##项目路径, 根据实际部署的修改即可,其他的不用修改
 SERVICE_DIR=/opt/hibob/app/chat
@@ -61,7 +63,7 @@ start(){
     # 创建新的 LOG_DIR
     mkdir -p "$LOG_DIR"
 
-    nohup java -Xms256m -Xmx256m -jar $JAR_NAME --spring.profiles.active=$SPRING_PROFILES_ACTIVE --spring.cloud.nacos.config.namespace=$NACOS_CONFIG_NAMESPACE --spring.cloud.nacos.discovery.namespace=$NACOS_DISCOVERY_NAMESPACE --spring.cloud.nacos.config.server-addr=$NACOS_CONFIG_SERVER_ADDR --spring.cloud.nacos.discovery.server-addr=$NACOS_DISCOVERY_SERVER_ADDR >/dev/null 2>&1 &
+    nohup java -Xms512m -Xmx512m -jar $JAR_NAME --spring.profiles.active=$SPRING_PROFILES_ACTIVE --spring.cloud.nacos.config.namespace=$NACOS_CONFIG_NAMESPACE --dubbo.registry.parameters.namespace=$DUBBO_REGISTRY_PARAMETERS_NAMESPACE --spring.cloud.nacos.discovery.namespace=$NACOS_DISCOVERY_NAMESPACE --spring.cloud.nacos.config.server-addr=$NACOS_CONFIG_SERVER_ADDR --spring.cloud.nacos.discovery.server-addr=$NACOS_DISCOVERY_SERVER_ADDR --dubbo.registry.address=$DUBBO_REGISTRY_ADDRESS >/dev/null 2>&1 &
     echo $! > $PID
     echo ">>> starting $JAR_NAME, PID=$! <<<"
 
