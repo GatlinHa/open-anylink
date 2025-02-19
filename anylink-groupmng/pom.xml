@@ -61,7 +61,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.hibob.anylink.chat.ChatApplication</mainClass>
+                    <mainClass>com.hibob.anylink.groupmng.GroupMngApplication</mainClass>
                 </configuration>
 <!--                <executions>-->
 <!--                    <execution>-->
