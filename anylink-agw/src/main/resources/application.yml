@@ -56,3 +56,5 @@ jwt:
 
 logging:
   config: classpath:logback-spring.xml
+  level:
+    root: #启动时从配置中心读取
