@@ -8,7 +8,7 @@
 
     <!-- 定义了一个名为serverName的属性，它的值来自于logging.file.name，如果没有找到该属性默认为defaultValue的值 -->
     <springProperty name="serverName" source="logging.file.name" defaultValue="groupmng"/>
-    <springProperty name="logging.path" source="logging.file.path" defaultValue="././logs"/>
+    <springProperty name="logging.path" source="logging.file.path" defaultValue="./logs/groupmng"/>
 
     <!--0. 日志格式和颜色渲染 -->
     <!-- 彩色日志依赖的渲染类 -->
