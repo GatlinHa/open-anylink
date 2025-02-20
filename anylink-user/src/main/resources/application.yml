@@ -26,6 +26,7 @@ spring:
 
 mybatis-plus:
   configuration:
+    # 输出sql日志，生产环境要使用 org.apache.ibatis.logging.nologging.NoLoggingImpl 关闭日志
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 jwt:
