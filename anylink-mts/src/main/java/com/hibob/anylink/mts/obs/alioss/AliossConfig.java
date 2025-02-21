@@ -25,16 +25,8 @@ public class AliossConfig {
     @Value("${obs.alioss.bucket}")
     private String bucket;
 
-    @Value("${obs.alioss.ak}")
-    private String ak;
-
-    @Value("${obs.alioss.sk}")
-    private String sk;
-
     @Bean
     public OSS aliossClient() throws ClientException {
-        System.setProperty("OSS_ACCESS_KEY_ID", ak);
-        System.setProperty("OSS_ACCESS_KEY_SECRET", sk);
         EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider();
         return OSSClientBuilder.create()
                 .endpoint(endpointInternal)

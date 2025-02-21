@@ -53,8 +53,6 @@ obs:
     endpoint-internal: #启动时从配置中心读取
     region: #启动时从配置中心读取
     bucket: #启动时从配置中心读取
-    ak: #启动时从配置中心读取
-    sk: #启动时从配置中心读取
 
 #自定义配置
 custom:

@@ -25,6 +25,7 @@ public class AliossService implements ObsService {
 
     @Override
     public String uploadFile(MultipartFile file) {
+        log.info("AliossService::uploadFile file");
         try {
             String fileName = file.getOriginalFilename();
             String prefixPath = FileType.determineFileType(fileName).name();
@@ -43,12 +44,12 @@ public class AliossService implements ObsService {
 
     @Override
     public String uploadFile(byte[] fileByte, String contentType, String fileName) {
+        log.info("AliossService::uploadFile fileByte");
         try {
             String prefixPath = FileType.determineFileType(fileName).name();
             String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             String uuidPath = UUID.randomUUID().toString();
             String fullName = prefixPath + "/" + datePath + "/" + uuidPath + "/" + fileName;
-
             InputStream stream = new ByteArrayInputStream(fileByte);
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(contentType);
