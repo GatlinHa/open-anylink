@@ -37,6 +37,11 @@ public class RedisKey {
     public static final String USER_ACTIVE_TOKEN = USER_PREFIX + "activeAccessToken:";
 
     /**
+     * 存储用户登录前分配的nonce
+     */
+    public static final String USER_NONCE =  USER_PREFIX + "nonce:";
+
+    /**
      * 存储正在使用的用户的refreshToken
      */
     public static final String USER_ACTIVE_TOKEN_REFRESH = USER_PREFIX + "activeRefreshToken:";

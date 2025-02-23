@@ -55,6 +55,17 @@ public class UserController {
         return userService.deregister();
     }
 
+    /**
+     * 登录前nonce，用于对登录密码进行加密传输
+     * @param dto
+     * @return
+     */
+    @ApiOperation(value = "登录前nonce", notes = "登录前nonce，用于对登录密码进行加密传输")
+    @GetMapping("/nonce")
+    public ResponseEntity<IMHttpResponse> nonce(@Validated NonceReq dto) {
+        return userService.nonce(dto);
+    }
+
     // TODO 怎么防ddos攻击？
     // 前端可以限制登录失败三次，增加图形验证。 需要后端怎么配合？
     // 应该是要把验证图片的功能单独拆出来当个服务器，验证成功后在把请求转发给登录服务器

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum ServiceErrorCode {
+    ERROR_ILLEGAL_REQ(Const.SERVICE_CODE_COMMON + 1, "非法请求"),
+
     ERROR_ACCOUNT_EXIST(Const.SERVICE_CODE_USER + 1, "账号已存在"), //TODO 这些都没有利用起来，后面整改下
 
     ERROR_XSS(Const.SERVICE_CODE_USER + 2, "输入内容含有非法字符"),

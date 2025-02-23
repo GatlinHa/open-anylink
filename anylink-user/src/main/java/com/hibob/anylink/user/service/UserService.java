@@ -26,6 +26,7 @@ import com.hibob.anylink.user.mapper.ClientMapper;
 import com.hibob.anylink.user.mapper.LoginMapper;
 import com.hibob.anylink.user.mapper.UserMapper;
 import com.hibob.anylink.user.mapper.UserStatusMapper;
+import com.hibob.anylink.user.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -45,6 +46,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService extends ServiceImpl<UserMapper, User> {
 
+    private final SecurityUtil securityUtil;
     private final PasswordEncoder passwordEncoder;
     private final JwtProperties jwtProperties;
     private final RedisTemplate<String, Object> redisTemplate;
@@ -64,7 +66,11 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     public ResponseEntity<IMHttpResponse> register(RegisterReq dto) {
         log.info("UserService::register");
-        User user = getOneByAccount(dto.getAccount());
+        String account = dto.getAccount();
+        String clientId = dto.getClientId();
+        String uniqueId = CommonUtil.conUniqueId(account, clientId);
+
+        User user = getOneByAccount(account);
         if (user != null) {
             log.info("account exist");
             return ResultUtil.error(ServiceErrorCode.ERROR_ACCOUNT_EXIST);
@@ -77,7 +83,26 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             return ResultUtil.error(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        String nonceKey = RedisKey.USER_NONCE + uniqueId;
+        Object obj = redisTemplate.opsForValue().get(nonceKey);
+        String nonce = "";
+        if (obj != null && StringUtils.hasLength((String) obj)) {
+            nonce = (String) obj;
+            redisTemplate.delete(nonceKey);
+        } else {
+            log.error("illegal login");
+            return ResultUtil.error(ServiceErrorCode.ERROR_ILLEGAL_REQ);
+        }
+
+        String password = "";
+        try {
+            password = securityUtil.decryptPassword(nonce, dto.getIv(), dto.getCiphertext(), dto.getAuthTag());
+        } catch (Exception e) {
+            log.error("password decrypt Exception: {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+        user.setPassword(passwordEncoder.encode(password));
         this.save(user);
         return ResultUtil.success();
     }
@@ -96,6 +121,20 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN_REFRESH + uniqueId);
 
         return ResultUtil.success();
+    }
+
+    public ResponseEntity<IMHttpResponse> nonce(NonceReq dto) {
+        log.info("UserService::nonce");
+        String account = dto.getAccount();
+        String clientId = dto.getClientId();
+        String uniqueId = CommonUtil.conUniqueId(account, clientId);
+        String nonce = UUID.randomUUID().toString().replace("-", "");
+        String nonceKey = RedisKey.USER_NONCE + uniqueId;
+        redisTemplate.opsForValue().set(nonceKey, nonce, Duration.ofSeconds(300));
+
+        Map<String, String> result = new HashMap<>();
+        result.put("nonce", nonce);
+        return ResultUtil.success(result);
     }
 
     public ResponseEntity<IMHttpResponse> login(int clientType, String clientName, String clientVersion, LoginReq dto) {
@@ -117,7 +156,26 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             log.error("no register");
             return ResultUtil.error(ServiceErrorCode.ERROR_LOGIN);
         }
-        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+
+        String nonceKey = RedisKey.USER_NONCE + uniqueId;
+        Object obj = redisTemplate.opsForValue().get(nonceKey);
+        String nonce = "";
+        if (obj != null && StringUtils.hasLength((String) obj)) {
+            nonce = (String) obj;
+            redisTemplate.delete(nonceKey);
+        } else {
+            log.error("illegal login");
+            return ResultUtil.error(ServiceErrorCode.ERROR_ILLEGAL_REQ);
+        }
+
+        String password = "";
+        try {
+            password = securityUtil.decryptPassword(nonce, dto.getIv(), dto.getCiphertext(), dto.getAuthTag());
+        } catch (Exception e) {
+            log.error("password decrypt Exception: {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             log.error("password error");
             return ResultUtil.error(ServiceErrorCode.ERROR_LOGIN);
         }
@@ -180,23 +238,51 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     public ResponseEntity<IMHttpResponse> modifyPwd(ModifyPwdReq dto) {
         log.info("UserService::modifyPwd");
-        if (dto.getOldPassword().equals(dto.getPassword())) {
+        ReqSession session = ReqSession.getSession();
+        String account = session.getAccount();
+        String clientId = session.getClientId();
+        String uniqueId = CommonUtil.conUniqueId(account, clientId);
+
+        String nonceKey = RedisKey.USER_NONCE + uniqueId;
+        Object obj = redisTemplate.opsForValue().get(nonceKey);
+        String nonce = "";
+        if (obj != null && StringUtils.hasLength((String) obj)) {
+            nonce = (String) obj;
+            redisTemplate.delete(nonceKey);
+        } else {
+            log.error("illegal login");
+            return ResultUtil.error(ServiceErrorCode.ERROR_ILLEGAL_REQ);
+        }
+
+        String oldPasswordStr = "";
+        String newPasswordStr = "";
+        try {
+            oldPasswordStr = securityUtil.decryptPassword(nonce,
+                    dto.getOldPassword().get("iv"),
+                    dto.getOldPassword().get("ciphertext"),
+                    dto.getOldPassword().get("authTag"));
+            newPasswordStr = securityUtil.decryptPassword(nonce,
+                    dto.getNewPassword().get("iv"),
+                    dto.getNewPassword().get("ciphertext"),
+                    dto.getNewPassword().get("authTag"));
+        } catch (Exception e) {
+            log.error("password decrypt Exception: {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+        if (oldPasswordStr.equals(newPasswordStr)) {
             log.error("new password equals the old password");
             return ResultUtil.error(ServiceErrorCode.ERROR_NEW_PASSWORD_EQUAL_OLD);
         }
 
-        ReqSession session = ReqSession.getSession();
-        String account = session.getAccount();
-//        String clientId = session.getClientId();
-//        String uniqueId = CommonUtil.conUniqueId(account, clientId);
         User user = getOneByAccount(account);
-        if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(oldPasswordStr, user.getPassword())) {
             log.error("password error");
             return ResultUtil.error(ServiceErrorCode.ERROR_OLD_PASSWORD_ERROR);
         }
         this.update(Wrappers.<User>lambdaUpdate()
                 .eq(User::getAccount, account)
-                .set(User::getPassword, passwordEncoder.encode(dto.getPassword()))
+                .set(User::getPassword, passwordEncoder.encode(newPasswordStr))
                 .set(User::getUpdateTime, new Date(System.currentTimeMillis())));
 
         // 修改密码之后可以继续保持登录状态，理由如下

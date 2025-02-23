@@ -22,8 +22,15 @@ public class LoginReq {
     @ApiModelProperty(value = "客户端ID")
     private String clientId;
 
-    @NotEmpty(message = "密码不可为空")
-    @ApiModelProperty(value = "密码")
-    private String password;
+    @NotEmpty(message = "iv不可为空")
+    @ApiModelProperty(value = "iv")
+    private String iv;
 
+    @NotEmpty(message = "ciphertext不可为空")
+    @ApiModelProperty(value = "ciphertext")
+    private String ciphertext;
+
+    @NotEmpty(message = "authTag不可为空")
+    @ApiModelProperty(value = "authTag")
+    private String authTag;
 }

@@ -41,6 +41,7 @@ jwt:
 custom:
   snow-flake:
     worker-datacenter-config: #启动时从配置中心读取
+  fixed-key: #启动时从配置中心读取
 
 logging:
   config: classpath:logback-spring.xml

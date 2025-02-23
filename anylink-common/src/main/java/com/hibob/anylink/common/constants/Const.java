@@ -5,6 +5,11 @@ public class Const {
     }
 
     /**
+     * 服务编码：公共编码
+     */
+    public static final int SERVICE_CODE_COMMON = 0;
+
+    /**
      * 服务编码：anylink-awg服务
      */
     public static final int SERVICE_CODE_AGW = 100;

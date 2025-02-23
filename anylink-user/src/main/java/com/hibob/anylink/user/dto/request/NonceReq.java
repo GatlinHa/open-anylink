@@ -5,25 +5,20 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.Map;
 
 @Data
-@ApiModel("修改密码请求的参数")
-public class ModifyPwdReq {
+@ApiModel("登出前获取nonce请求的参数")
+public class NonceReq {
+
+    @NotEmpty(message = "账号不可为空")
+    @Pattern(regexp = "^[a-zA-Z0-9_]{6,32}$", message = "账号必须是6-32位的字母、数字或下划线")
+    @ApiModelProperty(value = "账号")
+    private String account;
 
     @Size(max = 128, message = "客户端ID长度不能大于128字符")
     @NotEmpty(message = "客户端ID不可为空")
     @ApiModelProperty(value = "客户端ID")
     private String clientId;
-
-    @NotNull(message = "旧密码对象")
-    @ApiModelProperty(value = "旧密码对象")
-    private Map<String, String> oldPassword;
-
-    @NotNull(message = "新密码对象")
-    @ApiModelProperty(value = "新密码对象")
-    private Map<String, String> newPassword;
-
 }
