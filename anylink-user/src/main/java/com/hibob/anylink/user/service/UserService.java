@@ -1,5 +1,7 @@
 package com.hibob.anylink.user.service;
 
+import cn.hutool.captcha.CaptchaUtil;
+import cn.hutool.captcha.LineCaptcha;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -121,6 +123,32 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         redisTemplate.delete(RedisKey.USER_ACTIVE_TOKEN_REFRESH + uniqueId);
 
         return ResultUtil.success();
+    }
+
+    public ResponseEntity<IMHttpResponse> getCaptcha() {
+        log.info("UserService::GetCaptcha");
+        LineCaptcha captcha = CaptchaUtil.createLineCaptcha(100, 30, 4, 80);
+        String uuid = UUID.randomUUID().toString();
+        String redisKey = RedisKey.USER_CAPTCHA + uuid;
+        redisTemplate.opsForValue().set(redisKey, captcha.getCode(), Duration.ofSeconds(300));
+        String base64 = "data:image/png;base64," + captcha.getImageBase64();
+        Map<String, String> result = new HashMap<>();
+        result.put("base64", base64);
+        result.put("id", uuid);
+        return ResultUtil.success(result);
+    }
+
+    public ResponseEntity<IMHttpResponse> verifyCaptcha(VerifyCaptchaReq dto) {
+        log.info("UserService::verifyCaptcha");
+        String redisKey = RedisKey.USER_CAPTCHA + dto.getId();
+        Object o = redisTemplate.opsForValue().get(redisKey);
+        if (o == null || !dto.getCode().equals(o)) {
+            log.error("verify captcha error");
+            return ResultUtil.error(ServiceErrorCode.ERROR_VERIFY_CAPTCHA);
+        } else {
+            redisTemplate.delete(redisKey);
+            return ResultUtil.success();
+        }
     }
 
     public ResponseEntity<IMHttpResponse> nonce(NonceReq dto) {

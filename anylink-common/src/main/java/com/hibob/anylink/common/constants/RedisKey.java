@@ -42,6 +42,11 @@ public class RedisKey {
     public static final String USER_NONCE =  USER_PREFIX + "nonce:";
 
     /**
+     * 存储用户注册时要用到的验证码
+     */
+    public static final String USER_CAPTCHA =  USER_PREFIX + "captcha:";
+
+    /**
      * 存储正在使用的用户的refreshToken
      */
     public static final String USER_ACTIVE_TOKEN_REFRESH = USER_PREFIX + "activeRefreshToken:";

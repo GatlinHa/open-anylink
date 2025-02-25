@@ -37,6 +37,8 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
     static {
         ignoreAuthUrls.add("/ws");
+        ignoreAuthUrls.add("/api/user/getCaptcha");
+        ignoreAuthUrls.add("/api/user/verifyCaptcha");
         ignoreAuthUrls.add("/api/user/nonce");
         ignoreAuthUrls.add("/api/user/login");
         ignoreAuthUrls.add("/api/user/register");

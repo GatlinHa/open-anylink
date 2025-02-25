@@ -18,6 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mybatis-plus.version>3.5.6</mybatis-plus.version>
         <bcprov-jdk18on.version>1.80</bcprov-jdk18on.version>
+        <hutool-captcha.version>5.8.36</hutool-captcha.version>
     </properties>
 
     <dependencies>
@@ -47,6 +48,12 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk18on</artifactId>
             <version>${bcprov-jdk18on.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-captcha</artifactId>
+            <version>${hutool-captcha.version}</version>
         </dependency>
 
     </dependencies>

@@ -55,6 +55,18 @@ public class UserController {
         return userService.deregister();
     }
 
+    @ApiOperation(value = "获取图形验证码", notes = "获取图形验证码")
+    @GetMapping("/getCaptcha")
+    public ResponseEntity<IMHttpResponse> getCaptcha() {
+        return userService.getCaptcha();
+    }
+
+    @ApiOperation(value = "验证图形验证码", notes = "验证图形验证码")
+    @PostMapping("/verifyCaptcha")
+    public ResponseEntity<IMHttpResponse> verifyCaptcha(@Valid @RequestBody VerifyCaptchaReq dto) {
+        return userService.verifyCaptcha(dto);
+    }
+
     /**
      * 登录前nonce，用于对登录密码进行加密传输
      * @param dto

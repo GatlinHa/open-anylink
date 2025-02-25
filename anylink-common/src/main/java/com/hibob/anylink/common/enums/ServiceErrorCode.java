@@ -39,6 +39,8 @@ public enum ServiceErrorCode {
 
     ERROR_PARTITION_NO_EXIST(Const.SERVICE_CODE_USER + 16, "没有该分组"),
 
+    ERROR_VERIFY_CAPTCHA(Const.SERVICE_CODE_USER + 17, "验证码校验错误"),
+
     ERROR_SERVICE_EXCEPTION(Const.SERVICE_CODE_USER + 50, "服务器内部异常"),
 
     ERROR_CHAT_REFMSGID_EXCEPTION(Const.SERVICE_CODE_CHAT + 1, "ref msgId异常"),

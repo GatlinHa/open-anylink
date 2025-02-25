@@ -23,6 +23,8 @@ public class MvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         "/error",
+                        "/api/user/getCaptcha",
+                        "/api/user/verifyCaptcha",
                         "/api/user/nonce",
                         "/api/user/login",
                         "/api/user/register",
