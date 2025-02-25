@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 @ApiModel("查询别人信息返回的参数")
 public class UserVO {
@@ -36,7 +38,7 @@ public class UserVO {
     private String email;
 
     @ApiModelProperty(value = "生日")
-    private String birthday;
+    private Date birthday;
 
     @ApiModelProperty(value = "状态")
     private int status;
