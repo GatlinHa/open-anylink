@@ -142,7 +142,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         log.info("UserService::verifyCaptcha");
         String redisKey = RedisKey.USER_CAPTCHA + dto.getId();
         Object o = redisTemplate.opsForValue().get(redisKey);
-        if (o == null || !dto.getCode().equals(o)) {
+        if (o == null || !dto.getCode().equalsIgnoreCase((String) o)) {
             log.error("verify captcha error");
             return ResultUtil.error(ServiceErrorCode.ERROR_VERIFY_CAPTCHA);
         } else {
@@ -170,15 +170,6 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         String account = dto.getAccount();
         String clientId = dto.getClientId();
         String uniqueId = CommonUtil.conUniqueId(account, clientId);
-        //支持REST接口重复登录，所以这段代码不启用
-//        if (redisTemplate.hasKey(key)) {
-//            log.error("Repeated login");
-//            return ResultUtil.error(
-//                    HttpStatus.FORBIDDEN,
-//                    ServiceErrorCode.ERROR_MULTI_LOGIN.code(),
-//                    ServiceErrorCode.ERROR_MULTI_LOGIN.desc());
-//        }
-
         User user = getOneByAccount(account);
         if (user == null) {
             log.error("no register");

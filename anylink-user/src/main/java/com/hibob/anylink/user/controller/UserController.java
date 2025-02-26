@@ -41,7 +41,6 @@ public class UserController {
         return userService.validateAccount(dto);
     }
 
-    // TODO 需要验证码机制配合，否则请求容易被ddos攻击
     @ApiOperation(value = "用户注册", notes = "用户注册")
     @PostMapping("/register")
     public ResponseEntity<IMHttpResponse> register(@Valid @RequestBody RegisterReq dto) {
