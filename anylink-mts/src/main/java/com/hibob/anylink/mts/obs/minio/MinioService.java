@@ -23,9 +23,8 @@ public class MinioService implements ObsService {
     private final MinioClient minioClient;
 
     @Override
-    public String uploadFile(MultipartFile file) {
+    public String uploadFile(MultipartFile file, String fileName) {
         try {
-            String fileName = file.getOriginalFilename();
             String prefixPath = FileType.determineFileType(fileName).name();
             String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             String uuidPath = UUID.randomUUID().toString();

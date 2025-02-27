@@ -11,7 +11,7 @@ CREATE TABLE `anylink_user_info`(
     `level`  TINYINT(1) DEFAULT 1 COMMENT '用户级别 1:普通用户 其他TODO',
     `signature` VARCHAR(1024) DEFAULT '' COMMENT '个性签名',
     `phone_num` VARCHAR(20) DEFAULT '' COMMENT '手机号码',
-    `email` VARCHAR(50) DEFAULT '' COMMENT '邮箱',
+    `email` VARCHAR(255) DEFAULT '' COMMENT '邮箱',
     `birthday` DATE DEFAULT NULL COMMENT '生日',
     `created_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`  DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',

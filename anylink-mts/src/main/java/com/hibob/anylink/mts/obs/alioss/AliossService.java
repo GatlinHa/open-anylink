@@ -24,10 +24,9 @@ public class AliossService implements ObsService {
     private final OSS aliossClient;
 
     @Override
-    public String uploadFile(MultipartFile file) {
+    public String uploadFile(MultipartFile file, String fileName) {
         log.info("AliossService::uploadFile file");
         try {
-            String fileName = file.getOriginalFilename();
             String prefixPath = FileType.determineFileType(fileName).name();
             String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             String uuidPath = UUID.randomUUID().toString();

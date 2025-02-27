@@ -62,7 +62,7 @@ public class FileService {
     @Transactional
     public ResponseEntity<IMHttpResponse> uploadImage(UploadReq dto) {
         MultipartFile file = dto.getFile();
-        String fileName = file.getOriginalFilename();
+        String fileName = truncateFileName(file.getOriginalFilename());
         // 大小校验
         if (file.getSize() > obsConfig.getImageMaxLimit() * 1024 * 1024) {
             return ResultUtil.error(ServiceErrorCode.ERROR_IMAGE_TOO_BIG);
@@ -92,7 +92,7 @@ public class FileService {
             return ResultUtil.success(vo);
         }
 
-        String originUrl = obsService.uploadFile(file);
+        String originUrl = obsService.uploadFile(file, fileName);
         if (!StringUtils.hasLength(originUrl)) {
             return ResultUtil.error(ServiceErrorCode.ERROR_FILE_UPLOAD_ERROR);
         }
@@ -210,5 +210,30 @@ public class FileService {
             snowflakeId = SnowflakeId.getInstance();
         }
         return snowflakeId.nextId();
+    }
+
+    /**
+     * 截取文件名，最大保留64位
+     * @param fileName
+     * @return
+     */
+    private String truncateFileName(String fileName) {
+        if (fileName == null) {
+            return null;
+        }
+        int truncateLength = 64;
+        // 查找最后一个点的位置
+        int lastDotIndex = fileName.lastIndexOf('.');
+        if (lastDotIndex == -1) {
+            // 如果没有扩展名，直接截取前50位
+            return fileName.length() <= 50 ? fileName : fileName.substring(0, truncateLength);
+        }
+        // 分离文件名主体和扩展名
+        String nameWithoutExtension = fileName.substring(0, lastDotIndex);
+        String extension = fileName.substring(lastDotIndex);
+        // 截取文件名主体部分
+        String truncatedName = nameWithoutExtension.length() <= 50 ? nameWithoutExtension : nameWithoutExtension.substring(0, truncateLength);
+        // 重新组合文件名
+        return truncatedName + extension;
     }
 }
