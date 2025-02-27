@@ -26,6 +26,7 @@ public class MvcConfig implements WebMvcConfigurer {
                         "/api/user/getCaptcha",
                         "/api/user/verifyCaptcha",
                         "/api/user/nonce",
+                        "/api/user/forget",
                         "/api/user/login",
                         "/api/user/register",
                         "/api/user/validateAccount",

@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hibob.anylink.common.constants.RedisKey;
 import com.hibob.anylink.common.enums.ConnectStatus;
@@ -100,8 +101,8 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         try {
             password = securityUtil.decryptPassword(nonce, dto.getIv(), dto.getCiphertext(), dto.getAuthTag());
         } catch (Exception e) {
-            log.error("password decrypt Exception: {}", e.getMessage());
-            throw new RuntimeException(e);
+            log.error("register password decrypt Exception: {}", e.getMessage());
+            return ResultUtil.error(ServiceErrorCode.ERROR_DECRYPT_PASSWORD);
         }
 
         user.setPassword(passwordEncoder.encode(password));
@@ -151,6 +152,64 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         }
     }
 
+    public ResponseEntity<IMHttpResponse> forget(ForgetReq dto) {
+        log.info("UserService::forget");
+        if (!dto.getForgetCode().equals("1234")) {
+            log.error("verify forget code error");
+            return ResultUtil.error(ServiceErrorCode.ERROR_VERIFY_CAPTCHA);
+        }
+
+        String account = dto.getAccount();
+        String clientId = dto.getClientId();
+        String uniqueId = CommonUtil.conUniqueId(account, clientId);
+        String nonceKey = RedisKey.USER_NONCE + uniqueId;
+        Object obj = redisTemplate.opsForValue().get(nonceKey);
+        String nonce;
+        if (obj != null && StringUtils.hasLength((String) obj)) {
+            nonce = (String) obj;
+            redisTemplate.delete(nonceKey);
+        } else {
+            log.error("forget illegal login");
+            return ResultUtil.error(ServiceErrorCode.ERROR_ILLEGAL_REQ);
+        }
+
+        String password;
+        try {
+            password = securityUtil.decryptPassword(nonce,
+                    dto.getIv(),
+                    dto.getCiphertext(),
+                    dto.getAuthTag());
+        } catch (Exception e) {
+            log.error("forget password decrypt Exception: {}", e.getMessage());
+            return ResultUtil.error(ServiceErrorCode.ERROR_DECRYPT_PASSWORD);
+        }
+
+        SFunction<User, String> fun = null;
+        if (dto.getForgetType().equals("phoneNum")) {
+            fun = User::getPhoneNum;
+        } else if (dto.getForgetType().equals("email")) {
+            fun = User::getEmail;
+        }
+        if (null == fun) {
+            log.error("forget type error: {}");
+            return ResultUtil.error(ServiceErrorCode.ERROR_FORGET_TYPE);
+        }
+
+        LambdaUpdateWrapper<User> update = Wrappers.<User>lambdaUpdate()
+                .eq(User::getAccount, account)
+                .eq(fun, dto.getForgetKey())
+                .set(User::getPassword, passwordEncoder.encode(password))
+                .set(User::getUpdateTime, new Date(System.currentTimeMillis()));
+
+        boolean result = this.update(update);
+        if (!result) {
+            log.error("forget no record");
+            return ResultUtil.error(ServiceErrorCode.ERROR_FORGET_NO_RECORD);
+        }
+
+        return ResultUtil.success();
+    }
+
     public ResponseEntity<IMHttpResponse> nonce(NonceReq dto) {
         log.info("UserService::nonce");
         String account = dto.getAccount();
@@ -191,8 +250,8 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         try {
             password = securityUtil.decryptPassword(nonce, dto.getIv(), dto.getCiphertext(), dto.getAuthTag());
         } catch (Exception e) {
-            log.error("password decrypt Exception: {}", e.getMessage());
-            throw new RuntimeException(e);
+            log.error("login password decrypt Exception: {}", e.getMessage());
+            return ResultUtil.error(ServiceErrorCode.ERROR_DECRYPT_PASSWORD);
         }
         if (!passwordEncoder.matches(password, user.getPassword())) {
             log.error("password error");
@@ -285,8 +344,8 @@ public class UserService extends ServiceImpl<UserMapper, User> {
                     dto.getNewPassword().get("ciphertext"),
                     dto.getNewPassword().get("authTag"));
         } catch (Exception e) {
-            log.error("password decrypt Exception: {}", e.getMessage());
-            throw new RuntimeException(e);
+            log.error("modifyPwd password decrypt Exception: {}", e.getMessage());
+            return ResultUtil.error(ServiceErrorCode.ERROR_DECRYPT_PASSWORD);
         }
 
         if (oldPasswordStr.equals(newPasswordStr)) {

@@ -41,6 +41,12 @@ public enum ServiceErrorCode {
 
     ERROR_VERIFY_CAPTCHA(Const.SERVICE_CODE_USER + 17, "验证码校验错误"),
 
+    ERROR_DECRYPT_PASSWORD(Const.SERVICE_CODE_USER + 18, "密码解密错误"),
+
+    ERROR_FORGET_TYPE(Const.SERVICE_CODE_USER + 19, "忘记密码类型错误"),
+
+    ERROR_FORGET_NO_RECORD(Const.SERVICE_CODE_USER + 20, "没有找到记录"),
+
     ERROR_SERVICE_EXCEPTION(Const.SERVICE_CODE_USER + 50, "服务器内部异常"),
 
     ERROR_CHAT_REFMSGID_EXCEPTION(Const.SERVICE_CODE_CHAT + 1, "ref msgId异常"),

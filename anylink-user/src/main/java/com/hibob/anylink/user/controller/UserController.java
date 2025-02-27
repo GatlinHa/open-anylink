@@ -66,6 +66,13 @@ public class UserController {
         return userService.verifyCaptcha(dto);
     }
 
+    @ApiOperation(value = "忘记密码", notes = "忘记密码")
+    @ApiCommonHeader
+    @PostMapping("/forget")
+    public ResponseEntity<IMHttpResponse> forget(@Valid @RequestBody ForgetReq dto) {
+        return userService.forget(dto);
+    }
+
     /**
      * 登录前nonce，用于对登录密码进行加密传输
      * @param dto
