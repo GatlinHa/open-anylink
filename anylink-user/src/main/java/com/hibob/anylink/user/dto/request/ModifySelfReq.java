@@ -34,4 +34,10 @@ public class ModifySelfReq {
 
     @ApiModelProperty(value = "生日")
     private String birthday;
+
+    @ApiModelProperty(value = "新消息提醒")
+    private Boolean newMsgTips;
+
+    @ApiModelProperty(value = "发送消息提醒")
+    private Boolean sendMsgTips;
 }

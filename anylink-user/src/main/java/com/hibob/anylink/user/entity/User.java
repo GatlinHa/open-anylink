@@ -51,6 +51,12 @@ public class User extends Model<User> {
     @TableField("birthday")
     private Date birthday;
 
+    @TableField("new_msg_tips")
+    private Boolean newMsgTips;
+
+    @TableField("send_msg_tips")
+    private Boolean sendMsgTips;
+
     @TableField("created_time")
     private Date createdTime;
 

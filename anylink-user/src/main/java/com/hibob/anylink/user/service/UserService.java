@@ -443,6 +443,8 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         if (StringUtils.hasLength(dto.getPhoneNum())) updateWrapper.set(User::getPhoneNum, dto.getPhoneNum());
         if (StringUtils.hasLength(dto.getEmail())) updateWrapper.set(User::getEmail, dto.getEmail());
         if (StringUtils.hasLength(dto.getBirthday())) updateWrapper.set(User::getBirthday, dto.getBirthday());
+        if (dto.getNewMsgTips() != null) updateWrapper.set(User::getNewMsgTips, dto.getNewMsgTips());
+        if (dto.getSendMsgTips() != null) updateWrapper.set(User::getSendMsgTips, dto.getSendMsgTips());
         updateWrapper.set(User::getUpdateTime, new Date(System.currentTimeMillis()));
         this.update(updateWrapper);
 

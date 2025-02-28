@@ -43,4 +43,9 @@ public class UserVO {
     @ApiModelProperty(value = "状态")
     private int status;
 
+    @ApiModelProperty(value = "新消息提醒")
+    private Boolean newMsgTips;
+
+    @ApiModelProperty(value = "发送消息提醒")
+    private Boolean sendMsgTips;
 }
