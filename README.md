@@ -1,32 +1,78 @@
-<span class="logo" style="font-family: 'Segoe UI', system-ui, sans-serif; font-size: 80px; font-weight: bold; color: #1a365d; display: block; text-align: center; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">Open AnyLink</span>
+# Open AnyLink
 
 
 ## 简介
-**Open AnyLink是一款面向企业的IM即时通讯解决方案，旨在帮助企业`低成本`、`高效率`地构建`私有`、`安全`、`分布式`、`可定制`的日常办公通讯工具。**
+Open AnyLink是一款面向企业的IM即时通讯解决方案，旨在帮助企业`低成本`、`高效率`地构建`私有`、`安全`、`分布式`、`可定制`的日常办公通讯工具。
 
 ## 项目构成
-| 项目  | 项目名              | 地址                                                                                                                                                                                                                                                                                                                                                      | 技术栈                                                                                                                                                                                                                                              |
-|-----|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Web端 | open-anylink-web | <a :href="https://github.com/GatlinHa/open-anylink-web" target="_blank">github</a>: <img src="https://img.shields.io/github/stars/GatlinHa/open-anylink-web" alt="star"><br/><a :href="https://gitee.com/lijingbo-2021/open-anylink-web" target="_blank">gitee</a>: <img src="https://gitee.com//lijingbo-2021/open-anylink-web/badge/star.svg" alt="star"> | 框架：`Vue3`<br/> 构建打包：`Vite` <br/>UI组件：`Element-Plus`                                                                                                                                                                                              |
-| 服务端 | open-anylink     | <a :href="https://github.com/GatlinHa/open-anylink" target="_blank">github</a>: <img src="https://img.shields.io/github/stars/GatlinHa/open-anylink" alt="star"><br/><a :href="https://gitee.com/lijingbo-2021/open-anylink" target="_blank">gitee</a>: <img src="https://gitee.com//lijingbo-2021/open-anylink/badge/star.svg" alt="star"> | 框架：`spring Boot` `spring cloud`<br/>长连接：`Netty`<br/>私有协议：`protobuf`<br/>配置中心：`Nacos Config`<br/>注册中心：`Nacos Discovery`<br/>关系型数据库：`MySQL` `MyBatis-Plus`(driver)<br/>非关系型数据库：`MongoDB`<br/>缓存：`Redis`<br/>消息队列：`Kafka MQ` <br/>对象存储：`Mino` `OSS` |
+| 项目  | 项目名              | 地址                                                                                                                                                                                                                                                                                                                                                                                                                                | 技术栈                                                                                                                                                                                                                                              |
+|-----|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Web端 | open-anylink-web | [github](https://github.com/GatlinHa/open-anylink-web) <a href="https://github.com/GatlinHa/open-anylink-web/stargazers"><img src="https://img.shields.io/github/stars/GatlinHa/open-anylink-web" alt="star"></a><br/>[gitee](https://gitee.com/lijingbo-2021/open-anylink-web) <a href="https://gitee.com/lijingbo-2021/open-anylink-web/stargazers"><img src="https://gitee.com//lijingbo-2021/open-anylink-web/badge/star.svg" alt="star"></a> | 框架：`Vue3`<br/> 构建打包：`Vite` <br/>UI组件：`Element-Plus`                                                                                                                                                                                              |
+| 服务端 | open-anylink     | [github](https://github.com/GatlinHa/open-anylink) <a href="https://github.com/GatlinHa/open-anylink/stargazers"><img src="https://img.shields.io/github/stars/GatlinHa/open-anylink" alt="star"></a><br/>[gitee](https://gitee.com/lijingbo-2021/open-anylink) <a href="https://gitee.com/lijingbo-2021/open-anylink-web/stargazers"><img src="https://gitee.com//lijingbo-2021/open-anylink/badge/star.svg" alt="star"></a>                                                                               | 框架：`spring Boot` `spring cloud`<br/>长连接：`Netty`<br/>私有协议：`protobuf`<br/>配置中心：`Nacos Config`<br/>注册中心：`Nacos Discovery`<br/>关系型数据库：`MySQL` `MyBatis-Plus`(driver)<br/>非关系型数据库：`MongoDB`<br/>缓存：`Redis`<br/>消息队列：`Kafka MQ` <br/>对象存储：`Mino` `OSS` |
 - 本项目是其中的`服务端`。
 
 ## 更新记录
 - xx/xx/xx: V1.0.0发布，基本功能见`项目功能清单`
 
 ## 项目功能清单（含规划及开发中）
-| 功能大类  | 功能小类                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-|-------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 聊天类型  | <input type="checkbox" checked>单聊</input><br/><input type="checkbox" checked>群聊</input>                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| 通话功能  | <input type="checkbox" unchecked>语音通话</input><br/><input type="checkbox" unchecked>视频通话</input>                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| 消息类型  | <input type="checkbox" checked>文本</input><br/><input type="checkbox" checked>表情</input><br/><input type="checkbox" checked>图片</input><br/><input type="checkbox" unchecked>音频</input><br/><input type="checkbox" unchecked>视频</input><br/><input type="checkbox" unchecked>文件</input>                                                                                                                                                                                                                                                                  |
-| 消息功能  | <input type="checkbox" checked>在线消息</input><br/><input type="checkbox" checked>离线消息</input><br/><input type="checkbox" checked>消息漫游</input><br/><input type="checkbox" checked>多端在线</input><br/><input type="checkbox" checked>多端同步</input><br/><input type="checkbox" checked>已读未读</input><br/><input type="checkbox" unchecked>历史消息</input><br/><input type="checkbox" unchecked>@消息</input><br/><input type="checkbox" unchecked>消息撤回</input><br/><input type="checkbox" unchecked>消息引用</input><br/><input type="checkbox" unchecked>消息加入待办</input> |
-| 群组功能  | <input type="checkbox" checked>建群删群</input><br/><input type="checkbox" checked>群昵称</input><br/><input type="checkbox" checked>群备注</input><br/><input type="checkbox" checked>群头像</input><br/><input type="checkbox" checked>群公告</input><br/><input type="checkbox" checked>群系统消息</input><br/><input type="checkbox" checked>群转让</input><br/><input type="checkbox" unchecked>万人大群</input><br/><input type="checkbox" unchecked>团队组织群</input><br/><input type="checkbox" unchecked>公开群</input>                                                          |
-| 通讯录功能 | <input type="checkbox" checked>联系人备注</input><br/><input type="checkbox" checked>联系人分组</input><br/><input type="checkbox" checked>群备注</input><br/><input type="checkbox" checked>群分组</input><br/><input type="checkbox" unchecked>组织管理</input>                                                                                                                                                                                                                                                                                                          |
-| 会议功能  | <input type="checkbox" unchecked>语音会议</input><br/><input type="checkbox" unchecked>视频会议</input><br/><input type="checkbox" unchecked>桌面共享</input><br/><input type="checkbox" unchecked>桌面远程操控</input><br/><input type="checkbox" unchecked>会议录制</input><br/><input type="checkbox" unchecked>会议预约</input>                                                                                                                                                                                                                                              |
-| AI接入  | <input type="checkbox" unchecked>个人知识库</input><br/><input type="checkbox" unchecked>聊天机器人</input><br/><input type="checkbox" unchecked>AI Agent</input><br/><input type="checkbox" unchecked>聊天内容审核</input><br/><input type="checkbox" unchecked>企业培训培养</input>                                                                                                                                                                                                                                                                                        |
-| 其他功能  | <input type="checkbox" unchecked>大文件传输</input><br/><input type="checkbox" unchecked>待办事项</input>                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+#### 聊天类型
+  - [X] 单聊
+  - [X] 群聊
+#### 通话功能
+  - [ ] 语音通话
+  - [ ] 视频通话
+#### 消息类型
+  - [X] 文本
+  - [X] 表情
+  - [X] 图片
+  - [ ] 音频
+  - [ ] 视频
+  - [ ] 文件
+#### 消息功能
+  - [X] 在线消息
+  - [X] 离线消息
+  - [X] 消息漫游
+  - [X] 多端在线
+  - [X] 多端同步
+  - [X] 已读未读
+  - [ ] 历史消息
+  - [ ] @消息
+  - [ ] 消息撤回
+  - [ ] 消息引用
+  - [ ] 消息加入待办
+#### 群组功能
+  - [x] 建群删群
+  - [x] 群昵称
+  - [x] 群备注
+  - [x] 群头像
+  - [x] 群公告
+  - [x] 群系统消息
+  - [x] 群转让
+  - [ ] 万人大群
+  - [ ] 团队组织群
+  - [ ] 公开群
+#### 通讯录功能
+  - [x] 联系人备注
+  - [x] 联系人分组
+  - [x] 群备注
+  - [x] 群分组
+  - [ ] 组织管理
+#### 会议功能
+  - [ ] 语音会议
+  - [ ] 视频会议
+  - [ ] 桌面共享
+  - [ ] 桌面远程操控
+  - [ ] 会议录制
+  - [ ] 会议预约
+#### AI接入
+  - [ ] 个人知识库
+  - [ ] 聊天机器人
+  - [ ] AI Agent
+  - [ ] 智慧培训
+#### 其他功能
+  - [ ] 大文件传输
+  - [ ] 待办事项
+
 
 ## 项目演示地址
 - https://open-anylink.com/login
@@ -152,20 +198,23 @@ git clone https://gitee.com/lijingbo-2021/open-anylink.git
 7. 该免责声明的最终解释权归开发者所有。
 
 ## 交流社群
-<img src="doc/image/wx_group.png" alt="交流社群" style="zoom:25%;" />
+<img src="doc/image/wx_group.png" alt="交流社群" width="30%" />
 
 ## 如何联系我们
 - **QQ**：312777916
 - **邮箱**：312777916@qq.com
 - **微信**：wx_open_anylink_2025
 
-<img src="doc/image/wx_code.jpg" alt="微信二维码" style="zoom:25%;" />
+<img src="doc/image/wx_code.jpg" alt="微信二维码" width="30%" />
 
 ### 最后，如果您觉得还不错，请 `Star`, `Fork`一下本项目，或者“请”作者喝一杯coffee，您的一次小小鼓励将会使我们前进很远远。
-<img src="doc/image/zfb_sponsorship_code.jpg" alt="微信赞赏码" style="zoom:25%;" />
-<img src="doc/image/wx_sponsorship_code.jpg" alt="微信赞赏码" style="zoom:30%;" />
+<div style="display: flex;">
+  <img src="doc/image/zfb_sponsorship_code.jpg" alt="微信赞赏码" width="25%"/>
+  <img src="doc/image/wx_sponsorship_code.jpg" alt="微信赞赏码" width="35%"/>
+</div>
 
-**感谢以下赞助者的支持**
+<br>
+感谢以下赞助者的支持
 
   | 赞助时间 | 赞助者 | 平台 | 金额 |
   | ---- | ---- | ---- | ---- |
