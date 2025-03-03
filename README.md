@@ -232,7 +232,7 @@ git clone https://gitee.com/lijingbo-2021/open-anylink.git
 
 <img src="doc/image/wx_code.jpg" alt="微信二维码" width="30%" />
 
-### 最后，如果您觉得还不错，请 `Star`, `Fork`一下本项目，或者“请”作者喝一杯coffee，您的一次小小鼓励将会使我们前进很远远。
+### 最后，如果您觉得还不错，请 `Star`, `Fork`一下本项目，或者“请”作者喝一杯coffee，您的一次小小鼓励将会使我们前进很远很远。
 <div style="display: flex;">
   <img src="doc/image/zfb_sponsorship_code.jpg" alt="微信赞赏码" width="25%"/>
   <img src="doc/image/wx_sponsorship_code.jpg" alt="微信赞赏码" width="35%"/>
