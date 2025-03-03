@@ -38,8 +38,6 @@ mybatis-plus:
 
 #自定义配置
 custom:
-  snow-flake:
-    worker-datacenter-config: #启动时从配置中心读取
   thread-pool:
     max-pool-size: 100
     keep-alive-time: 1000
