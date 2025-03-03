@@ -1,19 +1,8 @@
-<style>
-.logo {
-  font-family: 'Segoe UI', system-ui, sans-serif;; 
-  font-size: 80px;
-  font-weight: bold;
-  color: #1a365d;
-  display: block;
-  text-align: center;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-</style>
-<span class="logo">Open AnyLink</span>
+<span class="logo" style="font-family: 'Segoe UI', system-ui, sans-serif; font-size: 80px; font-weight: bold; color: #1a365d; display: block; text-align: center; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">Open AnyLink</span>
 
 
 ## 简介
-- Open AnyLink是一款面向企业的IM即时通讯解决方案，旨在帮助企业`低成本`、`高效率`地构建`私有`、`安全`、`分布式`、`可定制`的日常办公通讯工具。
+**Open AnyLink是一款面向企业的IM即时通讯解决方案，旨在帮助企业`低成本`、`高效率`地构建`私有`、`安全`、`分布式`、`可定制`的日常办公通讯工具。**
 
 ## 项目构成
 | 项目  | 项目名              | 地址                                                                                                                                                                                                                                                                                                                                                      | 技术栈                                                                                                                                                                                                                                              |
