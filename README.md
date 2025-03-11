@@ -1,4 +1,4 @@
-# Open AnyLink
+# Open AnyLink <img src="favicon.svg" alt="logo" width="3.5%"/>
 
 ## 简介
 
@@ -6,7 +6,7 @@ Open AnyLink是一款面向企业的IM即时通讯解决方案，旨在帮助企
 
 ## 项目演示地址
 
-- https://open-anylink.com/login
+- https://open-anylink.com/im/login
 
 ## 项目构成
 
