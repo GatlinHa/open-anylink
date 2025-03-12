@@ -1,3 +1,4 @@
+CREATE DATABASE IF NOT EXISTS `anylink`;
 use `anylink`;
 DROP TABLE IF EXISTS anylink_chat_ref_msgId;
 CREATE TABLE anylink_chat_ref_msgId

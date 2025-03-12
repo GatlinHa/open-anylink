@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: jdbc:mysql://172.18.1.3:3306/anylink?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    
+  redis:
+    host: 172.18.1.2
+    port: 6379
+    password:
+
+custom:
+  snow-flake:
+    worker-datacenter-config: 
+      |-
+        {
+          "172.18.0.108:8030": {
+            "worker-id": 0,
+            "datacenter-id": 0
+          },
+          "172.18.0.108:8031": {
+            "worker-id": 1,
+            "datacenter-id": 0
+          },
+          "172.18.0.108:8032": {
+            "worker-id": 2,
+            "datacenter-id": 0
+          },
+          "172.18.0.108:8033": {
+            "worker-id": 3,
+            "datacenter-id": 0
+          }
+        }
+
+logging:
+  level:
+    root: info

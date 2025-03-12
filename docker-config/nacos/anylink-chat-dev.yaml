@@ -1,0 +1,18 @@
+spring:
+  data: 
+    mongodb:
+      host: 172.18.1.4
+      port: 27017
+      database: anylink
+  datasource:
+    url: jdbc:mysql://172.18.1.3:3306/anylink?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    
+  redis:
+    host: 172.18.1.2
+    port: 6379
+
+logging:
+  level:
+    root: info

@@ -1,3 +1,4 @@
+CREATE DATABASE IF NOT EXISTS `anylink`;
 use `anylink`;
 drop table IF EXISTS `anylink_mts_object`;
 CREATE TABLE `anylink_mts_object`

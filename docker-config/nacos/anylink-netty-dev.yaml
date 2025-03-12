@@ -1,0 +1,29 @@
+spring:
+  redis:
+    host: 172.18.1.2
+    port: 6379
+    password:
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+
+websocket: 
+  topic-distribute: 
+    |-
+      {
+        "172.18.0.109:8000": {
+          "topic": "topic-netty-0"
+        },
+        "172.18.0.109:8001": {
+          "topic": "topic-netty-1"
+        },
+        "172.18.0.109:8002": {
+          "topic": "topic-netty-2"
+        },
+        "172.18.0.109:8003": {
+          "topic": "topic-netty-3"
+        }
+      }
+
+logging:
+  level:
+    root: info

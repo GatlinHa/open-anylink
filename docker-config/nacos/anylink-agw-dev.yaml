@@ -1,0 +1,16 @@
+spring:
+    
+  redis:
+    host: 172.18.1.2
+    port: 6379
+    password:
+
+jwt:
+  accessToken:
+    secret: HZHDhdfjdfj
+  refreshToken:
+    secret: GHBsfh2sags
+
+logging:
+  level:
+    root: info

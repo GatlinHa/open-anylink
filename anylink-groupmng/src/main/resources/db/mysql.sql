@@ -1,3 +1,4 @@
+CREATE DATABASE IF NOT EXISTS `anylink`;
 use `anylink`;
 DROP TABLE IF EXISTS `anylink_group_info`;
 CREATE TABLE `anylink_group_info`(
