@@ -71,10 +71,11 @@ services:
         ipv4_address: 172.18.1.3
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./anylink-user/src/main/resources/db/mysql.sql:/docker-entrypoint-initdb.d/user.sql
-      - ./anylink-chat/src/main/resources/db/mysql.sql:/docker-entrypoint-initdb.d/chat.sql
-      - ./anylink-groupmng/src/main/resources/db/mysql.sql:/docker-entrypoint-initdb.d/groupmng.sql
-      - ./anylink-mts/src/main/resources/db/mysql.sql:/docker-entrypoint-initdb.d/mts.sql
+      - ./anylink-user/src/main/resources/db/mysql.sql:/docker-entrypoint-initdb.d/1_user.sql
+      - ./anylink-chat/src/main/resources/db/mysql.sql:/docker-entrypoint-initdb.d/2_chat.sql
+      - ./anylink-groupmng/src/main/resources/db/mysql.sql:/docker-entrypoint-initdb.d/3_groupmng.sql
+      - ./anylink-mts/src/main/resources/db/mysql.sql:/docker-entrypoint-initdb.d/4_mts.sql
+      - ./docker-config/mysql/demo-data.sql:/docker-entrypoint-initdb.d/5_demo-data.sql
     command:
       - mysqld
       - --default-time-zone=+8:00  # 设置 MySQL 服务时区
