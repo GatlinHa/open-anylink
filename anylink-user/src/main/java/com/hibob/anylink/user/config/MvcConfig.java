@@ -30,6 +30,7 @@ public class MvcConfig implements WebMvcConfigurer {
                         "/api/user/login",
                         "/api/user/register",
                         "/api/user/validateAccount",
+                        "/api/anylink-user/healthcheck",
                         "/swagger-resources/**",
                         "/webjars/**",
                         "/v2/**",

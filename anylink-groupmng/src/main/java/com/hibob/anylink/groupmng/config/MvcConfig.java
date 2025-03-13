@@ -26,6 +26,7 @@ public class MvcConfig implements WebMvcConfigurer {
                         "/swagger-resources/**",
                         "/webjars/**",
                         "/v2/**",
+                        "/api/anylink-groupmng/healthcheck",
                         "/swagger-ui.html/**"
                 );
     }

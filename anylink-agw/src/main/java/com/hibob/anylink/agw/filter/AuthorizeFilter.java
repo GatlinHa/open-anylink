@@ -44,6 +44,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         ignoreAuthUrls.add("/api/user/login");
         ignoreAuthUrls.add("/api/user/register");
         ignoreAuthUrls.add("/api/user/validateAccount");
+        ignoreAuthUrls.add("/api/anylink-agw/healthcheck");
     }
 
     @Override

@@ -232,6 +232,11 @@ services:
     networks:
       micro-net:
         ipv4_address: 172.18.0.101
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/anylink-agw/healthcheck"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     depends_on:
       - nacos-init
       - redis
@@ -251,6 +256,11 @@ services:
     networks:
       micro-net:
         ipv4_address: 172.18.0.102
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8020/api/anylink-chat/healthcheck"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     depends_on:
       - nacos-init
       - redis
@@ -272,6 +282,11 @@ services:
     networks:
       micro-net:
         ipv4_address: 172.18.0.103
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8030/api/anylink-groupmng/healthcheck"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     depends_on:
       - nacos-init
       - redis
@@ -293,6 +308,11 @@ services:
     networks:
       micro-net:
         ipv4_address: 172.18.0.104
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8040/api/anylink-mts/healthcheck"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     depends_on:
       - nacos-init
       - redis
@@ -315,6 +335,11 @@ services:
     networks:
       micro-net:
         ipv4_address: 172.18.0.105
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/anylink-netty/healthcheck"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     depends_on:
       - nacos-init
       - redis
@@ -335,10 +360,37 @@ services:
     networks:
       micro-net:
         ipv4_address: 172.18.0.106
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8010/api/anylink-user/healthcheck"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     depends_on:
       - nacos-init
       - redis
       - mysql
+
+  # 新增的检查服务
+  check-all-service:
+    image: curlimages/curl:8.12.1
+    container_name: check-all-service
+    networks:
+      micro-net:
+    depends_on:
+      anylink-agw:
+        condition: service_healthy
+      anylink-chat:
+        condition: service_healthy
+      anylink-groupmng:
+        condition: service_healthy
+      anylink-mts:
+        condition: service_healthy
+      anylink-netty:
+        condition: service_healthy
+      anylink-user:
+        condition: service_healthy
+    entrypoint: /bin/sh
+    command: -c "echo '*********Congratulations! All services are up and healthy!*********'"
 
 volumes:
   mysql_data:
