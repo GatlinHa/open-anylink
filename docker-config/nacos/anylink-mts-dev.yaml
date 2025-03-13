@@ -28,11 +28,11 @@ custom:
     worker-datacenter-config: 
       |-
         {
-          "172.18.0.107:8040": {
+          "172.18.0.104:8040": {
             "worker-id": 0,
             "datacenter-id": 0
           },
-          "172.18.0.107:8041": {
+          "172.18.0.104:8041": {
             "worker-id": 1,
             "datacenter-id": 0
           }

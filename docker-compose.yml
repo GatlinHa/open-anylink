@@ -196,10 +196,10 @@ services:
         done
         
         # 创建topic
-        kafka-topics.sh --create --topic topic-netty-0 --bootstrap-server kafka:9092
-        kafka-topics.sh --create --topic topic-netty-1 --bootstrap-server kafka:9092
-        kafka-topics.sh --create --topic topic-netty-2 --bootstrap-server kafka:9092
-        kafka-topics.sh --create --topic topic-netty-3 --bootstrap-server kafka:9092
+        kafka-topics.sh --create --topic topic-netty-0 --bootstrap-server kafka:9092 --if-not-exists
+        kafka-topics.sh --create --topic topic-netty-1 --bootstrap-server kafka:9092 --if-not-exists
+        kafka-topics.sh --create --topic topic-netty-2 --bootstrap-server kafka:9092 --if-not-exists
+        kafka-topics.sh --create --topic topic-netty-3 --bootstrap-server kafka:9092 --if-not-exists
 
   zookeeper:
     image: bitnami/zookeeper:3.9.3
@@ -213,6 +213,132 @@ services:
         ipv4_address: 172.18.1.7
     volumes:
       - zookeeper_data:/bitnami
+
+  # 微服务实例
+  anylink-agw:
+    image: anylink-agw  # 指定镜像名称
+    container_name: anylink-agw  # 为容器指定名称
+    build:
+      context: ./anylink-agw
+      dockerfile: ./Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CLOUD_NACOS_CONFIG_NAMESPACE: "dev20250303001"
+      SPRING_CLOUD_NACOS_DISCOVERY_NAMESPACE: "dev20250303001"
+      SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: "nacos:8848"
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: "nacos:8848"
+    ports:
+      - "8080:8080"
+    networks:
+      micro-net:
+        ipv4_address: 172.18.0.101
+    depends_on:
+      - nacos-init
+      - redis
+
+  anylink-chat:
+    image: anylink-chat  # 指定镜像名称
+    container_name: anylink-chat  # 为容器指定名称
+    build:
+      context: ./anylink-chat
+      dockerfile: ./Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CLOUD_NACOS_CONFIG_NAMESPACE: "dev20250303001"
+      SPRING_CLOUD_NACOS_DISCOVERY_NAMESPACE: "dev20250303001"
+      SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: "nacos:8848"
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: "nacos:8848"
+    networks:
+      micro-net:
+        ipv4_address: 172.18.0.102
+    depends_on:
+      - nacos-init
+      - redis
+      - mysql
+      - mongo
+
+  anylink-groupmng:
+    image: anylink-groupmng  # 指定镜像名称
+    container_name: anylink-groupmng  # 为容器指定名称
+    build:
+      context: ./anylink-groupmng
+      dockerfile: ./Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CLOUD_NACOS_CONFIG_NAMESPACE: "dev20250303001"
+      SPRING_CLOUD_NACOS_DISCOVERY_NAMESPACE: "dev20250303001"
+      SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: "nacos:8848"
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: "nacos:8848"
+    networks:
+      micro-net:
+        ipv4_address: 172.18.0.103
+    depends_on:
+      - nacos-init
+      - redis
+      - mysql
+
+
+  anylink-mts:
+    image: anylink-mts  # 指定镜像名称
+    container_name: anylink-mts  # 为容器指定名称
+    build:
+      context: ./anylink-mts
+      dockerfile: ./Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CLOUD_NACOS_CONFIG_NAMESPACE: "dev20250303001"
+      SPRING_CLOUD_NACOS_DISCOVERY_NAMESPACE: "dev20250303001"
+      SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: "nacos:8848"
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: "nacos:8848"
+    networks:
+      micro-net:
+        ipv4_address: 172.18.0.104
+    depends_on:
+      - nacos-init
+      - redis
+      - mysql
+      - minio-init
+
+
+  anylink-netty:
+    image: anylink-netty  # 指定镜像名称
+    container_name: anylink-netty  # 为容器指定名称
+    build:
+      context: ./anylink-netty
+      dockerfile: ./Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CLOUD_NACOS_CONFIG_NAMESPACE: "dev20250303001"
+      SPRING_CLOUD_NACOS_DISCOVERY_NAMESPACE: "dev20250303001"
+      SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: "nacos:8848"
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: "nacos:8848"
+    networks:
+      micro-net:
+        ipv4_address: 172.18.0.105
+    depends_on:
+      - nacos-init
+      - redis
+      - kafka-init
+
+  anylink-user:
+    image: anylink-user  # 指定镜像名称
+    container_name: anylink-user  # 为容器指定名称
+    build:
+      context: ./anylink-user
+      dockerfile: ./Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CLOUD_NACOS_CONFIG_NAMESPACE: "dev20250303001"
+      SPRING_CLOUD_NACOS_DISCOVERY_NAMESPACE: "dev20250303001"
+      SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: "nacos:8848"
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: "nacos:8848"
+    networks:
+      micro-net:
+        ipv4_address: 172.18.0.106
+    depends_on:
+      - nacos-init
+      - redis
+      - mysql
 
 volumes:
   mysql_data:

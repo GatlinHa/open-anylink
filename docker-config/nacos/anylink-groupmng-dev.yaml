@@ -14,19 +14,19 @@ custom:
     worker-datacenter-config: 
       |-
         {
-          "172.18.0.108:8030": {
+          "172.18.0.103:8030": {
             "worker-id": 0,
             "datacenter-id": 0
           },
-          "172.18.0.108:8031": {
+          "172.18.0.103:8031": {
             "worker-id": 1,
             "datacenter-id": 0
           },
-          "172.18.0.108:8032": {
+          "172.18.0.103:8032": {
             "worker-id": 2,
             "datacenter-id": 0
           },
-          "172.18.0.108:8033": {
+          "172.18.0.103:8033": {
             "worker-id": 3,
             "datacenter-id": 0
           }
