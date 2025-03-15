@@ -1,4 +1,4 @@
-# Open AnyLink <img src="favicon.svg" alt="logo" width="3.5%"/>
+# Open AnyLink <img src="doc/image/favicon.png" alt="logo" width=30/>
 
 ## 简介
 
@@ -103,6 +103,7 @@ Open AnyLink是一款面向企业的IM即时通讯解决方案，旨在帮助企
 
 - [ ] 大文件传输
 - [ ] 待办事项
+- [ ] 管理控制台
 
 ## 项目预览
 

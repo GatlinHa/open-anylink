@@ -154,6 +154,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     public ResponseEntity<IMHttpResponse> forget(ForgetReq dto) {
         log.info("UserService::forget");
+        // TODO 后面要换成真实的验证逻辑
         if (!dto.getForgetCode().equals("1234")) {
             log.error("verify forget code error");
             return ResultUtil.error(ServiceErrorCode.ERROR_VERIFY_CAPTCHA);
