@@ -134,7 +134,7 @@ Open AnyLink是一款面向企业的IM即时通讯解决方案，旨在帮助企
 <img src="doc/image/qq_group.jpg" alt="QQ交流社群" width="30%" />
 <img src="doc/image/wx_group.png" alt="微信交流社群" width="30%" />
 
-QQ群号：825505574，微信群有效期：3月17日
+QQ群号：825505574，微信群有效期：3月24日
 
 ## 如何联系我们
 
