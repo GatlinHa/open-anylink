@@ -13,6 +13,9 @@ public class MinioConfig {
     @Value("${obs.minio.endpoint}")
     private String endpoint;
 
+    @Value("${obs.minio.endpoint-internal}")
+    private String endpointInternal;
+
     @Value("${obs.minio.username}")
     private String username;
 
@@ -25,7 +28,7 @@ public class MinioConfig {
     @Bean
     public MinioClient minioClient(){
         return MinioClient.builder()
-                .endpoint(endpoint)
+                .endpoint(endpointInternal)
                 .credentials(username, password)
                 .build();
     }

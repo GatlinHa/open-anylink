@@ -44,6 +44,7 @@ obs:
 
   minio:
     endpoint: #启动时从配置中心读取
+    endpoint-internal: #启动时从配置中心读取
     bucket: #启动时从配置中心读取
     username: #启动时从配置中心读取
     password: #启动时从配置中心读取

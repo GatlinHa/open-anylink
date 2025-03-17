@@ -12,7 +12,8 @@ spring:
 obs:
   type: minio
   minio:
-    endpoint: http://192.168.0.109:9001
+    endpoint: http://127.0.0.1:9000
+    endpoint-internal: http://172.18.1.5:9000
     bucket: anylink
     username: admin
     password: 12345678
