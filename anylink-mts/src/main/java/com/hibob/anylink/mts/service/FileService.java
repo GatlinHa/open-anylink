@@ -146,9 +146,9 @@ public class FileService {
     private byte[] getImageThumb(byte[] oriImageBytes) {
         int srcSize = oriImageBytes.length;
         byte[] destImageBytes = oriImageBytes;
-        double accuracy = getAccuracy(srcSize);
         try {
             while (destImageBytes.length > obsConfig.getImageThumbSize()) {
+                double accuracy = getAccuracy(destImageBytes.length);
                 ByteArrayInputStream inputStream = new ByteArrayInputStream(destImageBytes);
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream(destImageBytes.length);
                 Thumbnails.of(inputStream)
