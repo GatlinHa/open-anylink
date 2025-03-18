@@ -14,7 +14,8 @@ obs:
   minio:
     endpoint: http://127.0.0.1:9000
     endpoint-internal: http://172.18.1.5:9000
-    bucket: anylink
+    bucket-ttl: anylink
+    bucket-long: anylink
     username: admin
     password: 12345678
     

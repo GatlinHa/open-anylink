@@ -22,8 +22,11 @@ public class MinioConfig {
     @Value("${obs.minio.password}")
     private String password;
 
-    @Value("${obs.minio.bucket}")
-    private String bucket;
+    @Value("${obs.minio.bucket-ttl}")
+    private String bucketTtl;
+
+    @Value("${obs.minio.bucket-long}")
+    private String bucketLong;
 
     @Bean
     public MinioClient minioClient(){

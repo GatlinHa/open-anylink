@@ -23,7 +23,9 @@ public class MinioService implements ObsService {
     private final MinioClient minioClient;
 
     @Override
-    public String uploadFile(MultipartFile file, String fileName) {
+    public String uploadFile(MultipartFile file, String fileName, int storeType) {
+        log.info("MinioService::uploadFile file");
+        String bucket = 0 == storeType ? minioConfig.getBucketLong() : minioConfig.getBucketTtl();
         try {
             String prefixPath = FileType.determineFileType(fileName).name();
             String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -31,12 +33,12 @@ public class MinioService implements ObsService {
             String fullName = prefixPath + "/" + datePath + "/" + uuidPath + "/" + fileName;
 
             minioClient.putObject(PutObjectArgs.builder()
-                    .bucket(minioConfig.getBucket())
+                    .bucket(bucket)
                     .object(fullName)
                     .stream(file.getInputStream(), file.getSize(), -1)
                     .contentType(file.getContentType())
                     .build());
-            return  minioConfig.getEndpoint() + "/" + minioConfig.getBucket() + "/" + fullName;
+            return  minioConfig.getEndpoint() + "/" + bucket + "/" + fullName;
         }
         catch (Exception e) {
             log.error("MinioService upload file error: {}", e.getMessage());
@@ -45,7 +47,9 @@ public class MinioService implements ObsService {
     }
 
     @Override
-    public String uploadFile(byte[] fileByte, String contentType, String fileName) {
+    public String uploadFile(byte[] fileByte, String contentType, String fileName, int storeType) {
+        log.info("MinioService::uploadFile fileByte");
+        String bucket = 0 == storeType ? minioConfig.getBucketLong() : minioConfig.getBucketTtl();
         try {
             String prefixPath = FileType.determineFileType(fileName).name();
             String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -54,12 +58,12 @@ public class MinioService implements ObsService {
 
             InputStream stream = new ByteArrayInputStream(fileByte);
             minioClient.putObject(PutObjectArgs.builder()
-                    .bucket(minioConfig.getBucket())
+                    .bucket(bucket)
                     .object(fullName)
                     .stream(stream, fileByte.length, -1)
                     .contentType(contentType)
                     .build());
-            return  minioConfig.getEndpoint() + "/" + minioConfig.getBucket() + "/" + fullName;
+            return  minioConfig.getEndpoint() + "/" + bucket + "/" + fullName;
         }
         catch (Exception e) {
             log.error("MinioService upload file error: {}", e.getMessage());

@@ -92,7 +92,7 @@ public class FileService {
             return ResultUtil.success(vo);
         }
 
-        String originUrl = obsService.uploadFile(file, fileName);
+        String originUrl = obsService.uploadFile(file, fileName, dto.getStoreType());
         if (!StringUtils.hasLength(originUrl)) {
             return ResultUtil.error(ServiceErrorCode.ERROR_FILE_UPLOAD_ERROR);
         }
@@ -103,7 +103,7 @@ public class FileService {
                 byte[] imageThumb = getImageThumb(file.getBytes());
                 int dotIndex = fileName.lastIndexOf('.'); // 文件名在前面已经校验过了，这里肯定合法
                 fileName = fileName.substring(0, dotIndex) + "-thumb" + fileName.substring(dotIndex);
-                thumbUrl = obsService.uploadFile(imageThumb, file.getContentType(), fileName);
+                thumbUrl = obsService.uploadFile(imageThumb, file.getContentType(), fileName, dto.getStoreType());
             } catch (IOException e) {
                 log.error("file.getBytes() error, exception is {}", e);
             }

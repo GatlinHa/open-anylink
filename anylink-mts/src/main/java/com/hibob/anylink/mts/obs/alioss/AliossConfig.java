@@ -22,8 +22,11 @@ public class AliossConfig {
     @Value("${obs.alioss.region}")
     private String region;
 
-    @Value("${obs.alioss.bucket}")
-    private String bucket;
+    @Value("${obs.alioss.bucket-ttl}")
+    private String bucketTtl;
+
+    @Value("${obs.alioss.bucket-long}")
+    private String bucketLong;
 
     @Bean
     public OSS aliossClient() throws ClientException {
