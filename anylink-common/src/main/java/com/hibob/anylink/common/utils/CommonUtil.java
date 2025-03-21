@@ -1,5 +1,6 @@
 package com.hibob.anylink.common.utils;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetAddress;
@@ -19,10 +20,14 @@ public class CommonUtil {
         return account + SPLIT_V + clientId;
     }
 
-    /**
-     * 获取本机局域网IP
-     */
-    public static String getLocalIp() {
+    @Getter
+    public static String localIp;
+
+    static {
+        localIp = initLocalIp();
+    }
+
+    private static String initLocalIp() {
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
@@ -47,6 +52,7 @@ public class CommonUtil {
 
         return null;
     }
+
 
     /**
      *  fromId 和 toId 按照字典序排序，如果fromId小则返回true
