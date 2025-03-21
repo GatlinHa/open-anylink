@@ -336,6 +336,9 @@ public class ChatService {
                 .filter(item -> item.getSessionType() == MsgType.CHAT.getNumber())
                 .map(Session::getRemoteId)
                 .collect(Collectors.toList());
+        if (remoteAccountList.size() == 0) {
+            return voMap;
+        }
         Map<String, Map<String, Object>> usersMap = rpcClient.getUserRpcService().queryUserInfoBatch(remoteAccountList);
 
         for (Session item : sessionList) {
