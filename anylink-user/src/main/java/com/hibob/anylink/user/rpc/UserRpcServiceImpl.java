@@ -5,20 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.hibob.anylink.common.enums.ConnectStatus;
 import com.hibob.anylink.common.rpc.service.UserRpcService;
-import com.hibob.anylink.common.config.JwtProperties;
 import com.hibob.anylink.common.utils.BeanUtil;
 import com.hibob.anylink.user.dto.vo.UserVO;
-import com.hibob.anylink.user.entity.Login;
 import com.hibob.anylink.user.entity.User;
 import com.hibob.anylink.user.entity.UserStatus;
-import com.hibob.anylink.user.mapper.LoginMapper;
 import com.hibob.anylink.user.mapper.UserMapper;
 import com.hibob.anylink.user.mapper.UserStatusMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,26 +25,20 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserRpcServiceImpl implements UserRpcService {
 
-    private final JwtProperties jwtProperties;
-    private final LoginMapper loginMapper;
     private final UserMapper userMapper;
     private final UserStatusMapper userStatusMapper;
 
     @Override
     public List<String> queryOnline(String account) {
         log.info("UserRpcServiceImpl::queryOnline start......");
-        LambdaQueryWrapper<Login> queryWrapper = Wrappers.lambdaQuery();
+        LambdaQueryWrapper<UserStatus> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper
-                .select(Login::getUniqueId)
-                .eq(Login::getAccount, account)
-                .isNotNull(Login::getLoginTime)
-                .isNull(Login::getLogoutTime)
-                .and(wrapper -> wrapper.isNull(Login::getRefreshTime)
-                                .or()
-                                .lt(Login::getRefreshTime, LocalDateTime.now().minusSeconds(jwtProperties.getAccessTokenExpire())))
-                .groupBy(Login::getUniqueId);
+                .select(UserStatus::getUniqueId)
+                .eq(UserStatus::getAccount, account)
+                .gt(UserStatus::getStatus, 0);
+
         List<String> list = new ArrayList<>();
-        loginMapper.selectList(queryWrapper).forEach(x -> {
+        userStatusMapper.selectList(queryWrapper).forEach(x -> {
             list.add(x.getUniqueId());
         });
         return list;

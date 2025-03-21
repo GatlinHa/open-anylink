@@ -18,6 +18,10 @@ target/
 *.iws
 *.iml
 *.ipr
+*.log
+README-local.md
+local-*.png
+/anylink-netty/src/main/resources/logback.xml
 
 ### NetBeans ###
 /nbproject/private/
@@ -31,6 +35,3 @@ build/
 
 ### VS Code ###
 .vscode/
-*.log
-README-local.md
-local-*.png
