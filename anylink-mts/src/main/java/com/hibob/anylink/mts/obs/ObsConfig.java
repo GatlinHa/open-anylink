@@ -17,6 +17,9 @@ public class ObsConfig {
     @Value("${obs.image.thumb-size}")
     private int imageThumbSize;
 
+    @Value("${obs.audio.max-limit}")
+    private int audioMaxLimit;
+
     @Value("${obs.ttl}")
     private int ttl;
 }

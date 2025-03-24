@@ -5,6 +5,8 @@ import java.util.Arrays;
 public enum FileType {
     IMAGE("jpg", "jpeg", "png", "gif", "bmp", "webp"),
     DOCUMENT("doc", "docx", "pdf", "txt"),
+
+    AUDIO("mp3", "wav", "aac", "flac", "ogg"), // Added audio file types
     // 可以继续添加其他类型
 
     UNKNOWN(null);
@@ -36,5 +38,10 @@ public enum FileType {
     public static boolean isImageFile(String fileName) {
         FileType fileType = determineFileType(fileName);
         return fileType == FileType.IMAGE;
+    }
+
+    public static boolean isAudioFile(String fileName) {
+        FileType fileType = determineFileType(fileName);
+        return fileType == FileType.AUDIO;
     }
 }

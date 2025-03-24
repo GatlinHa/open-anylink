@@ -5,12 +5,16 @@ import com.hibob.anylink.common.model.IMHttpResponse;
 import com.hibob.anylink.common.session.ReqSession;
 import com.hibob.anylink.common.utils.ResultUtil;
 import com.hibob.anylink.common.utils.SnowflakeId;
+import com.hibob.anylink.mts.dto.request.AudioReq;
 import com.hibob.anylink.mts.dto.request.ImageReq;
 import com.hibob.anylink.mts.dto.request.UploadReq;
+import com.hibob.anylink.mts.dto.vo.AudioVO;
 import com.hibob.anylink.mts.dto.vo.ImageVO;
+import com.hibob.anylink.mts.entity.MtsAudio;
 import com.hibob.anylink.mts.entity.MtsImage;
 import com.hibob.anylink.mts.entity.MtsObject;
 import com.hibob.anylink.mts.enums.FileType;
+import com.hibob.anylink.mts.mapper.MtsAudioMapper;
 import com.hibob.anylink.mts.mapper.MtsImageMapper;
 import com.hibob.anylink.mts.mapper.MtsObjectMapper;
 import com.hibob.anylink.mts.obs.ObsConfig;
@@ -40,11 +44,11 @@ public class FileService {
     private final ObsService obsService;
     private final MtsObjectMapper mtsObjectMapper;
     private final MtsImageMapper mtsImageMapper;
+    private final MtsAudioMapper mtsAudioMapper;
     private SnowflakeId snowflakeId = null;
 
     public ResponseEntity<IMHttpResponse> upload(UploadReq dto) {
         log.info("FileService::upload");
-        ResponseEntity<IMHttpResponse> res = ResultUtil.success();
         FileType fileType = FileType.determineFileType(dto.getFile().getOriginalFilename());
         switch (fileType) {
             case IMAGE:
@@ -52,11 +56,70 @@ public class FileService {
             case DOCUMENT:
 //                return uploadFile(dto);
                 break;
+            case AUDIO:
+                return uploadAudio(dto);
             default:
                 break;
         }
 
         return ResultUtil.success();
+    }
+
+    @Transactional
+    public ResponseEntity<IMHttpResponse> uploadAudio(UploadReq dto) {
+        MultipartFile file = dto.getFile();
+        String fileName = truncateFileName(file.getOriginalFilename());
+        // 大小校验
+        if (file.getSize() > obsConfig.getAudioMaxLimit() * 1024 * 1024) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_MTS_AUDIO_TOO_BIG);
+        }
+
+        // 文件后缀校验
+        if (!FileType.isAudioFile(fileName)) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_MTS_AUDIO_FORMAT_ERROR);
+        }
+
+        AudioVO vo = new AudioVO();
+        String audioId = getMd5(file);
+        long objectId = generateObjectId();
+        MtsAudio mtsAudio = mtsAudioMapper.selectById(audioId);
+        if (mtsAudio != null) {
+            MtsObject mtsObject = new MtsObject();
+            mtsObject.setObjectId(objectId);
+            mtsObject.setObjectType(1);
+            mtsObject.setForeignId(mtsAudio.getAudioId());
+            mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
+            mtsObjectMapper.insert(mtsObject);
+
+            vo.setObjectId(Long.toString(objectId));
+            vo.setUrl(mtsAudio.getUrl());
+            return ResultUtil.success(vo);
+        }
+
+        String url = obsService.uploadFile(file, fileName, dto.getStoreType());
+        if (!StringUtils.hasLength(url)) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_UPLOAD_ERROR);
+        }
+
+        mtsAudio = new MtsAudio();
+        mtsAudio.setAudioId(audioId);
+        mtsAudio.setAudioType(file.getContentType());
+        mtsAudio.setAudioSize(file.getSize());
+        mtsAudio.setUrl(url);
+        mtsAudio.setCreatedAccount(ReqSession.getSession().getAccount());
+        mtsAudio.setExpire(obsConfig.getTtl() * 86400L);
+        mtsAudioMapper.insert(mtsAudio);
+
+        MtsObject mtsObject = new MtsObject();
+        mtsObject.setObjectId(objectId);
+        mtsObject.setObjectType(1);
+        mtsObject.setForeignId(mtsAudio.getAudioId());
+        mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
+        mtsObjectMapper.insert(mtsObject);
+
+        vo.setObjectId(Long.toString(objectId));
+        vo.setUrl(url);
+        return ResultUtil.success(vo);
     }
 
     @Transactional
@@ -116,7 +179,7 @@ public class FileService {
         mtsImage.setOriginUrl(originUrl);
         mtsImage.setThumbUrl(thumbUrl);
         mtsImage.setCreatedAccount(ReqSession.getSession().getAccount());
-        mtsImage.setExpire(obsConfig.getTtl() * 86400);
+        mtsImage.setExpire(obsConfig.getTtl() * 86400L);
         mtsImageMapper.insert(mtsImage);
 
         MtsObject mtsObject = new MtsObject();
@@ -135,6 +198,15 @@ public class FileService {
     public ResponseEntity<IMHttpResponse> image(ImageReq dto) {
         List<ImageVO> voList = mtsObjectMapper.batchSelectImage(dto.getObjectIds());
         return ResultUtil.success(voList);
+    }
+
+    public ResponseEntity<IMHttpResponse> audio(AudioReq dto) {
+        List<AudioVO> voList = mtsObjectMapper.selectAudio(dto.getObjectId());
+        if (voList.size() > 0) {
+            return ResultUtil.success(voList.get(0));
+        } else  {
+            return ResultUtil.success(new AudioVO());
+        }
     }
 
     /**

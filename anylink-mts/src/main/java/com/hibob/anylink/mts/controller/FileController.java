@@ -2,6 +2,7 @@ package com.hibob.anylink.mts.controller;
 
 import com.hibob.anylink.common.annotation.ApiCommonHeader;
 import com.hibob.anylink.common.model.IMHttpResponse;
+import com.hibob.anylink.mts.dto.request.AudioReq;
 import com.hibob.anylink.mts.dto.request.ImageReq;
 import com.hibob.anylink.mts.dto.request.UploadReq;
 import com.hibob.anylink.mts.service.FileService;
@@ -45,6 +46,16 @@ public class FileController {
     @GetMapping("/image")
     public ResponseEntity<IMHttpResponse> image(@Validated ImageReq dto) {
         return fileService.image(dto);
+    }
+
+    /**
+     * 根据objectId查询audio的url
+     */
+    @ApiOperation(value = "根据objectId查询audio的url", notes = "根据objectId查询audio的url")
+    @ApiCommonHeader
+    @GetMapping("/audio")
+    public ResponseEntity<IMHttpResponse> audio(@Validated AudioReq dto) {
+        return fileService.audio(dto);
     }
 
 }

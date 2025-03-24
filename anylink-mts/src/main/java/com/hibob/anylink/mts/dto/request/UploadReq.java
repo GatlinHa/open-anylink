@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @ApiModel("文件上传请求")
 public class UploadReq {
 
-    @ApiModelProperty(value = "存储类型")
+    @ApiModelProperty(value = "存储时长类型")
     @NotNull
     @Max(value = 1, message = "临时存储")
     @Min(value = 0, message = "永久存储")

@@ -40,6 +40,8 @@ obs:
     thumb-size: 102400  #单位B
   file:
     max-limit: 200 #单位M
+  audio:
+    max-limit: 10 #单位M
   ttl: 15 #单位天
 
   minio:
