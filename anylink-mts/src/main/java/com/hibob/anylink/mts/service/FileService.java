@@ -55,14 +55,12 @@ public class FileService {
                 return uploadImage(dto);
             case DOCUMENT:
 //                return uploadFile(dto);
-                break;
+                return  ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_NOT_SUPPORT);
             case AUDIO:
                 return uploadAudio(dto);
             default:
-                break;
+                return  ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_NOT_SUPPORT);
         }
-
-        return ResultUtil.success();
     }
 
     @Transactional
@@ -105,6 +103,7 @@ public class FileService {
         mtsAudio.setAudioId(audioId);
         mtsAudio.setAudioType(file.getContentType());
         mtsAudio.setAudioSize(file.getSize());
+        mtsAudio.setAudioDuration(dto.getDuration());
         mtsAudio.setUrl(url);
         mtsAudio.setCreatedAccount(ReqSession.getSession().getAccount());
         mtsAudio.setExpire(obsConfig.getTtl() * 86400L);
@@ -119,6 +118,7 @@ public class FileService {
 
         vo.setObjectId(Long.toString(objectId));
         vo.setUrl(url);
+        vo.setDuration(dto.getDuration());
         return ResultUtil.success(vo);
     }
 

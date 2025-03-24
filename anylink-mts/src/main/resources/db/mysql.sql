@@ -45,6 +45,7 @@ CREATE TABLE `anylink_mts_audio`
     `audio_id` VARCHAR(255) NOT NULL COMMENT '音频唯一ID，采用文件md5计算方式',
     `audio_type` VARCHAR(64) NOT NULL COMMENT '音频类型',
     `audio_size` BIGINT NOT NULL COMMENT '音频大小',
+    `audio_duration` INT NOT NULL COMMENT '音频时长（秒）',
     `url` VARCHAR(512) NOT NULL COMMENT '音频下载url地址',
     `expire` BIGINT NOT NULL COMMENT '过期时间',
     `created_account` VARCHAR(255) NOT NULL COMMENT '创建者',

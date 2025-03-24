@@ -32,7 +32,7 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
      * @return AudioVO
      */
     @Select("<script>" +
-            " select t1.object_id, t2.url from anylink_mts_object t1 " +
+            " select t1.object_id, t2.url, t2.audio_duration as duration from anylink_mts_object t1 " +
             " INNER JOIN anylink_mts_audio t2 " +
             " ON t1.foreign_id = t2.audio_id " +
             " AND t1.object_id = #{objectId} " +

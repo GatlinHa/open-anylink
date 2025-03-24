@@ -6,7 +6,7 @@ public enum FileType {
     IMAGE("jpg", "jpeg", "png", "gif", "bmp", "webp"),
     DOCUMENT("doc", "docx", "pdf", "txt"),
 
-    AUDIO("mp3", "wav", "aac", "flac", "ogg"), // Added audio file types
+    AUDIO("mp3", "wav", "aac", "flac", "ogg", "webm"), // Added audio file types
     // 可以继续添加其他类型
 
     UNKNOWN(null);

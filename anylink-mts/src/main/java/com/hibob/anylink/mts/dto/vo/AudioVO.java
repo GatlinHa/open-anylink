@@ -13,4 +13,7 @@ public class AudioVO {
     @ApiModelProperty(value = "url")
     private String url;
 
+    @ApiModelProperty(value = "时长")
+    private int duration;
+
 }

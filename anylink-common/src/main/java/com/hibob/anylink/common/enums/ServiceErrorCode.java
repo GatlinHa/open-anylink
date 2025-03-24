@@ -81,6 +81,8 @@ public enum ServiceErrorCode {
 
     ERROR_MTS_FILE_UPLOAD_ERROR(Const.SERVICE_CODE_MTS + 3, "文件上传失败"),
 
+    ERROR_MTS_FILE_NOT_SUPPORT(Const.SERVICE_CODE_MTS + 4, "不支持该文件格式"),
+
     ERROR_DEFAULT(Const.SERVICE_CODE_DEFAULT, "未知错误");
 
 

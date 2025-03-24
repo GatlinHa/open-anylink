@@ -21,6 +21,9 @@ public class MtsAudio {
     @TableField(value = "audio_size")
     private long audioSize;
 
+    @TableField(value = "audio_duration")
+    private long audioDuration;
+
     @TableField(value = "url")
     private String url;
 
