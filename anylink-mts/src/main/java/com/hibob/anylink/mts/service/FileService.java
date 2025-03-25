@@ -304,14 +304,14 @@ public class FileService {
         // 查找最后一个点的位置
         int lastDotIndex = fileName.lastIndexOf('.');
         if (lastDotIndex == -1) {
-            // 如果没有扩展名，直接截取前50位
-            return fileName.length() <= 50 ? fileName : fileName.substring(0, truncateLength);
+            // 如果没有扩展名，直接截取前64位
+            return fileName.length() <= truncateLength ? fileName : fileName.substring(0, truncateLength);
         }
         // 分离文件名主体和扩展名
         String nameWithoutExtension = fileName.substring(0, lastDotIndex);
         String extension = fileName.substring(lastDotIndex);
         // 截取文件名主体部分
-        String truncatedName = nameWithoutExtension.length() <= 50 ? nameWithoutExtension : nameWithoutExtension.substring(0, truncateLength);
+        String truncatedName = nameWithoutExtension.length() <= truncateLength ? nameWithoutExtension : nameWithoutExtension.substring(0, truncateLength);
         // 重新组合文件名
         return truncatedName + extension;
     }

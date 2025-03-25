@@ -33,7 +33,7 @@ CREATE TABLE `anylink_mts_image`
     `image_size` BIGINT NOT NULL COMMENT '图像大小',
     `file_name` VARCHAR(255) NOT NULL COMMENT '文件名',
     `origin_url` VARCHAR(512) NOT NULL COMMENT '原始图下载url地址',
-    `thumb_url` VARCHAR(512) DEFAULT NULL COMMENT '缩略图下载url地址',
+    `thumb_url` VARCHAR(512) NOT NULL COMMENT '缩略图下载url地址',
     `expire` BIGINT NOT NULL COMMENT '过期时间',
     `created_account` VARCHAR(255) NOT NULL COMMENT '创建者',
     `created_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
