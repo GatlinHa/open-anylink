@@ -91,6 +91,9 @@ public class FileService {
 
             vo.setObjectId(Long.toString(objectId));
             vo.setUrl(mtsAudio.getUrl());
+            vo.setDuration(mtsAudio.getAudioDuration());
+            vo.setFileName(mtsAudio.getFileName());
+            vo.setSize(mtsAudio.getAudioSize());
             return ResultUtil.success(vo);
         }
 
@@ -104,6 +107,7 @@ public class FileService {
         mtsAudio.setAudioType(file.getContentType());
         mtsAudio.setAudioSize(file.getSize());
         mtsAudio.setAudioDuration(dto.getDuration());
+        mtsAudio.setFileName(fileName);
         mtsAudio.setUrl(url);
         mtsAudio.setCreatedAccount(ReqSession.getSession().getAccount());
         mtsAudio.setExpire(obsConfig.getTtl() * 86400L);
@@ -119,6 +123,8 @@ public class FileService {
         vo.setObjectId(Long.toString(objectId));
         vo.setUrl(url);
         vo.setDuration(dto.getDuration());
+        vo.setFileName(fileName);
+        vo.setSize(file.getSize());
         return ResultUtil.success(vo);
     }
 
@@ -152,6 +158,8 @@ public class FileService {
             vo.setObjectId(Long.toString(objectId));
             vo.setOriginUrl(mtsImage.getOriginUrl());
             vo.setThumbUrl(mtsImage.getThumbUrl());
+            vo.setFileName(mtsImage.getFileName());
+            vo.setSize(mtsImage.getImageSize());
             return ResultUtil.success(vo);
         }
 
@@ -165,8 +173,8 @@ public class FileService {
             try {
                 byte[] imageThumb = getImageThumb(file.getBytes());
                 int dotIndex = fileName.lastIndexOf('.'); // 文件名在前面已经校验过了，这里肯定合法
-                fileName = fileName.substring(0, dotIndex) + "-thumb" + fileName.substring(dotIndex);
-                thumbUrl = obsService.uploadFile(imageThumb, file.getContentType(), fileName, dto.getStoreType());
+                String thumbFileName = fileName.substring(0, dotIndex) + "-thumb" + fileName.substring(dotIndex);
+                thumbUrl = obsService.uploadFile(imageThumb, file.getContentType(), thumbFileName, dto.getStoreType());
             } catch (IOException e) {
                 log.error("file.getBytes() error, exception is {}", e);
             }
@@ -176,6 +184,7 @@ public class FileService {
         mtsImage.setImageId(imageId);
         mtsImage.setImageType(file.getContentType());
         mtsImage.setImageSize(file.getSize());
+        mtsImage.setFileName(fileName);
         mtsImage.setOriginUrl(originUrl);
         mtsImage.setThumbUrl(thumbUrl);
         mtsImage.setCreatedAccount(ReqSession.getSession().getAccount());
@@ -192,6 +201,8 @@ public class FileService {
         vo.setObjectId(Long.toString(objectId));
         vo.setOriginUrl(originUrl);
         vo.setThumbUrl(thumbUrl);
+        vo.setFileName(fileName);
+        vo.setSize(file.getSize());
         return ResultUtil.success(vo);
     }
 

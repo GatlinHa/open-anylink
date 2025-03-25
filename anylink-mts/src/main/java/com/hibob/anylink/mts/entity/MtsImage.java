@@ -21,6 +21,9 @@ public class MtsImage {
     @TableField(value = "image_size")
     private long imageSize;
 
+    @TableField(value = "file_name")
+    private String fileName;
+
     @TableField(value = "origin_url")
     private String originUrl;
 

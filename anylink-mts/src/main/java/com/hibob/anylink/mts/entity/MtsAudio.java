@@ -22,7 +22,10 @@ public class MtsAudio {
     private long audioSize;
 
     @TableField(value = "audio_duration")
-    private long audioDuration;
+    private int audioDuration;
+
+    @TableField(value = "file_name")
+    private String fileName;
 
     @TableField(value = "url")
     private String url;

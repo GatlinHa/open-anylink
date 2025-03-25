@@ -16,7 +16,7 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
      * @return List<ImageVO>
      */
     @Select("<script>" +
-            " select t1.object_id, t2.origin_url, t2.thumb_url from anylink_mts_object t1 " +
+            " select t1.object_id, t2.origin_url, t2.thumb_url, t2.file_name, t2.image_size as size from anylink_mts_object t1 " +
             " INNER JOIN anylink_mts_image t2 " +
             " ON t1.foreign_id = t2.image_id " +
             " AND t1.object_id IN " +
@@ -32,7 +32,7 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
      * @return List<AudioVO>
      */
     @Select("<script>" +
-            " select t1.object_id, t2.url, t2.audio_duration as duration from anylink_mts_object t1 " +
+            " select t1.object_id, t2.url, t2.audio_duration as duration, t2.file_name, t2.audio_size as size from anylink_mts_object t1 " +
             " INNER JOIN anylink_mts_audio t2 " +
             " ON t1.foreign_id = t2.audio_id " +
             " AND t1.object_id IN " +

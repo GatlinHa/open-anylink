@@ -16,4 +16,10 @@ public class AudioVO {
     @ApiModelProperty(value = "时长")
     private int duration;
 
+    @ApiModelProperty(value = "文件名")
+    private String fileName;
+
+    @ApiModelProperty(value = "文件大小")
+    private long size;
+
 }

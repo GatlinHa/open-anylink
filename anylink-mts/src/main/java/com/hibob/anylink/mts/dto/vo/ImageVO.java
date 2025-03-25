@@ -15,4 +15,10 @@ public class ImageVO {
 
     @ApiModelProperty(value = "缩略图")
     private String thumbUrl;
+
+    @ApiModelProperty(value = "文件名")
+    private String fileName;
+
+    @ApiModelProperty(value = "文件大小")
+    private long size;
 }
