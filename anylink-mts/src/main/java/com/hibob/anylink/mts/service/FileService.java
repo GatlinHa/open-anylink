@@ -201,12 +201,8 @@ public class FileService {
     }
 
     public ResponseEntity<IMHttpResponse> audio(AudioReq dto) {
-        List<AudioVO> voList = mtsObjectMapper.selectAudio(dto.getObjectId());
-        if (voList.size() > 0) {
-            return ResultUtil.success(voList.get(0));
-        } else  {
-            return ResultUtil.success(new AudioVO());
-        }
+        List<AudioVO> voList = mtsObjectMapper.batchSelectAudio(dto.getObjectIds());
+        return ResultUtil.success(voList);
     }
 
     /**

@@ -27,15 +27,18 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
     List<ImageVO> batchSelectImage(List<String> objectIds);
 
     /**
-     * 查询音频信息
-     * @param objectId 富媒体ID
-     * @return AudioVO
+     * 批量查询音频信息
+     * @param objectIds 富媒体ID数组
+     * @return List<AudioVO>
      */
     @Select("<script>" +
             " select t1.object_id, t2.url, t2.audio_duration as duration from anylink_mts_object t1 " +
             " INNER JOIN anylink_mts_audio t2 " +
             " ON t1.foreign_id = t2.audio_id " +
-            " AND t1.object_id = #{objectId} " +
+            " AND t1.object_id IN " +
+            " <foreach item='item' index='index' collection='objectIds' open='(' separator=',' close=')'>" +
+            " #{item}" +
+            " </foreach>" +
             "</script>")
-    List<AudioVO> selectAudio(String objectId);
+    List<AudioVO> batchSelectAudio(List<String> objectIds);
 }
