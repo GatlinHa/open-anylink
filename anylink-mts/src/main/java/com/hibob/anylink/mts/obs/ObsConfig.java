@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ObsConfig {
 
-    @Value("${obs.file.max-limit}")
-    private int fileMaxLimit;
+    @Value("${obs.document.max-limit}")
+    private int documentMaxLimit;
 
     @Value("${obs.image.max-limit}")
     private int imageMaxLimit;

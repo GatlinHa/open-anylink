@@ -6,22 +6,14 @@ import com.hibob.anylink.common.session.ReqSession;
 import com.hibob.anylink.common.utils.CommonUtil;
 import com.hibob.anylink.common.utils.ResultUtil;
 import com.hibob.anylink.common.utils.SnowflakeId;
-import com.hibob.anylink.mts.dto.request.AudioReq;
-import com.hibob.anylink.mts.dto.request.ImageReq;
-import com.hibob.anylink.mts.dto.request.UploadReq;
-import com.hibob.anylink.mts.dto.request.VideoReq;
+import com.hibob.anylink.mts.dto.request.*;
 import com.hibob.anylink.mts.dto.vo.AudioVO;
+import com.hibob.anylink.mts.dto.vo.DocumentVO;
 import com.hibob.anylink.mts.dto.vo.ImageVO;
 import com.hibob.anylink.mts.dto.vo.VideoVO;
-import com.hibob.anylink.mts.entity.MtsAudio;
-import com.hibob.anylink.mts.entity.MtsImage;
-import com.hibob.anylink.mts.entity.MtsObject;
-import com.hibob.anylink.mts.entity.MtsVideo;
+import com.hibob.anylink.mts.entity.*;
 import com.hibob.anylink.mts.enums.FileType;
-import com.hibob.anylink.mts.mapper.MtsAudioMapper;
-import com.hibob.anylink.mts.mapper.MtsImageMapper;
-import com.hibob.anylink.mts.mapper.MtsObjectMapper;
-import com.hibob.anylink.mts.mapper.MtsVideoMapper;
+import com.hibob.anylink.mts.mapper.*;
 import com.hibob.anylink.mts.obs.ObsConfig;
 import com.hibob.anylink.mts.obs.ObsService;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +43,7 @@ public class FileService {
     private final MtsImageMapper mtsImageMapper;
     private final MtsAudioMapper mtsAudioMapper;
     private final MtsVideoMapper mtsVideoMapper;
+    private final MtsDocumentMapper mtsDocumentMapper;
     private SnowflakeId snowflakeId = null;
 
     public ResponseEntity<IMHttpResponse> upload(UploadReq dto) {
@@ -73,9 +66,10 @@ public class FileService {
                     return ResultUtil.error(ServiceErrorCode.ERROR_MTS_VIDEO_FORMAT_ERROR);
                 }
                 return uploadVideo(dto);
+            case TEXT:
             case DOCUMENT:
             default:
-                return  ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_NOT_SUPPORT);
+                return uploadDocument(dto);
         }
     }
 
@@ -265,6 +259,65 @@ public class FileService {
         return ResultUtil.success(vo);
     }
 
+    @Transactional
+    public ResponseEntity<IMHttpResponse> uploadDocument(UploadReq dto) {
+        MultipartFile file = dto.getFile();
+        String fileName = truncateFileName(file.getOriginalFilename());
+        // 大小校验
+        if (file.getSize() > (long) obsConfig.getDocumentMaxLimit() * 1024 * 1024) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_MTS_VIDEO_TOO_BIG);
+        }
+
+        DocumentVO vo = new DocumentVO();
+        String documentId = getMd5(file);
+        long objectId = generateObjectId();
+        MtsDocument mtsDocument = mtsDocumentMapper.selectById(documentId);
+        if (mtsDocument != null) {
+            MtsObject mtsObject = new MtsObject();
+            mtsObject.setObjectId(objectId);
+            mtsObject.setObjectType(3);
+            mtsObject.setForeignId(mtsDocument.getDocumentId());
+            mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
+            mtsObjectMapper.insert(mtsObject);
+
+            vo.setObjectId(Long.toString(objectId));
+            vo.setDocumentType(mtsDocument.getDocumentType());
+            vo.setUrl(mtsDocument.getUrl());
+            vo.setFileName(mtsDocument.getFileName());
+            vo.setSize(mtsDocument.getDocumentSize());
+            return ResultUtil.success(vo);
+        }
+
+        String url = obsService.uploadFile(file, generateRandomFileName(fileName), dto.getStoreType());
+        if (!StringUtils.hasLength(url)) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_UPLOAD_ERROR);
+        }
+
+        mtsDocument = new MtsDocument();
+        mtsDocument.setDocumentId(documentId);
+        mtsDocument.setDocumentType(file.getContentType());
+        mtsDocument.setDocumentSize(file.getSize());
+        mtsDocument.setFileName(fileName);
+        mtsDocument.setUrl(url);
+        mtsDocument.setCreatedAccount(ReqSession.getSession().getAccount());
+        mtsDocument.setExpire(obsConfig.getTtl() * 86400L);
+        mtsDocumentMapper.insert(mtsDocument);
+
+        MtsObject mtsObject = new MtsObject();
+        mtsObject.setObjectId(objectId);
+        mtsObject.setObjectType(3);
+        mtsObject.setForeignId(documentId);
+        mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
+        mtsObjectMapper.insert(mtsObject);
+
+        vo.setObjectId(Long.toString(objectId));
+        vo.setDocumentType(mtsDocument.getDocumentType());
+        vo.setUrl(url);
+        vo.setFileName(fileName);
+        vo.setSize(file.getSize());
+        return ResultUtil.success(vo);
+    }
+
     public ResponseEntity<IMHttpResponse> image(ImageReq dto) {
         List<ImageVO> voList = mtsObjectMapper.batchSelectImage(dto.getObjectIds());
         return ResultUtil.success(voList);
@@ -277,6 +330,11 @@ public class FileService {
 
     public ResponseEntity<IMHttpResponse> video(VideoReq dto) {
         List<VideoVO> voList = mtsObjectMapper.batchSelectVideo(dto.getObjectIds());
+        return ResultUtil.success(voList);
+    }
+
+    public ResponseEntity<IMHttpResponse> document(DocumentReq dto) {
+        List<DocumentVO> voList = mtsObjectMapper.batchSelectDocument(dto.getObjectIds());
         return ResultUtil.success(voList);
     }
 

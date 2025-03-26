@@ -2,10 +2,7 @@ package com.hibob.anylink.mts.controller;
 
 import com.hibob.anylink.common.annotation.ApiCommonHeader;
 import com.hibob.anylink.common.model.IMHttpResponse;
-import com.hibob.anylink.mts.dto.request.AudioReq;
-import com.hibob.anylink.mts.dto.request.ImageReq;
-import com.hibob.anylink.mts.dto.request.UploadReq;
-import com.hibob.anylink.mts.dto.request.VideoReq;
+import com.hibob.anylink.mts.dto.request.*;
 import com.hibob.anylink.mts.service.FileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -67,5 +64,15 @@ public class FileController {
     @GetMapping("/video")
     public ResponseEntity<IMHttpResponse> video(@Validated VideoReq dto) {
         return fileService.video(dto);
+    }
+
+    /**
+     * 根据objectId查询document的url
+     */
+    @ApiOperation(value = "根据objectId查询document的url", notes = "根据objectId查询document的url")
+    @ApiCommonHeader
+    @GetMapping("/document")
+    public ResponseEntity<IMHttpResponse> document(@Validated DocumentReq dto) {
+        return fileService.document(dto);
     }
 }

@@ -6,11 +6,8 @@ public enum FileType {
     IMAGE("image/", "jpg", "jpeg", "png", "gif", "bmp", "webp", "tiff", "ico", "jfif"),
     AUDIO("audio/", "mp3", "wav", "aac", "flac", "ogg", "webm", "m4a", "wma", "amr"),
     VIDEO("video/", "mp4", "avi", "mkv", "mov", "flv", "webm", "wmv", "mpeg", "3gp", "m4v"),
-    DOCUMENT("application/", "doc", "docx", "pdf", "txt"),
-//    DOCUMENT("application/", "doc", "docx", "pdf", "txt", "ppt", "pptx", "xls", "xlsx", "odt", "ods", "odp"),
-//    ARCHIVE("application/", "zip", "rar", "7z", "tar", "gz", "bz2"),
-
-
+    DOCUMENT("application/"),
+    TEXT("text/"),
     UNKNOWN("");
 
     private final String contentType;
@@ -39,6 +36,8 @@ public enum FileType {
             return VIDEO;
         } else if (contentType.startsWith(DOCUMENT.contentType)) {
             return DOCUMENT;
+        } else if (contentType.startsWith(TEXT.contentType)) {
+            return TEXT;
         } else  {
             return UNKNOWN;
         }

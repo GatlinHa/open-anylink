@@ -8,21 +8,24 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("anylink_mts_file")
-public class MtsFile {
+@TableName("anylink_mts_document")
+public class MtsDocument {
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "file_id")
-    private String fileId;
+    @TableId(value = "document_id")
+    private String documentId;
 
-    @TableField(value = "file_type")
-    private String fileType;
+    @TableField(value = "document_type")
+    private String documentType;
 
-    @TableField(value = "file_size")
-    private long fileSize;
+    @TableField(value = "document_size")
+    private long documentSize;
 
-    @TableField(value = "file_url")
-    private String fileUrl;
+    @TableField(value = "file_name")
+    private String fileName;
+
+    @TableField(value = "url")
+    private String url;
 
     @TableField(value = "expire")
     private long expire;

@@ -38,12 +38,12 @@ obs:
   image:
     max-limit: 10 #单位M
     thumb-size: 102400  #单位B
-  file:
-    max-limit: 200 #单位M
   audio:
     max-limit: 10 #单位M
   video:
-    max-limit: 50 #单位M
+    max-limit: 10 #单位M
+  document:
+    max-limit: 10 #单位M
   ttl: 15 #单位天
 
   minio:

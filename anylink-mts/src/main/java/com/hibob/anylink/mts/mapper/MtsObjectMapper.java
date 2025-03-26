@@ -2,6 +2,7 @@ package com.hibob.anylink.mts.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hibob.anylink.mts.dto.vo.AudioVO;
+import com.hibob.anylink.mts.dto.vo.DocumentVO;
 import com.hibob.anylink.mts.dto.vo.ImageVO;
 import com.hibob.anylink.mts.dto.vo.VideoVO;
 import com.hibob.anylink.mts.entity.MtsObject;
@@ -58,4 +59,20 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
             " </foreach>" +
             "</script>")
     List<VideoVO> batchSelectVideo(List<String> objectIds);
+
+    /**
+     * 批量查询Document信息
+     * @param objectIds Document ID数组
+     * @return List<DocumentVO>
+     */
+    @Select("<script>" +
+            " select t1.object_id, t2.document_type, t2.url, t2.file_name, t2.document_size as size from anylink_mts_object t1 " +
+            " INNER JOIN anylink_mts_document t2 " +
+            " ON t1.foreign_id = t2.document_id " +
+            " AND t1.object_id IN " +
+            " <foreach item='item' index='index' collection='objectIds' open='(' separator=',' close=')'>" +
+            " #{item}" +
+            " </foreach>" +
+            "</script>")
+    List<DocumentVO> batchSelectDocument(List<String> objectIds);
 }
