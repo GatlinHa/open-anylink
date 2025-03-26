@@ -20,6 +20,9 @@ public class ObsConfig {
     @Value("${obs.audio.max-limit}")
     private int audioMaxLimit;
 
+    @Value("${obs.video.max-limit}")
+    private int videoMaxLimit;
+
     @Value("${obs.ttl}")
     private int ttl;
 }

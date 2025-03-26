@@ -42,6 +42,8 @@ obs:
     max-limit: 200 #单位M
   audio:
     max-limit: 10 #单位M
+  video:
+    max-limit: 50 #单位M
   ttl: 15 #单位天
 
   minio:

@@ -5,6 +5,7 @@ import com.hibob.anylink.common.model.IMHttpResponse;
 import com.hibob.anylink.mts.dto.request.AudioReq;
 import com.hibob.anylink.mts.dto.request.ImageReq;
 import com.hibob.anylink.mts.dto.request.UploadReq;
+import com.hibob.anylink.mts.dto.request.VideoReq;
 import com.hibob.anylink.mts.service.FileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -58,4 +59,13 @@ public class FileController {
         return fileService.audio(dto);
     }
 
+    /**
+     * 根据objectId查询video的url
+     */
+    @ApiOperation(value = "根据objectId查询video的url", notes = "根据objectId查询video的url")
+    @ApiCommonHeader
+    @GetMapping("/video")
+    public ResponseEntity<IMHttpResponse> video(@Validated VideoReq dto) {
+        return fileService.video(dto);
+    }
 }

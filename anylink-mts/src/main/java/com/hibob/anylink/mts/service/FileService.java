@@ -3,20 +3,25 @@ package com.hibob.anylink.mts.service;
 import com.hibob.anylink.common.enums.ServiceErrorCode;
 import com.hibob.anylink.common.model.IMHttpResponse;
 import com.hibob.anylink.common.session.ReqSession;
+import com.hibob.anylink.common.utils.CommonUtil;
 import com.hibob.anylink.common.utils.ResultUtil;
 import com.hibob.anylink.common.utils.SnowflakeId;
 import com.hibob.anylink.mts.dto.request.AudioReq;
 import com.hibob.anylink.mts.dto.request.ImageReq;
 import com.hibob.anylink.mts.dto.request.UploadReq;
+import com.hibob.anylink.mts.dto.request.VideoReq;
 import com.hibob.anylink.mts.dto.vo.AudioVO;
 import com.hibob.anylink.mts.dto.vo.ImageVO;
+import com.hibob.anylink.mts.dto.vo.VideoVO;
 import com.hibob.anylink.mts.entity.MtsAudio;
 import com.hibob.anylink.mts.entity.MtsImage;
 import com.hibob.anylink.mts.entity.MtsObject;
+import com.hibob.anylink.mts.entity.MtsVideo;
 import com.hibob.anylink.mts.enums.FileType;
 import com.hibob.anylink.mts.mapper.MtsAudioMapper;
 import com.hibob.anylink.mts.mapper.MtsImageMapper;
 import com.hibob.anylink.mts.mapper.MtsObjectMapper;
+import com.hibob.anylink.mts.mapper.MtsVideoMapper;
 import com.hibob.anylink.mts.obs.ObsConfig;
 import com.hibob.anylink.mts.obs.ObsService;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +50,7 @@ public class FileService {
     private final MtsObjectMapper mtsObjectMapper;
     private final MtsImageMapper mtsImageMapper;
     private final MtsAudioMapper mtsAudioMapper;
+    private final MtsVideoMapper mtsVideoMapper;
     private SnowflakeId snowflakeId = null;
 
     public ResponseEntity<IMHttpResponse> upload(UploadReq dto) {
@@ -58,6 +64,8 @@ public class FileService {
                 return  ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_NOT_SUPPORT);
             case AUDIO:
                 return uploadAudio(dto);
+            case VIDEO:
+                return uploadVideo(dto);
             default:
                 return  ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_NOT_SUPPORT);
         }
@@ -96,8 +104,7 @@ public class FileService {
             vo.setSize(mtsAudio.getAudioSize());
             return ResultUtil.success(vo);
         }
-
-        String url = obsService.uploadFile(file, fileName, dto.getStoreType());
+        String url = obsService.uploadFile(file, generateRandomFileName(fileName), dto.getStoreType());
         if (!StringUtils.hasLength(url)) {
             return ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_UPLOAD_ERROR);
         }
@@ -117,6 +124,71 @@ public class FileService {
         mtsObject.setObjectId(objectId);
         mtsObject.setObjectType(1);
         mtsObject.setForeignId(mtsAudio.getAudioId());
+        mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
+        mtsObjectMapper.insert(mtsObject);
+
+        vo.setObjectId(Long.toString(objectId));
+        vo.setUrl(url);
+        vo.setDuration(dto.getDuration());
+        vo.setFileName(fileName);
+        vo.setSize(file.getSize());
+        return ResultUtil.success(vo);
+    }
+
+    @Transactional
+    public ResponseEntity<IMHttpResponse> uploadVideo(UploadReq dto) {
+        MultipartFile file = dto.getFile();
+        String fileName = truncateFileName(file.getOriginalFilename());
+        // 大小校验
+        if (file.getSize() > obsConfig.getVideoMaxLimit() * 1024 * 1024) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_MTS_VIDEO_TOO_BIG);
+        }
+
+        // 文件后缀校验
+        if (!FileType.isVideoFile(fileName)) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_MTS_VIDEO_FORMAT_ERROR);
+        }
+
+        VideoVO vo = new VideoVO();
+        String videoId = getMd5(file);
+        long objectId = generateObjectId();
+        MtsVideo mtsVideo = mtsVideoMapper.selectById(videoId);
+        if (mtsVideo != null) {
+            MtsObject mtsObject = new MtsObject();
+            mtsObject.setObjectId(objectId);
+            mtsObject.setObjectType(2);
+            mtsObject.setForeignId(mtsVideo.getVideoId());
+            mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
+            mtsObjectMapper.insert(mtsObject);
+
+            vo.setObjectId(Long.toString(objectId));
+            vo.setUrl(mtsVideo.getUrl());
+            vo.setDuration(mtsVideo.getVideoDuration());
+            vo.setFileName(mtsVideo.getFileName());
+            vo.setSize(mtsVideo.getVideoSize());
+            return ResultUtil.success(vo);
+        }
+
+        String url = obsService.uploadFile(file, generateRandomFileName(fileName), dto.getStoreType());
+        if (!StringUtils.hasLength(url)) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_UPLOAD_ERROR);
+        }
+
+        mtsVideo = new MtsVideo();
+        mtsVideo.setVideoId(videoId);
+        mtsVideo.setVideoType(file.getContentType());
+        mtsVideo.setVideoSize(file.getSize());
+        mtsVideo.setVideoDuration(dto.getDuration());
+        mtsVideo.setFileName(fileName);
+        mtsVideo.setUrl(url);
+        mtsVideo.setCreatedAccount(ReqSession.getSession().getAccount());
+        mtsVideo.setExpire(obsConfig.getTtl() * 86400L);
+        mtsVideoMapper.insert(mtsVideo);
+
+        MtsObject mtsObject = new MtsObject();
+        mtsObject.setObjectId(objectId);
+        mtsObject.setObjectType(2);
+        mtsObject.setForeignId(mtsVideo.getVideoId());
         mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
         mtsObjectMapper.insert(mtsObject);
 
@@ -163,7 +235,7 @@ public class FileService {
             return ResultUtil.success(vo);
         }
 
-        String originUrl = obsService.uploadFile(file, fileName, dto.getStoreType());
+        String originUrl = obsService.uploadFile(file, generateRandomFileName(fileName), dto.getStoreType());
         if (!StringUtils.hasLength(originUrl)) {
             return ResultUtil.error(ServiceErrorCode.ERROR_FILE_UPLOAD_ERROR);
         }
@@ -172,9 +244,7 @@ public class FileService {
         if (file.getSize() > obsConfig.getImageThumbSize()) {
             try {
                 byte[] imageThumb = getImageThumb(file.getBytes());
-                int dotIndex = fileName.lastIndexOf('.'); // 文件名在前面已经校验过了，这里肯定合法
-                String thumbFileName = fileName.substring(0, dotIndex) + "-thumb" + fileName.substring(dotIndex);
-                thumbUrl = obsService.uploadFile(imageThumb, file.getContentType(), thumbFileName, dto.getStoreType());
+                thumbUrl = obsService.uploadFile(imageThumb, file.getContentType(), generateRandomFileName(fileName), dto.getStoreType());
             } catch (IOException e) {
                 log.error("file.getBytes() error, exception is {}", e);
             }
@@ -213,6 +283,11 @@ public class FileService {
 
     public ResponseEntity<IMHttpResponse> audio(AudioReq dto) {
         List<AudioVO> voList = mtsObjectMapper.batchSelectAudio(dto.getObjectIds());
+        return ResultUtil.success(voList);
+    }
+
+    public ResponseEntity<IMHttpResponse> video(VideoReq dto) {
+        List<VideoVO> voList = mtsObjectMapper.batchSelectVideo(dto.getObjectIds());
         return ResultUtil.success(voList);
     }
 
@@ -292,7 +367,7 @@ public class FileService {
     }
 
     /**
-     * 截取文件名，最大保留64位
+     * 截取文件名，最大保留128位
      * @param fileName
      * @return
      */
@@ -300,7 +375,7 @@ public class FileService {
         if (fileName == null) {
             return null;
         }
-        int truncateLength = 64;
+        int truncateLength = 128;
         // 查找最后一个点的位置
         int lastDotIndex = fileName.lastIndexOf('.');
         if (lastDotIndex == -1) {
@@ -314,5 +389,23 @@ public class FileService {
         String truncatedName = nameWithoutExtension.length() <= truncateLength ? nameWithoutExtension : nameWithoutExtension.substring(0, truncateLength);
         // 重新组合文件名
         return truncatedName + extension;
+    }
+
+    /**
+     * 上传的文件生成随机文件名，用于保存在对象存储中
+     * @param fileName 原始文件名
+     * @return
+     */
+    private String generateRandomFileName(String fileName) {
+        if (fileName == null) {
+            return null;
+        }
+        String randomStr = CommonUtil.generateRandomStr(16);
+        int lastDotIndex = fileName.lastIndexOf('.');
+        if (lastDotIndex == -1) {
+            return randomStr;
+        } else {
+            return randomStr + fileName.substring(lastDotIndex);
+        }
     }
 }

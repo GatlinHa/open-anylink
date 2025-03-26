@@ -6,7 +6,7 @@ CREATE TABLE anylink_chat_ref_msgId
     `session_id` VARCHAR(512) NOT NULL COMMENT 'session id，主键',
     `ref_msg_id` BIGINT DEFAULT 10000 COMMENT 'msgId参考值，初始值10000',
     PRIMARY KEY(`session_id`)
-) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '参考MsgId表';
+) ENGINE=INNODB CHARSET=utf8mb4 COMMENT '参考MsgId表';
 
 DROP TABLE IF EXISTS `anylink_chat_session`;
 CREATE TABLE `anylink_chat_session`
@@ -26,7 +26,7 @@ CREATE TABLE `anylink_chat_session`
     `join_time` JSON COMMENT '记录每一次进群的时间，数组结构',
     `leave_time` JSON COMMENT '记录每一次离群的时间，数组结构',
     PRIMARY KEY(`account`, `session_id`)
-) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '用户的会话信息表';
+) ENGINE=INNODB CHARSET=utf8mb4 COMMENT '用户的会话信息表';
 
 DROP TABLE IF EXISTS `anylink_chat_partition`;
 CREATE TABLE `anylink_chat_partition`
@@ -37,4 +37,4 @@ CREATE TABLE `anylink_chat_partition`
     `partition_type` TINYINT(1) NOT NULL COMMENT '分组类型，0联系人，1群组',
     `update_time`  DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
     PRIMARY KEY(`account`, `partition_id`)
-) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '用户给会话分组的表';
+) ENGINE=INNODB CHARSET=utf8mb4 COMMENT '用户给会话分组的表';

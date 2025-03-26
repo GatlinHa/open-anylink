@@ -24,14 +24,14 @@ public class AliossService implements ObsService {
     private final OSS aliossClient;
 
     @Override
-    public String uploadFile(MultipartFile file, String fileName, int storeType) {
+    public String uploadFile(MultipartFile file, String randomFileName, int storeType) {
         log.info("AliossService::uploadFile file");
         String bucket = 0 == storeType ? aliossConfig.getBucketLong() : aliossConfig.getBucketTtl();
         try {
-            String prefixPath = FileType.determineFileType(fileName).name();
+            String prefixPath = FileType.determineFileType(randomFileName).name();
             String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             String uuidPath = UUID.randomUUID().toString();
-            String fullName = prefixPath + "/" + datePath + "/" + uuidPath + "/" + fileName;
+            String fullName = prefixPath + "/" + datePath + "/" + uuidPath + "/" + randomFileName;
 
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, fullName, file.getInputStream());
             aliossClient.putObject(putObjectRequest);
@@ -43,14 +43,14 @@ public class AliossService implements ObsService {
     }
 
     @Override
-    public String uploadFile(byte[] fileByte, String contentType, String fileName, int storeType) {
+    public String uploadFile(byte[] fileByte, String contentType, String randomFileName, int storeType) {
         log.info("AliossService::uploadFile fileByte");
         String bucket = 0 == storeType ? aliossConfig.getBucketLong() : aliossConfig.getBucketTtl();
         try {
-            String prefixPath = FileType.determineFileType(fileName).name();
+            String prefixPath = FileType.determineFileType(randomFileName).name();
             String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             String uuidPath = UUID.randomUUID().toString();
-            String fullName = prefixPath + "/" + datePath + "/" + uuidPath + "/" + fileName;
+            String fullName = prefixPath + "/" + datePath + "/" + uuidPath + "/" + randomFileName;
             InputStream stream = new ByteArrayInputStream(fileByte);
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(contentType);

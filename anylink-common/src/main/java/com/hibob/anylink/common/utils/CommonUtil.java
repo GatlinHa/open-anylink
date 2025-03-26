@@ -6,11 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
+import java.util.Random;
 
 import static com.hibob.anylink.common.constants.Const.SPLIT_V;
 
 @Slf4j
 public class CommonUtil {
+
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     private CommonUtil() {
 
@@ -96,6 +99,16 @@ public class CommonUtil {
             return str;
         }
         return str.substring(0, maxLength);
+    }
+
+    public static String generateRandomStr(int length) {
+        Random random = new Random();
+        StringBuilder stringBuilder = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            stringBuilder.append(CHARACTERS.charAt(randomIndex));
+        }
+        return stringBuilder.toString();
     }
 
 }

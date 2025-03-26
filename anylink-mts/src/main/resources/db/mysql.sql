@@ -10,7 +10,7 @@ CREATE TABLE `anylink_mts_object`
     `created_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY(`object_id`),
     INDEX `idx_foreign_id`(foreign_id)
-) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '富媒体对象表，MTS服务的首表';
+) ENGINE=INNODB CHARSET=utf8mb4 COMMENT '富媒体对象表，MTS服务的首表';
 
 drop table IF EXISTS `anylink_mts_file`;
 CREATE TABLE `anylink_mts_file`
@@ -23,7 +23,7 @@ CREATE TABLE `anylink_mts_file`
     `created_account` VARCHAR(255) NOT NULL COMMENT '创建者',
     `created_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY(`file_id`)
-) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '文件对象信息表';
+) ENGINE=INNODB CHARSET=utf8mb4 COMMENT '文件对象信息表';
 
 drop table IF EXISTS `anylink_mts_image`;
 CREATE TABLE `anylink_mts_image`
@@ -38,7 +38,7 @@ CREATE TABLE `anylink_mts_image`
     `created_account` VARCHAR(255) NOT NULL COMMENT '创建者',
     `created_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY(`image_id`)
-) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '图像表';
+) ENGINE=INNODB CHARSET=utf8mb4 COMMENT '图像表';
 
 drop table IF EXISTS `anylink_mts_audio`;
 CREATE TABLE `anylink_mts_audio`
@@ -53,4 +53,19 @@ CREATE TABLE `anylink_mts_audio`
     `created_account` VARCHAR(255) NOT NULL COMMENT '创建者',
     `created_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY(`audio_id`)
-) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '音频表';
+) ENGINE=INNODB CHARSET=utf8mb4 COMMENT '音频表';
+
+drop table IF EXISTS `anylink_mts_video`;
+CREATE TABLE `anylink_mts_video`
+(
+    `video_id` VARCHAR(255) NOT NULL COMMENT '视频唯一ID，采用文件md5计算方式',
+    `video_type` VARCHAR(64) NOT NULL COMMENT '视频类型',
+    `video_size` BIGINT NOT NULL COMMENT '视频大小',
+    `video_duration` INT NOT NULL COMMENT '视频时长（秒）',
+    `file_name` VARCHAR(255) NOT NULL COMMENT '文件名',
+    `url` VARCHAR(512) NOT NULL COMMENT '视频下载url地址',
+    `expire` BIGINT NOT NULL COMMENT '过期时间',
+    `created_account` VARCHAR(255) NOT NULL COMMENT '创建者',
+    `created_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    PRIMARY KEY(`video_id`)
+) ENGINE=INNODB CHARSET=utf8mb4 COMMENT '视频表';

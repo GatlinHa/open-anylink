@@ -75,13 +75,17 @@ public enum ServiceErrorCode {
 
     ERROR_GROUP_MNG_NOT_IN_GROUP(Const.SERVICE_CODE_GROUP_MNG + 7, "您已离开该群或群已被解散"),
 
-    ERROR_MTS_AUDIO_TOO_BIG(Const.SERVICE_CODE_MTS + 1, "音频过大"),
+    ERROR_MTS_AUDIO_TOO_BIG(Const.SERVICE_CODE_MTS + 1, "音频文件过大"),
 
     ERROR_MTS_AUDIO_FORMAT_ERROR(Const.SERVICE_CODE_MTS + 2, "音频格式错误"),
 
     ERROR_MTS_FILE_UPLOAD_ERROR(Const.SERVICE_CODE_MTS + 3, "文件上传失败"),
 
     ERROR_MTS_FILE_NOT_SUPPORT(Const.SERVICE_CODE_MTS + 4, "不支持该文件格式"),
+
+    ERROR_MTS_VIDEO_TOO_BIG(Const.SERVICE_CODE_MTS + 5, "视频文件过大"),
+
+    ERROR_MTS_VIDEO_FORMAT_ERROR(Const.SERVICE_CODE_MTS + 6, "音频格式错误"),
 
     ERROR_DEFAULT(Const.SERVICE_CODE_DEFAULT, "未知错误");
 

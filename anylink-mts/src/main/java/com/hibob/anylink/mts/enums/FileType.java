@@ -6,8 +6,10 @@ public enum FileType {
     IMAGE("jpg", "jpeg", "png", "gif", "bmp", "webp"),
     DOCUMENT("doc", "docx", "pdf", "txt"),
 
-    AUDIO("mp3", "wav", "aac", "flac", "ogg", "webm"), // Added audio file types
+    AUDIO("mp3", "wav", "aac", "flac", "ogg", "webm"),
     // 可以继续添加其他类型
+
+    VIDEO("mp4", "avi", "mkv", "mov", "flv", "webm", "wmv"),
 
     UNKNOWN(null);
 
@@ -43,5 +45,10 @@ public enum FileType {
     public static boolean isAudioFile(String fileName) {
         FileType fileType = determineFileType(fileName);
         return fileType == FileType.AUDIO;
+    }
+
+    public static boolean isVideoFile(String fileName) {
+        FileType fileType = determineFileType(fileName);
+        return fileType == FileType.VIDEO;
     }
 }

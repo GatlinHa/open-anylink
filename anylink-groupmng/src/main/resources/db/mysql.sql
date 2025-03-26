@@ -17,7 +17,7 @@ CREATE TABLE `anylink_group_info`(
     `del_time` DATETIME DEFAULT NULL COMMENT '删除时间',
     PRIMARY KEY (group_id),
     INDEX `idx_creator`(creator)
-) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '群组信息表';
+) ENGINE=INNODB CHARSET=utf8mb4 COMMENT '群组信息表';
 
 DROP TABLE IF EXISTS `anylink_group_member`;
 CREATE TABLE `anylink_group_member`(
@@ -28,5 +28,5 @@ CREATE TABLE `anylink_group_member`(
     `muted_mode` TINYINT(1) DEFAULT 0 COMMENT '禁言模式: 0未设置, 1禁言黑名单，2禁言白名单',
     `in_status` TINYINT(1) DEFAULT 0 COMMENT '在群状态：0正常，1退群，2群解散',
     PRIMARY KEY (group_id, account)
-) ENGINE=INNODB CHARSET=utf8mb3 COMMENT '群组成员表';
+) ENGINE=INNODB CHARSET=utf8mb4 COMMENT '群组成员表';
 
