@@ -161,7 +161,6 @@ public class FileService {
 
             vo.setObjectId(Long.toString(objectId));
             vo.setUrl(mtsVideo.getUrl());
-            vo.setDuration(mtsVideo.getVideoDuration());
             vo.setFileName(mtsVideo.getFileName());
             vo.setSize(mtsVideo.getVideoSize());
             return ResultUtil.success(vo);
@@ -176,7 +175,6 @@ public class FileService {
         mtsVideo.setVideoId(videoId);
         mtsVideo.setVideoType(file.getContentType());
         mtsVideo.setVideoSize(file.getSize());
-        mtsVideo.setVideoDuration(dto.getDuration());
         mtsVideo.setFileName(fileName);
         mtsVideo.setUrl(url);
         mtsVideo.setCreatedAccount(ReqSession.getSession().getAccount());
@@ -192,7 +190,6 @@ public class FileService {
 
         vo.setObjectId(Long.toString(objectId));
         vo.setUrl(url);
-        vo.setDuration(dto.getDuration());
         vo.setFileName(fileName);
         vo.setSize(file.getSize());
         return ResultUtil.success(vo);

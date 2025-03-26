@@ -21,9 +21,6 @@ public class MtsVideo {
     @TableField(value = "video_size")
     private long videoSize;
 
-    @TableField(value = "video_duration")
-    private int videoDuration;
-
     @TableField(value = "file_name")
     private String fileName;
 

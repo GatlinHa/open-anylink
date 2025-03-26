@@ -19,7 +19,7 @@ public class UploadReq {
     @Min(value = 0, message = "永久存储")
     private int storeType;
 
-    @ApiModelProperty(value = "音视频的时长")
+    @ApiModelProperty(value = "录音的时长")
     private int duration;
 
     @ApiModelProperty(value = "文件")

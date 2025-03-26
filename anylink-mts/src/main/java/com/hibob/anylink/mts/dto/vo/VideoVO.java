@@ -13,9 +13,6 @@ public class VideoVO {
     @ApiModelProperty(value = "url")
     private String url;
 
-    @ApiModelProperty(value = "时长")
-    private int duration;
-
     @ApiModelProperty(value = "文件名")
     private String fileName;
 

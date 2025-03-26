@@ -49,7 +49,7 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
      * @return List<VideoVO>
      */
     @Select("<script>" +
-            " select t1.object_id, t2.url, t2.video_duration as duration, t2.file_name, t2.video_size as size from anylink_mts_object t1 " +
+            " select t1.object_id, t2.url, t2.file_name, t2.video_size as size from anylink_mts_object t1 " +
             " INNER JOIN anylink_mts_video t2 " +
             " ON t1.foreign_id = t2.video_id " +
             " AND t1.object_id IN " +
