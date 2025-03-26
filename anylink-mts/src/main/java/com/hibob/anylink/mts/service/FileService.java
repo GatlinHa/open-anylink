@@ -55,17 +55,25 @@ public class FileService {
 
     public ResponseEntity<IMHttpResponse> upload(UploadReq dto) {
         log.info("FileService::upload");
-        FileType fileType = FileType.determineFileType(dto.getFile().getOriginalFilename());
+        FileType fileType = FileType.determineFileType(dto.getFile().getContentType());
+        String fileName = dto.getFile().getOriginalFilename();
         switch (fileType) {
             case IMAGE:
+                if (!FileType.checkExtension(FileType.IMAGE, fileName)) {
+                    return ResultUtil.error(ServiceErrorCode.ERROR_MTS_IMAGE_FORMAT_ERROR);
+                }
                 return uploadImage(dto);
-            case DOCUMENT:
-//                return uploadFile(dto);
-                return  ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_NOT_SUPPORT);
             case AUDIO:
+                if (!FileType.checkExtension(FileType.AUDIO, fileName)) {
+                    return ResultUtil.error(ServiceErrorCode.ERROR_MTS_AUDIO_FORMAT_ERROR);
+                }
                 return uploadAudio(dto);
             case VIDEO:
+                if (!FileType.checkExtension(FileType.VIDEO, fileName)) {
+                    return ResultUtil.error(ServiceErrorCode.ERROR_MTS_VIDEO_FORMAT_ERROR);
+                }
                 return uploadVideo(dto);
+            case DOCUMENT:
             default:
                 return  ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_NOT_SUPPORT);
         }
@@ -76,13 +84,8 @@ public class FileService {
         MultipartFile file = dto.getFile();
         String fileName = truncateFileName(file.getOriginalFilename());
         // 大小校验
-        if (file.getSize() > obsConfig.getAudioMaxLimit() * 1024 * 1024) {
+        if (file.getSize() > (long) obsConfig.getAudioMaxLimit() * 1024 * 1024) {
             return ResultUtil.error(ServiceErrorCode.ERROR_MTS_AUDIO_TOO_BIG);
-        }
-
-        // 文件后缀校验
-        if (!FileType.isAudioFile(fileName)) {
-            return ResultUtil.error(ServiceErrorCode.ERROR_MTS_AUDIO_FORMAT_ERROR);
         }
 
         AudioVO vo = new AudioVO();
@@ -140,13 +143,8 @@ public class FileService {
         MultipartFile file = dto.getFile();
         String fileName = truncateFileName(file.getOriginalFilename());
         // 大小校验
-        if (file.getSize() > obsConfig.getVideoMaxLimit() * 1024 * 1024) {
+        if (file.getSize() > (long) obsConfig.getVideoMaxLimit() * 1024 * 1024) {
             return ResultUtil.error(ServiceErrorCode.ERROR_MTS_VIDEO_TOO_BIG);
-        }
-
-        // 文件后缀校验
-        if (!FileType.isVideoFile(fileName)) {
-            return ResultUtil.error(ServiceErrorCode.ERROR_MTS_VIDEO_FORMAT_ERROR);
         }
 
         VideoVO vo = new VideoVO();
@@ -205,15 +203,9 @@ public class FileService {
         MultipartFile file = dto.getFile();
         String fileName = truncateFileName(file.getOriginalFilename());
         // 大小校验
-        if (file.getSize() > obsConfig.getImageMaxLimit() * 1024 * 1024) {
+        if (file.getSize() > (long) obsConfig.getImageMaxLimit() * 1024 * 1024) {
             return ResultUtil.error(ServiceErrorCode.ERROR_IMAGE_TOO_BIG);
         }
-
-        // 文件后缀校验
-        if (!FileType.isImageFile(fileName)) {
-            return ResultUtil.error(ServiceErrorCode.ERROR_IMAGE_FORMAT_ERROR);
-        }
-
 
         ImageVO vo = new ImageVO();
         String imageId = getMd5(file);

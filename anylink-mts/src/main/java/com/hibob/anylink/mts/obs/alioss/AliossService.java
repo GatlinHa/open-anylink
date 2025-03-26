@@ -28,7 +28,7 @@ public class AliossService implements ObsService {
         log.info("AliossService::uploadFile file");
         String bucket = 0 == storeType ? aliossConfig.getBucketLong() : aliossConfig.getBucketTtl();
         try {
-            String prefixPath = FileType.determineFileType(randomFileName).name();
+            String prefixPath = FileType.determineFileType(file.getContentType()).name();
             String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             String uuidPath = UUID.randomUUID().toString();
             String fullName = prefixPath + "/" + datePath + "/" + uuidPath + "/" + randomFileName;
@@ -47,7 +47,7 @@ public class AliossService implements ObsService {
         log.info("AliossService::uploadFile fileByte");
         String bucket = 0 == storeType ? aliossConfig.getBucketLong() : aliossConfig.getBucketTtl();
         try {
-            String prefixPath = FileType.determineFileType(randomFileName).name();
+            String prefixPath = FileType.determineFileType(contentType).name();
             String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             String uuidPath = UUID.randomUUID().toString();
             String fullName = prefixPath + "/" + datePath + "/" + uuidPath + "/" + randomFileName;

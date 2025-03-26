@@ -27,7 +27,7 @@ public class MinioService implements ObsService {
         log.info("MinioService::uploadFile file");
         String bucket = 0 == storeType ? minioConfig.getBucketLong() : minioConfig.getBucketTtl();
         try {
-            String prefixPath = FileType.determineFileType(randomFileName).name();
+            String prefixPath = FileType.determineFileType(file.getContentType()).name();
             String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             String uuidPath = UUID.randomUUID().toString();
             String fullName = prefixPath + "/" + datePath + "/" + uuidPath + "/" + randomFileName;
@@ -51,7 +51,7 @@ public class MinioService implements ObsService {
         log.info("MinioService::uploadFile fileByte");
         String bucket = 0 == storeType ? minioConfig.getBucketLong() : minioConfig.getBucketTtl();
         try {
-            String prefixPath = FileType.determineFileType(randomFileName).name();
+            String prefixPath = FileType.determineFileType(contentType).name();
             String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             String uuidPath = UUID.randomUUID().toString();
             String fullName = prefixPath + "/" + datePath + "/" + uuidPath + "/" + randomFileName;
