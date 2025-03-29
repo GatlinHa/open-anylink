@@ -1,5 +1,6 @@
 package com.hibob.anylink.mts.obs.minio;
 
+import com.hibob.anylink.mts.obs.ObsConfig;
 import io.minio.MinioClient;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Data
-public class MinioConfig {
+public class MinioConfig extends ObsConfig {
 
     @Value("${obs.minio.endpoint}")
     private String endpoint;

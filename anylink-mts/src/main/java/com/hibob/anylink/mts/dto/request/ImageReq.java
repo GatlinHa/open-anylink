@@ -13,5 +13,5 @@ public class ImageReq {
 
     @ApiModelProperty(value = "待查询的objectId列表")
     @NotNull
-    private List<String> objectIds;
+    private List<Long> objectIds;
 }

@@ -16,10 +16,13 @@ public class UserVO {
     @ApiModelProperty(value = "昵称")
     private String nickName;
 
-    @ApiModelProperty(value = "头像")
+    @ApiModelProperty(value = "头像Id")
+    private Long avatarId;
+
+    @ApiModelProperty(value = "头像url")
     private String avatar;
 
-    @ApiModelProperty(value = "头像缩略图")
+    @ApiModelProperty(value = "头像缩略图url")
     private String avatarThumb;
 
     @ApiModelProperty(value = "性别")

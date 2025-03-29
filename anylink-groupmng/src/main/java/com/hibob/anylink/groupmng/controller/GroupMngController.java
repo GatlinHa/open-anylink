@@ -3,7 +3,7 @@ package com.hibob.anylink.groupmng.controller;
 import com.hibob.anylink.common.annotation.ApiCommonHeader;
 import com.hibob.anylink.common.model.IMHttpResponse;
 import com.hibob.anylink.groupmng.service.GroupMngService;
-import com.hibob.anylink.groupmng.dao.request.*;
+import com.hibob.anylink.groupmng.dto.request.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

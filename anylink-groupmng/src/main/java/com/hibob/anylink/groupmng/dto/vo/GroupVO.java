@@ -1,6 +1,5 @@
-package com.hibob.anylink.groupmng.dao.vo;
+package com.hibob.anylink.groupmng.dto.vo;
 
-import com.hibob.anylink.groupmng.entity.GroupInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +11,7 @@ import java.util.Map;
 public class GroupVO {
 
     @ApiModelProperty(value = "群组信息")
-    private GroupInfo groupInfo;
+    private GroupInfoVO groupInfo;
 
     /**
      * 群组成员, key是账号,value是info对象

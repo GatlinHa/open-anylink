@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class ObsConfig {
 
+    @Value("${obs.source}")
+    private String source;
+
     @Value("${obs.document.max-limit}")
     private int documentMaxLimit;
 
@@ -25,4 +28,8 @@ public class ObsConfig {
 
     @Value("${obs.ttl}")
     private int ttl;
+
+    @Value("${obs.url-expire}")
+    private long urlExpire;
+
 }

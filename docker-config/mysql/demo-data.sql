@@ -106,13 +106,13 @@ insert  into `anylink_chat_session`(`account`,`session_id`,`remote_id`,`session_
 
 /*Data for the table `anylink_group_info` */
 
-insert  into `anylink_group_info`(`group_id`,`group_type`,`group_name`,`announcement`,`avatar`,`avatar_thumb`,`history_browse`,`all_muted`,`join_group_approval`,`creator`,`created_time`,`del_flag`,`del_time`) values 
-('158691065723879424',1,'久旱逢甘雨','','','',0,0,0,'a123456','2025-03-13 21:41:38',0,NULL),
-('158691088943546368',1,'他乡遇故知','','','',0,0,0,'a00007','2025-03-13 21:41:43',0,NULL),
-('158691108577083392',1,'洞房花烛夜','','','',0,0,0,'a123456','2025-03-13 21:41:48',0,NULL),
-('158691141649170432',1,'金榜题名时','','','',0,0,0,'a123456','2025-03-13 21:41:56',0,NULL),
-('158691195474673664',1,'海内存知己','','','',0,0,0,'a00007','2025-03-13 21:42:09',0,NULL),
-('158691214953021440',1,'天涯若比邻','','','',0,0,0,'a00007','2025-03-13 21:42:13',0,NULL);
+insert  into `anylink_group_info`(`group_id`,`group_type`,`group_name`,`announcement`,`avatar_id`, `history_browse`,`all_muted`,`join_group_approval`,`creator`,`created_time`,`del_flag`,`del_time`) values
+('158691065723879424',1,'久旱逢甘雨','',NULL,0,0,0,'a123456','2025-03-13 21:41:38',0,NULL),
+('158691088943546368',1,'他乡遇故知','',NULL,0,0,0,'a00007','2025-03-13 21:41:43',0,NULL),
+('158691108577083392',1,'洞房花烛夜','',NULL,0,0,0,'a123456','2025-03-13 21:41:48',0,NULL),
+('158691141649170432',1,'金榜题名时','',NULL,0,0,0,'a123456','2025-03-13 21:41:56',0,NULL),
+('158691195474673664',1,'海内存知己','',NULL,0,0,0,'a00007','2025-03-13 21:42:09',0,NULL),
+('158691214953021440',1,'天涯若比邻','',NULL,0,0,0,'a00007','2025-03-13 21:42:13',0,NULL);
 
 /*Data for the table `anylink_group_member` */
 
@@ -148,15 +148,15 @@ insert  into `anylink_group_member`(`group_id`,`account`,`nick_name`,`role`,`mut
 
 /*Data for the table `anylink_user_info` */
 
-insert  into `anylink_user_info`(`id`,`account`,`nick_name`,`avatar`,`avatar_thumb`,`password`,`gender`,`level`,`signature`,`phone_num`,`email`,`birthday`,`new_msg_tips`,`send_msg_tips`,`created_time`,`update_time`) values 
-(1900173352510787586,'a00001','李白','','','$2a$10$xkDV/RerNeW.JGM1/XIdzOCe8sALfA/Wcq/GUQQ/Sg4Zw3R9iFi72',0,0,'','','','1970-01-01',1,1,'2025-03-13 21:13:25','2025-03-13 13:24:36'),
-(1900175138856472577,'a123456','王维','','','$2a$10$EzsZyvZYcSPSi99Y37Fo.OMfF/tG6NTQZjJoLVXMFFIj/lmVxD6JS',0,0,'','','',NULL,1,1,'2025-03-13 21:20:31','2025-03-13 21:20:31'),
-(1900175304376291330,'a00002','杜甫','','','$2a$10$fMHisoUiWbjSkRTB0rM7LugakprGQzTyf9wfbhCuAMbEgwx14e/nO',0,0,'','','',NULL,1,1,'2025-03-13 21:21:10','2025-03-13 21:21:10'),
-(1900175379810848769,'a00003','苏轼','','','$2a$10$9.Dg/MAEa3iV6/kNyrIjj.7D.OVHRSTdkLYvB47UTIUVM5XS5ld3y',0,0,'','','',NULL,1,1,'2025-03-13 21:21:28','2025-03-13 21:21:28'),
-(1900175484102217730,'a00004','白居易','','','$2a$10$rW0W5r5Ez1SAEDCsep3EzOCyW294ssvrd2sE5ifIqfzeg/yDICrsK',0,0,'','','',NULL,1,1,'2025-03-13 21:21:53','2025-03-13 21:21:53'),
-(1900175660925685762,'a00005','唐伯虎','','','$2a$10$Zv7CDJ0lzHT92e6LdxdY2uaxvidWAtaYORnQPjCHSk3rZgA.mm2EW',0,0,'','','',NULL,1,1,'2025-03-13 21:22:35','2025-03-13 21:22:35'),
-(1900175802458279937,'a00006','辛弃疾','','','$2a$10$qMLIWdlnSa3ztno1tEulluj56ys0TopUXr7P6.X6lhpWOui3pmlde',0,0,'','','',NULL,1,1,'2025-03-13 21:23:09','2025-03-13 21:23:09'),
-(1900175894573584385,'a00007','欧阳修','','','$2a$10$SkjZDhIeI.3dyjP6PZyco.SVH1gMSAII0cEHlAbRlrei/7QCqBL5K',0,0,'','','',NULL,1,1,'2025-03-13 21:23:31','2025-03-13 21:23:31');
+insert  into `anylink_user_info`(`id`,`account`,`nick_name`,`avatar_id`,`password`,`gender`,`level`,`signature`,`phone_num`,`email`,`birthday`,`new_msg_tips`,`send_msg_tips`,`created_time`,`update_time`) values
+(1900173352510787586,'a00001','李白',NULL,'$2a$10$xkDV/RerNeW.JGM1/XIdzOCe8sALfA/Wcq/GUQQ/Sg4Zw3R9iFi72',0,0,'','','','1970-01-01',1,1,'2025-03-13 21:13:25','2025-03-13 13:24:36'),
+(1900175138856472577,'a123456','王维',NULL,'$2a$10$EzsZyvZYcSPSi99Y37Fo.OMfF/tG6NTQZjJoLVXMFFIj/lmVxD6JS',0,0,'','','',NULL,1,1,'2025-03-13 21:20:31','2025-03-13 21:20:31'),
+(1900175304376291330,'a00002','杜甫',NULL,'$2a$10$fMHisoUiWbjSkRTB0rM7LugakprGQzTyf9wfbhCuAMbEgwx14e/nO',0,0,'','','',NULL,1,1,'2025-03-13 21:21:10','2025-03-13 21:21:10'),
+(1900175379810848769,'a00003','苏轼',NULL,'$2a$10$9.Dg/MAEa3iV6/kNyrIjj.7D.OVHRSTdkLYvB47UTIUVM5XS5ld3y',0,0,'','','',NULL,1,1,'2025-03-13 21:21:28','2025-03-13 21:21:28'),
+(1900175484102217730,'a00004','白居易',NULL,'$2a$10$rW0W5r5Ez1SAEDCsep3EzOCyW294ssvrd2sE5ifIqfzeg/yDICrsK',0,0,'','','',NULL,1,1,'2025-03-13 21:21:53','2025-03-13 21:21:53'),
+(1900175660925685762,'a00005','唐伯虎',NULL,'$2a$10$Zv7CDJ0lzHT92e6LdxdY2uaxvidWAtaYORnQPjCHSk3rZgA.mm2EW',0,0,'','','',NULL,1,1,'2025-03-13 21:22:35','2025-03-13 21:22:35'),
+(1900175802458279937,'a00006','辛弃疾',NULL,'$2a$10$qMLIWdlnSa3ztno1tEulluj56ys0TopUXr7P6.X6lhpWOui3pmlde',0,0,'','','',NULL,1,1,'2025-03-13 21:23:09','2025-03-13 21:23:09'),
+(1900175894573584385,'a00007','欧阳修',NULL,'$2a$10$SkjZDhIeI.3dyjP6PZyco.SVH1gMSAII0cEHlAbRlrei/7QCqBL5K',0,0,'','','',NULL,1,1,'2025-03-13 21:23:31','2025-03-13 21:23:31');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

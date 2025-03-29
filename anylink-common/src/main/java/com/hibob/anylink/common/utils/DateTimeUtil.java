@@ -38,6 +38,11 @@ public class DateTimeUtil {
         }
     }
 
+    public static long getUtcSecond() {
+        Date currentDate = new Date();
+        return currentDate.getTime() / 1000;
+    }
+
     private static void formatValidate(String format) {
         if (!FORMAT_LIST.contains(format)) {
             throw new RuntimeException(String.format("This format: %s is not supported", format));

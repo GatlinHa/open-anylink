@@ -1,9 +1,6 @@
 package com.hibob.anylink.common.rpc.client;
 
-import com.hibob.anylink.common.rpc.service.ChatRpcService;
-import com.hibob.anylink.common.rpc.service.GroupMngRpcService;
-import com.hibob.anylink.common.rpc.service.NettyRpcService;
-import com.hibob.anylink.common.rpc.service.UserRpcService;
+import com.hibob.anylink.common.rpc.service.*;
 import lombok.Data;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
@@ -23,5 +20,8 @@ public class RpcClient {
 
     @DubboReference(check = false, timeout = 3000) //关闭启动检查，否则启动会依赖RPC服务端
     private NettyRpcService nettyRpcService;
+
+    @DubboReference(check = false, timeout = 3000) //关闭启动检查，否则启动会依赖RPC服务端
+    private MtsRpcService mtsRpcService;
 
 }

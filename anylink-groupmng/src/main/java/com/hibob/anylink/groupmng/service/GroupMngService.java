@@ -8,14 +8,16 @@ import com.hibob.anylink.common.model.IMHttpResponse;
 import com.hibob.anylink.common.protobuf.MsgType;
 import com.hibob.anylink.common.rpc.client.RpcClient;
 import com.hibob.anylink.common.session.ReqSession;
+import com.hibob.anylink.common.utils.BeanUtil;
 import com.hibob.anylink.common.utils.ResultUtil;
 import com.hibob.anylink.common.utils.SnowflakeId;
-import com.hibob.anylink.groupmng.dao.vo.GroupVO;
+import com.hibob.anylink.groupmng.dto.vo.GroupInfoVO;
+import com.hibob.anylink.groupmng.dto.vo.GroupVO;
 import com.hibob.anylink.groupmng.entity.GroupInfo;
 import com.hibob.anylink.groupmng.entity.GroupMember;
 import com.hibob.anylink.groupmng.mapper.GroupInfoMapper;
 import com.hibob.anylink.groupmng.mapper.GroupMemberMapper;
-import com.hibob.anylink.groupmng.dao.request.*;
+import com.hibob.anylink.groupmng.dto.request.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -53,8 +55,7 @@ public class GroupMngService {
         int groupType = dto.getGroupType();
         String groupName = dto.getGroupName();
         String announcement = ""; //创建时，不带公告
-        String avatar = ""; //创建时，不带群头像
-        String avatarThumb = ""; //创建时，不带群头像缩略图
+        Long avatarId = null; //创建时，不带群头像
         boolean historyBrowse = false; //创建时，默认新成员不能查看历史消息
         boolean allMuted = false; //创建时，默认非全场静音
         boolean joinGroupApproval = false; //创建时，默认全员可以邀请新成员
@@ -65,8 +66,7 @@ public class GroupMngService {
         groupInfo.setGroupType(groupType);
         groupInfo.setGroupName(groupName);
         groupInfo.setAnnouncement(announcement);
-        groupInfo.setAvatar(avatar);
-        groupInfo.setAvatarThumb(avatarThumb);
+        groupInfo.setAvatarId(avatarId);
         groupInfo.setHistoryBrowse(historyBrowse);
         groupInfo.setAllMuted(allMuted);
         groupInfo.setJoinGroupApproval(joinGroupApproval);
@@ -116,7 +116,7 @@ public class GroupMngService {
         rpcClient.getNettyRpcService().sendSysMsg(msgMap);
 
         GroupVO vo = new GroupVO();
-        vo.setGroupInfo(groupInfo);
+        vo.setGroupInfo(BeanUtil.copyProperties(groupInfo, GroupInfoVO.class));
         return ResultUtil.success(vo);
     }
 
@@ -128,7 +128,24 @@ public class GroupMngService {
         log.info("GroupMngService::queryGroupList");
         String account = ReqSession.getSession().getAccount();
         List<GroupInfo> groupInfos = groupInfoMapper.selectGroupList(account);
-        return ResultUtil.success(groupInfos);
+        List<Long> avatarIds = groupInfos.stream().map(GroupInfo::getAvatarId).collect(Collectors.toList());
+        Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(avatarIds);
+        List<GroupInfoVO> result = groupInfos.stream().map(item -> {
+            long avatarId = item.getAvatarId();
+            String avatar = "";
+            String avatarThumb = "";
+            Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
+            if (objectMap != null) {
+                avatar = objectMap.get("originUrl").toString();
+                avatarThumb = objectMap.get("thumbUrl").toString();
+            }
+            GroupInfoVO groupInfoVO = BeanUtil.copyProperties(item, GroupInfoVO.class);
+            groupInfoVO.setAvatarId(avatarId);
+            groupInfoVO.setAvatar(avatar);
+            groupInfoVO.setAvatarThumb(avatarThumb);
+            return groupInfoVO;
+        }).collect(Collectors.toList());
+        return ResultUtil.success(result);
     }
 
     /**
@@ -156,8 +173,21 @@ public class GroupMngService {
             usersMap.get(member.getAccount()).put("inStatus", member.getInStatus());
         }
 
+        long avatarId = groupInfo.getAvatarId();
+        String avatar = "";
+        String avatarThumb = "";
+        Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(Arrays.asList(avatarId));
+        Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
+        if (objectMap != null) {
+            avatar = objectMap.get("originUrl").toString();
+            avatarThumb = objectMap.get("thumbUrl").toString();
+        }
         GroupVO vo = new GroupVO();
-        vo.setGroupInfo(groupInfo);
+        GroupInfoVO groupInfoVO = BeanUtil.copyProperties(groupInfo, GroupInfoVO.class);
+        groupInfoVO.setAvatarId(avatarId);
+        groupInfoVO.setAvatar(avatar);
+        groupInfoVO.setAvatarThumb(avatarThumb);
+        vo.setGroupInfo(groupInfoVO);
         vo.setMembers(usersMap);
         return ResultUtil.success(vo);
     }
@@ -184,8 +214,25 @@ public class GroupMngService {
         log.info("GroupMngService::searchGroupInfo");
         String account = ReqSession.getSession().getAccount();
         String searchKey = dto.getSearchKey();
-        List<GroupInfo> groups = groupInfoMapper.searchGroupInfo(account, searchKey);
-        return ResultUtil.success(groups);
+        List<GroupInfo> groupInfos = groupInfoMapper.searchGroupInfo(account, searchKey);
+        List<Long> avatarIds = groupInfos.stream().map(GroupInfo::getAvatarId).collect(Collectors.toList());
+        Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(avatarIds);
+        List<GroupInfoVO> result = groupInfos.stream().map(item -> {
+            long avatarId = item.getAvatarId();
+            String avatar = "";
+            String avatarThumb = "";
+            Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
+            if (objectMap != null) {
+                avatar = objectMap.get("originUrl").toString();
+                avatarThumb = objectMap.get("thumbUrl").toString();
+            }
+            GroupInfoVO groupInfoVO = BeanUtil.copyProperties(item, GroupInfoVO.class);
+            groupInfoVO.setAvatarId(avatarId);
+            groupInfoVO.setAvatar(avatar);
+            groupInfoVO.setAvatarThumb(avatarThumb);
+            return groupInfoVO;
+        }).collect(Collectors.toList());
+        return ResultUtil.success(result);
     }
 
     /**
@@ -203,15 +250,13 @@ public class GroupMngService {
 
         String announcement = dto.getAnnouncement();
         String groupName = dto.getGroupName();
-        String avatar = dto.getAvatar();
-        String avatarThumb = dto.getAvatarThumb();
+        Long avatarId = dto.getAvatarId();
         Boolean historyBrowse = dto.getHistoryBrowse();
         Boolean allMuted = dto.getAllMuted();
         Boolean joinGroupApproval = dto.getJoinGroupApproval();
         if (announcement == null // 注意: ""空串是有效值, 表示没有公告
                 && !StringUtils.hasLength(groupName)
-                && !StringUtils.hasLength(avatar)
-                && !StringUtils.hasLength(avatarThumb)
+                && avatarId == null
                 && historyBrowse == null
                 && allMuted == null
                 && joinGroupApproval == null) {
@@ -230,9 +275,8 @@ public class GroupMngService {
             updateWrapper.set(GroupInfo::getGroupName, groupName);
             msgMap.put("msgType", MsgType.SYS_GROUP_UPDATE_NAME.getNumber());
             content.put("groupName", groupName);
-        } else if (StringUtils.hasLength(avatar) && StringUtils.hasLength(avatarThumb)) {
-            updateWrapper.set(GroupInfo::getAvatar, avatar);
-            updateWrapper.set(GroupInfo::getAvatarThumb, avatarThumb);
+        } else if (avatarId != null) {
+            updateWrapper.set(GroupInfo::getAvatarId, avatarId);
             msgMap.put("msgType", MsgType.SYS_GROUP_UPDATE_AVATAR.getNumber());
         } else if (historyBrowse != null) {
             updateWrapper.set(GroupInfo::isHistoryBrowse, historyBrowse);

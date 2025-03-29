@@ -24,11 +24,8 @@ public class GroupInfo {
     @TableField(value = "announcement")
     private String announcement;
 
-    @TableField(value = "avatar")
-    private String avatar;
-
-    @TableField(value = "avatar_thumb")
-    private String avatarThumb;
+    @TableField(value = "avatar_id")
+    private long avatarId;
 
     @TableField(value = "history_browse")
     private boolean historyBrowse;

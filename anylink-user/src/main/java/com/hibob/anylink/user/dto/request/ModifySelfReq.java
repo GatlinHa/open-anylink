@@ -11,11 +11,8 @@ public class ModifySelfReq {
     @ApiModelProperty(value = "昵称")
     private String nickName;
 
-    @ApiModelProperty(value = "头像")
-    private String avatar;
-
-    @ApiModelProperty(value = "头像缩略图")
-    private String avatarThumb;
+    @ApiModelProperty(value = "头像Id")
+    private Long avatarId;
 
     @ApiModelProperty(value = "性别")
     private int gender;

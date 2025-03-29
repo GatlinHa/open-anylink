@@ -27,6 +27,11 @@ public class RedisKey {
     public static final String CHAT_PREFIX = COMMON_PREFIX + "chat:";
 
     /**
+     * Netty服务的前缀
+     */
+    public static final String MTS_PREFIX = COMMON_PREFIX + "mts:";
+
+    /**
      * 存储注销的用户的黑名单
      */
     public static final String USER_DEREGISTER = USER_PREFIX + "deregister:";
@@ -87,4 +92,14 @@ public class RedisKey {
      */
     public static final String CHAT_SESSION_MSG = CHAT_PREFIX + "msg:";
 
+
+    /**
+     * 保存的图片的原图url和缩略图url, 后面接图片的objectId
+     */
+    public static final String MTS_IMAGE_URL = MTS_PREFIX + "imageUrl:";
+
+    /**
+     * 保存的存储对象的url, 后面接objectId
+     */
+    public static final String MTS_OBJECT_URL = MTS_PREFIX + "objectUrl:";
 }

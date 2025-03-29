@@ -2,8 +2,11 @@ package com.hibob.anylink.mts.obs.minio;
 
 import com.hibob.anylink.mts.enums.FileType;
 import com.hibob.anylink.mts.obs.ObsService;
+import com.hibob.anylink.mts.obs.ObsUploadRet;
+import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.http.Method;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -23,7 +27,7 @@ public class MinioService implements ObsService {
     private final MinioClient minioClient;
 
     @Override
-    public String uploadFile(MultipartFile file, String randomFileName, int storeType) {
+    public ObsUploadRet uploadFile(MultipartFile file, String randomFileName, int storeType) {
         log.info("MinioService::uploadFile file");
         String bucket = 0 == storeType ? minioConfig.getBucketLong() : minioConfig.getBucketTtl();
         try {
@@ -38,16 +42,17 @@ public class MinioService implements ObsService {
                     .stream(file.getInputStream(), file.getSize(), -1)
                     .contentType(file.getContentType())
                     .build());
-            return  minioConfig.getEndpoint() + "/" + bucket + "/" + fullName;
+            String signUrl = getSignUrl(bucket, fullName);
+            return new ObsUploadRet(bucket, fullName, signUrl);
         }
         catch (Exception e) {
             log.error("MinioService upload file error: {}", e.getMessage());
-            return "";
+            return null;
         }
     }
 
     @Override
-    public String uploadFile(byte[] fileByte, String contentType, String randomFileName, int storeType) {
+    public ObsUploadRet uploadFile(byte[] fileByte, String contentType, String randomFileName, int storeType) {
         log.info("MinioService::uploadFile fileByte");
         String bucket = 0 == storeType ? minioConfig.getBucketLong() : minioConfig.getBucketTtl();
         try {
@@ -63,10 +68,30 @@ public class MinioService implements ObsService {
                     .stream(stream, fileByte.length, -1)
                     .contentType(contentType)
                     .build());
-            return  minioConfig.getEndpoint() + "/" + bucket + "/" + fullName;
+            String signUrl = getSignUrl(bucket, fullName);
+            return new ObsUploadRet(bucket, fullName, signUrl);
         }
         catch (Exception e) {
             log.error("MinioService upload file error: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public String getSignUrl(String bucketName, String ObjectName) {
+        log.info("MinioService::getSignUrl");
+        try {
+            String url = minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs
+                            .builder()
+                            .method(Method.GET)
+                            .bucket(bucketName)
+                            .object(ObjectName)
+                            .expiry((int) minioConfig.getUrlExpire(), TimeUnit.SECONDS)
+                            .build());
+            return url;
+        } catch (Exception e) {
+            log.error("MinioService getSignUrl error: {}", e.getMessage());
             return "";
         }
     }

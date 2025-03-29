@@ -34,7 +34,7 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 obs:
-  type: #启动时从配置中心读取
+  source: #启动时从配置中心读取
   image:
     max-limit: 10 #单位M
     thumb-size: 102400  #单位B
@@ -45,6 +45,7 @@ obs:
   document:
     max-limit: 10 #单位M
   ttl: 15 #单位天
+  url-expire: 86400 #单位s
 
   minio:
     endpoint: #启动时从配置中心读取

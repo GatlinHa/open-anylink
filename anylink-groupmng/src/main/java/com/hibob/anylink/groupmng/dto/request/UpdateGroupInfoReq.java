@@ -1,4 +1,4 @@
-package com.hibob.anylink.groupmng.dao.request;
+package com.hibob.anylink.groupmng.dto.request;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,13 +22,8 @@ public class UpdateGroupInfoReq {
     @Size(max = 1024, message = "群组公告长度不能大于1024字符")
     private String announcement;
 
-    @ApiModelProperty(value = "可选参数，群组头像")
-    @Size(max = 1024, message = "群组头像长度不能大于1024字符")
-    private String avatar;
-
-    @ApiModelProperty(value = "可选参数，群组头像缩略图")
-    @Size(max = 1024, message = "群组头像缩略图长度不能大于1024字符")
-    private String avatarThumb;
+    @ApiModelProperty(value = "可选参数，群组头像id")
+    private Long avatarId;
 
     @ApiModelProperty(value = "可选参数，是否新成员可查看历史消息")
     private Boolean historyBrowse;

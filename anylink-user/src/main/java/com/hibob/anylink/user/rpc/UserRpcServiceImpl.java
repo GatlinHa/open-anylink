@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.hibob.anylink.common.enums.ConnectStatus;
+import com.hibob.anylink.common.rpc.client.RpcClient;
 import com.hibob.anylink.common.rpc.service.UserRpcService;
 import com.hibob.anylink.common.utils.BeanUtil;
 import com.hibob.anylink.user.dto.vo.UserVO;
@@ -15,10 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @DubboService
@@ -27,6 +26,7 @@ public class UserRpcServiceImpl implements UserRpcService {
 
     private final UserMapper userMapper;
     private final UserStatusMapper userStatusMapper;
+    private final RpcClient rpcClient;
 
     @Override
     public List<String> queryOnline(String account) {
@@ -53,9 +53,21 @@ public class UserRpcServiceImpl implements UserRpcService {
         if (users.size() > 0) {
             try {
                 User user = users.get(0);
+                long avatarId = user.getAvatarId();
+                String avatar = "";
+                String avatarThumb = "";
+                Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(Arrays.asList(avatarId));
+                Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
+                if (objectMap != null) {
+                    avatar = objectMap.get("originUrl").toString();
+                    avatarThumb = objectMap.get("thumbUrl").toString();
+                }
                 UserStatus userStatus = userStatusMapper.queryStatus(account);
                 user.setStatus(userStatus == null ? ConnectStatus.OFFLINE.getValue() : userStatus.getStatus());
                 UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
+                vo.setAvatarId(avatarId);
+                vo.setAvatar(avatar);
+                vo.setAvatarThumb(avatarThumb);
                 vo.setBirthday(null); //查询别人信息不返回生日信息
                 return BeanUtil.objectToMap(vo);
             } catch (IllegalAccessException e) {
@@ -75,6 +87,9 @@ public class UserRpcServiceImpl implements UserRpcService {
         Map<String, Integer> statusMap = userStatusMapper.queryStatusByAccountList(accountList);
         Map<String, Map<String, Object>> result = new HashMap();
         try {
+            List<Long> avatarIds = users.stream().map(User::getAvatarId).collect(Collectors.toList());
+            Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(avatarIds);
+
             for (User user : users) {
                 if (statusMap == null || statusMap.get(user.getAccount()) == null) {
                     user.setStatus(ConnectStatus.OFFLINE.getValue());
@@ -82,8 +97,21 @@ public class UserRpcServiceImpl implements UserRpcService {
                 else {
                     user.setStatus(statusMap.get(user.getAccount()));
                 }
+
+                long avatarId = user.getAvatarId();
+                String avatar = "";
+                String avatarThumb = "";
+                Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
+                if (objectMap != null) {
+                    avatar = objectMap.get("originUrl").toString();
+                    avatarThumb = objectMap.get("thumbUrl").toString();
+                }
+
                 // 把User对象转成返回对象
                 UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
+                vo.setAvatarId(avatarId);
+                vo.setAvatar(avatar);
+                vo.setAvatarThumb(avatarThumb);
                 vo.setBirthday(null); //查询别人信息不返回生日信息
                 result.put(user.getAccount(), BeanUtil.objectToMap(vo));
             }

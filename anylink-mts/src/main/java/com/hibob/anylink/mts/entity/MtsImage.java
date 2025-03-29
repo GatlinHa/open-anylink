@@ -24,11 +24,17 @@ public class MtsImage {
     @TableField(value = "file_name")
     private String fileName;
 
-    @TableField(value = "origin_url")
-    private String originUrl;
+    @TableField(value = "store_source")
+    private String storeSource;
 
-    @TableField(value = "thumb_url")
-    private String thumbUrl;
+    @TableField(value = "bucket_name")
+    private String bucketName;
+
+    @TableField(value = "origin_path")
+    private String originPath;
+
+    @TableField(value = "thumb_path")
+    private String thumbPath;
 
     @TableField(value = "expire")
     private long expire;

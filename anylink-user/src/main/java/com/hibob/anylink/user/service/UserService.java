@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hibob.anylink.common.constants.RedisKey;
 import com.hibob.anylink.common.enums.ConnectStatus;
 import com.hibob.anylink.common.model.IMHttpResponse;
+import com.hibob.anylink.common.rpc.client.RpcClient;
 import com.hibob.anylink.user.dto.vo.TokensVO;
 import com.hibob.anylink.user.dto.vo.UserVO;
 import com.hibob.anylink.common.enums.ServiceErrorCode;
@@ -56,6 +57,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     private final ClientMapper clientMapper;
     private final LoginMapper loginMapper;
     private final UserStatusMapper userStatusMapper;
+    private final RpcClient rpcClient;
 
     public ResponseEntity<IMHttpResponse> validateAccount(ValidateAccountReq dto) {
         log.info("UserService::validateAccount");
@@ -413,8 +415,22 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         int status = userStatus == null || userStatus.getStatus() < ConnectStatus.ONLINE.getValue()
                 ? ConnectStatus.ONLINE.getValue() : userStatus.getStatus();
         user.setStatus(status);
+
+        long avatarId = user.getAvatarId();
+        String avatar = "";
+        String avatarThumb = "";
+        Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(Arrays.asList(avatarId));
+        Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
+        if (objectMap != null) {
+            avatar = objectMap.get("originUrl").toString();
+            avatarThumb = objectMap.get("thumbUrl").toString();
+        }
+
         // 把User对象转成返回对象
         UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
+        vo.setAvatarId(avatarId);
+        vo.setAvatar(avatar);
+        vo.setAvatarThumb(avatarThumb);
         if (vo == null) {
             log.error("BeanUtil.copyProperties error");
             return ResultUtil.error(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -436,8 +452,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         // 按需更新，dto传了参数才更新，不传不更新
         LambdaUpdateWrapper<User> updateWrapper = Wrappers.<User>lambdaUpdate().eq(User::getAccount, account);
         if (StringUtils.hasLength(dto.getNickName())) updateWrapper.set(User::getNickName, dto.getNickName());
-        if (StringUtils.hasLength(dto.getAvatar())) updateWrapper.set(User::getAvatar, dto.getAvatar());
-        if (StringUtils.hasLength(dto.getAvatarThumb())) updateWrapper.set(User::getAvatarThumb, dto.getAvatarThumb());
+        if (dto.getAvatarId() != null) updateWrapper.set(User::getAvatarId, dto.getAvatarId());
         if (dto.getGender() != 0) updateWrapper.set(User::getGender, dto.getGender());
         if (dto.getLevel() != 0) updateWrapper.set(User::getLevel, dto.getLevel());
         if (StringUtils.hasLength(dto.getSignature())) updateWrapper.set(User::getSignature, dto.getSignature());
@@ -464,8 +479,21 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         UserStatus userStatus = userStatusMapper.queryStatus(dto.getAccount());
         user.setStatus(userStatus == null ? ConnectStatus.OFFLINE.getValue() : userStatus.getStatus());
 
+        long avatarId = user.getAvatarId();
+        String avatar = "";
+        String avatarThumb = "";
+        Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(Arrays.asList(avatarId));
+        Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
+        if (objectMap != null) {
+            avatar = objectMap.get("originUrl").toString();
+            avatarThumb = objectMap.get("thumbUrl").toString();
+        }
+
         // 把User对象转成返回对象
         UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
+        vo.setAvatarId(avatarId);
+        vo.setAvatar(avatar);
+        vo.setAvatarThumb(avatarThumb);
         if (vo == null) {
             log.error("BeanUtil.copyProperties error");
             return ResultUtil.error(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -489,6 +517,9 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             statusMap = null;
         }
 
+        List<Long> avatarIds = lists.stream().map(User::getAvatarId).collect(Collectors.toList());
+        Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(avatarIds);
+
         List<UserVO> voList = new ArrayList<>();
         lists.forEach(user -> {
             if (statusMap == null || statusMap.get(user.getAccount()) == null) {
@@ -498,7 +529,20 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             else {
                 user.setStatus(statusMap.get(user.getAccount()));
             }
+
+            long avatarId = user.getAvatarId();
+            String avatar = "";
+            String avatarThumb = "";
+            Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
+            if (objectMap != null) {
+                avatar = objectMap.get("originUrl").toString();
+                avatarThumb = objectMap.get("thumbUrl").toString();
+            }
+
             UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
+            vo.setAvatarId(avatarId);
+            vo.setAvatar(avatar);
+            vo.setAvatarThumb(avatarThumb);
             vo.setBirthday(null); //查询别人信息不返回生日信息
             voList.add(vo);
         });

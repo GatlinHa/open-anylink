@@ -2,6 +2,7 @@ package com.hibob.anylink.mts.obs.alioss;
 
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyuncs.exceptions.ClientException;
+import com.hibob.anylink.mts.obs.ObsConfig;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +12,7 @@ import com.aliyun.oss.common.auth.*;
 
 @Component
 @Data
-public class AliossConfig {
+public class AliossConfig extends ObsConfig {
 
     @Value("${obs.alioss.endpoint}")
     private String endpoint;

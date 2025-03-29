@@ -1,5 +1,9 @@
 package com.hibob.anylink.mts.service;
 
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hibob.anylink.common.constants.RedisKey;
 import com.hibob.anylink.common.enums.ServiceErrorCode;
 import com.hibob.anylink.common.model.IMHttpResponse;
 import com.hibob.anylink.common.session.ReqSession;
@@ -13,12 +17,16 @@ import com.hibob.anylink.mts.dto.vo.ImageVO;
 import com.hibob.anylink.mts.dto.vo.VideoVO;
 import com.hibob.anylink.mts.entity.*;
 import com.hibob.anylink.mts.enums.FileType;
+import com.hibob.anylink.mts.enums.ObjectType;
 import com.hibob.anylink.mts.mapper.*;
 import com.hibob.anylink.mts.obs.ObsConfig;
+import com.hibob.anylink.mts.obs.ObsFactory;
 import com.hibob.anylink.mts.obs.ObsService;
+import com.hibob.anylink.mts.obs.ObsUploadRet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,13 +38,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileService {
 
+    private final RedisTemplate<String, Object> redisTemplate;
     private final ObsConfig obsConfig;
     private final ObsService obsService;
     private final MtsObjectMapper mtsObjectMapper;
@@ -86,25 +99,46 @@ public class FileService {
         String audioId = getMd5(file);
         long objectId = generateObjectId();
         MtsAudio mtsAudio = mtsAudioMapper.selectById(audioId);
+        String redisKey = RedisKey.MTS_OBJECT_URL + objectId;
+        String source = "";
+        String bucket = "";
+        String fullPath = "";
+        String url = "";
+
         if (mtsAudio != null) {
             MtsObject mtsObject = new MtsObject();
             mtsObject.setObjectId(objectId);
-            mtsObject.setObjectType(1);
+            mtsObject.setObjectType(ObjectType.AUDIO.value());
             mtsObject.setForeignId(mtsAudio.getAudioId());
             mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
             mtsObjectMapper.insert(mtsObject);
 
+            url = (String)redisTemplate.opsForValue().get(redisKey);
+            // 如果redis中不存在url，则需要生成签名url
+            if (!StringUtils.hasLength(url)) {
+                source = mtsAudio.getStoreSource();
+                bucket = mtsAudio.getBucketName();
+                fullPath = mtsAudio.getFullPath();
+                url = ObsFactory.ObsService(source).getSignUrl(bucket, fullPath);
+                redisTemplate.opsForValue().set(redisKey, url, Duration.ofSeconds(obsConfig.getUrlExpire()));
+            }
+
             vo.setObjectId(Long.toString(objectId));
-            vo.setUrl(mtsAudio.getUrl());
+            vo.setUrl(url);
             vo.setDuration(mtsAudio.getAudioDuration());
             vo.setFileName(mtsAudio.getFileName());
             vo.setSize(mtsAudio.getAudioSize());
             return ResultUtil.success(vo);
         }
-        String url = obsService.uploadFile(file, generateRandomFileName(fileName), dto.getStoreType());
-        if (!StringUtils.hasLength(url)) {
+
+        ObsUploadRet obsUploadRet = obsService.uploadFile(file, generateRandomFileName(fileName), dto.getStoreType());
+        if (obsUploadRet == null) {
             return ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_UPLOAD_ERROR);
         }
+
+        bucket = obsUploadRet.getBucket();
+        url = obsUploadRet.getUrl();
+        fullPath = obsUploadRet.getFullPath();
 
         mtsAudio = new MtsAudio();
         mtsAudio.setAudioId(audioId);
@@ -112,17 +146,21 @@ public class FileService {
         mtsAudio.setAudioSize(file.getSize());
         mtsAudio.setAudioDuration(dto.getDuration());
         mtsAudio.setFileName(fileName);
-        mtsAudio.setUrl(url);
+        mtsAudio.setStoreSource(obsConfig.getSource());
+        mtsAudio.setBucketName(bucket);
+        mtsAudio.setFullPath(fullPath);
         mtsAudio.setCreatedAccount(ReqSession.getSession().getAccount());
         mtsAudio.setExpire(obsConfig.getTtl() * 86400L);
         mtsAudioMapper.insert(mtsAudio);
 
         MtsObject mtsObject = new MtsObject();
         mtsObject.setObjectId(objectId);
-        mtsObject.setObjectType(1);
+        mtsObject.setObjectType(ObjectType.AUDIO.value());
         mtsObject.setForeignId(mtsAudio.getAudioId());
         mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
         mtsObjectMapper.insert(mtsObject);
+
+        redisTemplate.opsForValue().set(redisKey, url, Duration.ofSeconds(obsConfig.getUrlExpire()));
 
         vo.setObjectId(Long.toString(objectId));
         vo.setUrl(url);
@@ -145,42 +183,66 @@ public class FileService {
         String videoId = getMd5(file);
         long objectId = generateObjectId();
         MtsVideo mtsVideo = mtsVideoMapper.selectById(videoId);
+        String redisKey = RedisKey.MTS_OBJECT_URL + objectId;
+        String source = "";
+        String bucket = "";
+        String fullPath = "";
+        String url = "";
+
         if (mtsVideo != null) {
             MtsObject mtsObject = new MtsObject();
             mtsObject.setObjectId(objectId);
-            mtsObject.setObjectType(2);
+            mtsObject.setObjectType(ObjectType.VIDEO.value());
             mtsObject.setForeignId(mtsVideo.getVideoId());
             mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
             mtsObjectMapper.insert(mtsObject);
 
+            url = (String)redisTemplate.opsForValue().get(redisKey);
+            // 如果redis中不存在url，则需要生成签名url
+            if (!StringUtils.hasLength(url)) {
+                source = mtsVideo.getStoreSource();
+                bucket = mtsVideo.getBucketName();
+                fullPath = mtsVideo.getFullPath();
+                url = ObsFactory.ObsService(source).getSignUrl(bucket, fullPath);
+                redisTemplate.opsForValue().set(redisKey, url, Duration.ofSeconds(obsConfig.getUrlExpire()));
+            }
+
             vo.setObjectId(Long.toString(objectId));
-            vo.setUrl(mtsVideo.getUrl());
+            vo.setUrl(url);
             vo.setFileName(mtsVideo.getFileName());
             vo.setSize(mtsVideo.getVideoSize());
             return ResultUtil.success(vo);
         }
 
-        String url = obsService.uploadFile(file, generateRandomFileName(fileName), dto.getStoreType());
-        if (!StringUtils.hasLength(url)) {
+        ObsUploadRet obsUploadRet = obsService.uploadFile(file, generateRandomFileName(fileName), dto.getStoreType());
+        if (obsUploadRet == null) {
             return ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_UPLOAD_ERROR);
         }
+
+        bucket = obsUploadRet.getBucket();
+        url = obsUploadRet.getUrl();
+        fullPath = obsUploadRet.getFullPath();
 
         mtsVideo = new MtsVideo();
         mtsVideo.setVideoId(videoId);
         mtsVideo.setVideoType(file.getContentType());
         mtsVideo.setVideoSize(file.getSize());
         mtsVideo.setFileName(fileName);
-        mtsVideo.setUrl(url);
+        mtsVideo.setStoreSource(obsConfig.getSource());
+        mtsVideo.setBucketName(bucket);
+        mtsVideo.setFullPath(fullPath);
         mtsVideo.setCreatedAccount(ReqSession.getSession().getAccount());
         mtsVideo.setExpire(obsConfig.getTtl() * 86400L);
         mtsVideoMapper.insert(mtsVideo);
 
         MtsObject mtsObject = new MtsObject();
         mtsObject.setObjectId(objectId);
-        mtsObject.setObjectType(2);
+        mtsObject.setObjectType(ObjectType.VIDEO.value());
         mtsObject.setForeignId(mtsVideo.getVideoId());
         mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
         mtsObjectMapper.insert(mtsObject);
+
+        redisTemplate.opsForValue().set(redisKey, url, Duration.ofSeconds(obsConfig.getUrlExpire()));
 
         vo.setObjectId(Long.toString(objectId));
         vo.setUrl(url);
@@ -202,32 +264,73 @@ public class FileService {
         String imageId = getMd5(file);
         long objectId = generateObjectId();
         MtsImage mtsImage = mtsImageMapper.selectById(imageId);
+        String redisKey = RedisKey.MTS_IMAGE_URL + objectId;
+        String source = "";
+        String bucket = "";
+        String originPath = "";
+        String thumbPath = "";
+        String originUrl = "";
+        String thumbUrl = "";
+
         if (mtsImage != null) {
             MtsObject mtsObject = new MtsObject();
             mtsObject.setObjectId(objectId);
-            mtsObject.setObjectType(0);
+            mtsObject.setObjectType(ObjectType.IMAGE.value());
             mtsObject.setForeignId(mtsImage.getImageId());
             mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
             mtsObjectMapper.insert(mtsObject);
 
+            String o = (String)redisTemplate.opsForValue().get(redisKey);
+            if (o != null) {
+                try {
+                    Map<String, Object> map = new ObjectMapper().readValue(o, Map.class);
+                    originUrl = (String) map.get("originUrl");
+                    thumbUrl = (String) map.get("thumbUrl");
+                } catch (JsonProcessingException e) {
+                    log.error("json format for image url in redis is failed, exception is {}", e.getMessage());
+                }
+            }
+
+            // 如果redis中不存在url，则需要生成签名url
+            if (!StringUtils.hasLength(originUrl) || !StringUtils.hasLength(thumbUrl)) {
+                source = mtsImage.getStoreSource();
+                bucket = mtsImage.getBucketName();
+                originPath = mtsImage.getOriginPath();
+                thumbPath = mtsImage.getThumbPath();
+                originUrl = ObsFactory.ObsService(source).getSignUrl(bucket, originPath);
+                thumbUrl = ObsFactory.ObsService(source).getSignUrl(bucket, thumbPath);
+                Map<String, String> map = new HashMap<>();
+                map.put("originUrl", originUrl);
+                map.put("thumbUrl", thumbUrl);
+                redisTemplate.opsForValue().set(redisKey, JSON.toJSONString(map), Duration.ofSeconds(obsConfig.getUrlExpire()));
+            }
+
             vo.setObjectId(Long.toString(objectId));
-            vo.setOriginUrl(mtsImage.getOriginUrl());
-            vo.setThumbUrl(mtsImage.getThumbUrl());
+            vo.setOriginUrl(originUrl);
+            vo.setThumbUrl(thumbUrl);
             vo.setFileName(mtsImage.getFileName());
             vo.setSize(mtsImage.getImageSize());
             return ResultUtil.success(vo);
         }
 
-        String originUrl = obsService.uploadFile(file, generateRandomFileName(fileName), dto.getStoreType());
-        if (!StringUtils.hasLength(originUrl)) {
-            return ResultUtil.error(ServiceErrorCode.ERROR_FILE_UPLOAD_ERROR);
+        ObsUploadRet obsUploadRet = obsService.uploadFile(file, generateRandomFileName(fileName), dto.getStoreType());
+        if (obsUploadRet == null) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_UPLOAD_ERROR);
         }
 
-        String thumbUrl = originUrl;
+        bucket = obsUploadRet.getBucket();
+        originUrl = obsUploadRet.getUrl();
+        originPath = obsUploadRet.getFullPath();
+        thumbUrl = originUrl;
+        thumbPath = originPath;
         if (file.getSize() > obsConfig.getImageThumbSize()) {
             try {
                 byte[] imageThumb = getImageThumb(file.getBytes());
-                thumbUrl = obsService.uploadFile(imageThumb, file.getContentType(), generateRandomFileName(fileName), dto.getStoreType());
+                ObsUploadRet ret = obsService.uploadFile(imageThumb, file.getContentType(), generateRandomFileName(fileName), dto.getStoreType());
+                if (ret != null) {
+                    thumbUrl = ret.getUrl();
+                    thumbPath = ret.getFullPath();
+                }
             } catch (IOException e) {
                 log.error("file.getBytes() error, exception is {}", e);
             }
@@ -238,18 +341,25 @@ public class FileService {
         mtsImage.setImageType(file.getContentType());
         mtsImage.setImageSize(file.getSize());
         mtsImage.setFileName(fileName);
-        mtsImage.setOriginUrl(originUrl);
-        mtsImage.setThumbUrl(thumbUrl);
+        mtsImage.setStoreSource(obsConfig.getSource());
+        mtsImage.setBucketName(bucket);
+        mtsImage.setOriginPath(originPath);
+        mtsImage.setThumbPath(thumbPath);
         mtsImage.setCreatedAccount(ReqSession.getSession().getAccount());
         mtsImage.setExpire(obsConfig.getTtl() * 86400L);
         mtsImageMapper.insert(mtsImage);
 
         MtsObject mtsObject = new MtsObject();
         mtsObject.setObjectId(objectId);
-        mtsObject.setObjectType(0);
+        mtsObject.setObjectType(ObjectType.IMAGE.value());
         mtsObject.setForeignId(mtsImage.getImageId());
         mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
         mtsObjectMapper.insert(mtsObject);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("originUrl", originUrl);
+        map.put("thumbUrl", thumbUrl);
+        redisTemplate.opsForValue().set(redisKey, JSON.toJSONString(map), Duration.ofSeconds(obsConfig.getUrlExpire()));
 
         vo.setObjectId(Long.toString(objectId));
         vo.setOriginUrl(originUrl);
@@ -272,43 +382,67 @@ public class FileService {
         String documentId = getMd5(file);
         long objectId = generateObjectId();
         MtsDocument mtsDocument = mtsDocumentMapper.selectById(documentId);
+        String redisKey = RedisKey.MTS_OBJECT_URL + objectId;
+        String source = "";
+        String bucket = "";
+        String fullPath = "";
+        String url = "";
+
         if (mtsDocument != null) {
             MtsObject mtsObject = new MtsObject();
             mtsObject.setObjectId(objectId);
-            mtsObject.setObjectType(3);
+            mtsObject.setObjectType(ObjectType.DOCUMENT.value());
             mtsObject.setForeignId(mtsDocument.getDocumentId());
             mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
             mtsObjectMapper.insert(mtsObject);
 
+            url = (String)redisTemplate.opsForValue().get(redisKey);
+            // 如果redis中不存在url，则需要生成签名url
+            if (!StringUtils.hasLength(url)) {
+                source = mtsDocument.getStoreSource();
+                bucket = mtsDocument.getBucketName();
+                fullPath = mtsDocument.getFullPath();
+                url = ObsFactory.ObsService(source).getSignUrl(bucket, fullPath);
+                redisTemplate.opsForValue().set(redisKey, url, Duration.ofSeconds(obsConfig.getUrlExpire()));
+            }
+
             vo.setObjectId(Long.toString(objectId));
             vo.setDocumentType(mtsDocument.getDocumentType());
-            vo.setUrl(mtsDocument.getUrl());
+            vo.setUrl(url);
             vo.setFileName(mtsDocument.getFileName());
             vo.setSize(mtsDocument.getDocumentSize());
             return ResultUtil.success(vo);
         }
 
-        String url = obsService.uploadFile(file, generateRandomFileName(fileName), dto.getStoreType());
-        if (!StringUtils.hasLength(url)) {
+        ObsUploadRet obsUploadRet = obsService.uploadFile(file, generateRandomFileName(fileName), dto.getStoreType());
+        if (obsUploadRet == null) {
             return ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_UPLOAD_ERROR);
         }
+
+        bucket = obsUploadRet.getBucket();
+        url = obsUploadRet.getUrl();
+        fullPath = obsUploadRet.getFullPath();
 
         mtsDocument = new MtsDocument();
         mtsDocument.setDocumentId(documentId);
         mtsDocument.setDocumentType(file.getContentType());
         mtsDocument.setDocumentSize(file.getSize());
         mtsDocument.setFileName(fileName);
-        mtsDocument.setUrl(url);
+        mtsDocument.setStoreSource(obsConfig.getSource());
+        mtsDocument.setBucketName(bucket);
+        mtsDocument.setFullPath(fullPath);
         mtsDocument.setCreatedAccount(ReqSession.getSession().getAccount());
         mtsDocument.setExpire(obsConfig.getTtl() * 86400L);
         mtsDocumentMapper.insert(mtsDocument);
 
         MtsObject mtsObject = new MtsObject();
         mtsObject.setObjectId(objectId);
-        mtsObject.setObjectType(3);
+        mtsObject.setObjectType(ObjectType.DOCUMENT.value());
         mtsObject.setForeignId(documentId);
         mtsObject.setCreatedAccount(ReqSession.getSession().getAccount());
         mtsObjectMapper.insert(mtsObject);
+
+        redisTemplate.opsForValue().set(redisKey, url, Duration.ofSeconds(obsConfig.getUrlExpire()));
 
         vo.setObjectId(Long.toString(objectId));
         vo.setDocumentType(mtsDocument.getDocumentType());
@@ -319,23 +453,158 @@ public class FileService {
     }
 
     public ResponseEntity<IMHttpResponse> image(ImageReq dto) {
-        List<ImageVO> voList = mtsObjectMapper.batchSelectImage(dto.getObjectIds());
+        List<ImageVO> voList = getImageVOS(dto.getObjectIds());
         return ResultUtil.success(voList);
     }
 
     public ResponseEntity<IMHttpResponse> audio(AudioReq dto) {
-        List<AudioVO> voList = mtsObjectMapper.batchSelectAudio(dto.getObjectIds());
+        List<AudioVO> voList = getAudioVOS(dto.getObjectIds());
         return ResultUtil.success(voList);
     }
 
     public ResponseEntity<IMHttpResponse> video(VideoReq dto) {
-        List<VideoVO> voList = mtsObjectMapper.batchSelectVideo(dto.getObjectIds());
+        List<VideoVO> voList = getVideoVOS(dto.getObjectIds());
         return ResultUtil.success(voList);
     }
 
     public ResponseEntity<IMHttpResponse> document(DocumentReq dto) {
-        List<DocumentVO> voList = mtsObjectMapper.batchSelectDocument(dto.getObjectIds());
+        List<DocumentVO> voList = getDocumentVOS(dto.getObjectIds());
         return ResultUtil.success(voList);
+    }
+
+    public List<ImageVO> getImageVOS(List<Long> objectIds) {
+        List<Map<String, Object>> list = mtsObjectMapper.batchSelectImage(objectIds);
+        List<ImageVO> voList = list.stream().map((item) -> {
+            String objectId = item.get("objectId").toString();
+            String fileName = item.get("fileName").toString();
+            long size = (long) item.get("size");
+            String source = item.get("source").toString();
+            String bucket = item.get("bucket").toString();
+            String originPath = item.get("originPath").toString();
+            String thumbPath = item.get("thumbPath").toString();
+
+            String originUrl = "";
+            String thumbUrl = "";
+
+            String redisKey = RedisKey.MTS_IMAGE_URL + objectId;
+            String o = (String) redisTemplate.opsForValue().get(redisKey);
+            if (o != null) {
+                try {
+                    Map<String, Object> map = new ObjectMapper().readValue(o, Map.class);
+                    originUrl = (String) map.get("originUrl");
+                    thumbUrl = (String) map.get("thumbUrl");
+                } catch (JsonProcessingException e) {
+                    log.error("json format for image url in redis is failed, exception is {}", e.getMessage());
+                }
+            }
+
+            // 如果redis中不存在url，则需要生成签名url
+            if (!StringUtils.hasLength(originUrl) || !StringUtils.hasLength(thumbUrl)) {
+                originUrl = ObsFactory.ObsService(source).getSignUrl(bucket, originPath);
+                thumbUrl = ObsFactory.ObsService(source).getSignUrl(bucket, thumbPath);
+                Map<String, String> map = new HashMap<>();
+                map.put("originUrl", originUrl);
+                map.put("thumbUrl", thumbUrl);
+                redisTemplate.opsForValue().set(redisKey, JSON.toJSONString(map), Duration.ofSeconds(obsConfig.getUrlExpire()));
+            }
+
+            ImageVO vo = new ImageVO();
+            vo.setObjectId(objectId);
+            vo.setOriginUrl(originUrl);
+            vo.setThumbUrl(thumbUrl);
+            vo.setFileName(fileName);
+            vo.setSize(size);
+            return vo;
+        }).collect(Collectors.toList());
+        return voList;
+    }
+
+    public List<AudioVO> getAudioVOS(List<Long> objectIds) {
+        List<Map<String, Object>> list = mtsObjectMapper.batchSelectAudio(objectIds);
+        List<AudioVO> voList = list.stream().map((item) -> {
+            String objectId = item.get("objectId").toString();
+            int duration = (int) item.get("duration");
+            String fileName = item.get("fileName").toString();
+            long size = (long) item.get("size");
+            String source = item.get("source").toString();
+            String bucket = item.get("bucket").toString();
+            String fullPath = item.get("fullPath").toString();
+
+            String redisKey = RedisKey.MTS_OBJECT_URL + objectId;
+            String url = (String) redisTemplate.opsForValue().get(redisKey);
+            // 如果redis中不存在url，则需要生成签名url
+            if (!StringUtils.hasLength(url)) {
+                url = ObsFactory.ObsService(source).getSignUrl(bucket, fullPath);
+                redisTemplate.opsForValue().set(redisKey, url, Duration.ofSeconds(obsConfig.getUrlExpire()));
+            }
+
+            AudioVO vo = new AudioVO();
+            vo.setObjectId(objectId);
+            vo.setUrl(url);
+            vo.setDuration(duration);
+            vo.setFileName(fileName);
+            vo.setSize(size);
+            return vo;
+        }).collect(Collectors.toList());
+        return voList;
+    }
+
+    public List<VideoVO> getVideoVOS(List<Long> objectIds) {
+        List<Map<String, Object>> list = mtsObjectMapper.batchSelectVideo(objectIds);
+        List<VideoVO> voList = list.stream().map((item) -> {
+            String objectId = item.get("objectId").toString();
+            String fileName = item.get("fileName").toString();
+            long size = (long) item.get("size");
+            String source = item.get("source").toString();
+            String bucket = item.get("bucket").toString();
+            String fullPath = item.get("fullPath").toString();
+
+            String redisKey = RedisKey.MTS_OBJECT_URL + objectId;
+            String url = (String) redisTemplate.opsForValue().get(redisKey);
+            // 如果redis中不存在url，则需要生成签名url
+            if (!StringUtils.hasLength(url)) {
+                url = ObsFactory.ObsService(source).getSignUrl(bucket, fullPath);
+                redisTemplate.opsForValue().set(redisKey, url, Duration.ofSeconds(obsConfig.getUrlExpire()));
+            }
+
+            VideoVO vo = new VideoVO();
+            vo.setObjectId(objectId);
+            vo.setUrl(url);
+            vo.setFileName(fileName);
+            vo.setSize(size);
+            return vo;
+        }).collect(Collectors.toList());
+        return voList;
+    }
+
+    public List<DocumentVO> getDocumentVOS(List<Long> objectIds) {
+        List<Map<String, Object>> list = mtsObjectMapper.batchSelectDocument(objectIds);
+        List<DocumentVO> voList = list.stream().map((item) -> {
+            String objectId = item.get("objectId").toString();
+            String documentType = item.get("documentType").toString();
+            String fileName = item.get("fileName").toString();
+            long size = (long) item.get("size");
+            String source = item.get("source").toString();
+            String bucket = item.get("bucket").toString();
+            String fullPath = item.get("fullPath").toString();
+
+            String redisKey = RedisKey.MTS_OBJECT_URL + objectId;
+            String url = (String) redisTemplate.opsForValue().get(redisKey);
+            // 如果redis中不存在url，则需要生成签名url
+            if (!StringUtils.hasLength(url)) {
+                url = ObsFactory.ObsService(source).getSignUrl(bucket, fullPath);
+                redisTemplate.opsForValue().set(redisKey, url, Duration.ofSeconds(obsConfig.getUrlExpire()));
+            }
+
+            DocumentVO vo = new DocumentVO();
+            vo.setObjectId(objectId);
+            vo.setDocumentType(documentType);
+            vo.setUrl(url);
+            vo.setFileName(fileName);
+            vo.setSize(size);
+            return vo;
+        }).collect(Collectors.toList());
+        return voList;
     }
 
     /**

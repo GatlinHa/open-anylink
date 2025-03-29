@@ -1,16 +1,17 @@
-package com.hibob.anylink.groupmng.dao.request;
+package com.hibob.anylink.groupmng.dto.request;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 
 @Data
-@ApiModel("退出群组请求的参数")
-public class LeaveGroupReq {
+@ApiModel("查询群组信息请求的参数")
+public class QueryGroupInfoReq {
+
     @ApiModelProperty(value = "群组id")
-    @NotNull
+    @NotEmpty
     private String groupId;
 
 }

@@ -18,3 +18,14 @@ spring:
       discovery:
         #server-addr: xxx # 由启动命令指定该参数
         #namespace: xxx # 由启动命令指定该参数
+
+dubbo:
+  application:
+    name: anylink-mts-dubbo
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    #address: nacos://xxx # 由启动命令指定该参数
+    parameters:
+    #namespace: xxx # 由启动命令指定该参数

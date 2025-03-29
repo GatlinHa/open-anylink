@@ -10,10 +10,10 @@ public class ImageVO {
     @ApiModelProperty(value = "富媒体对象id")
     private String objectId;
 
-    @ApiModelProperty(value = "原图")
+    @ApiModelProperty(value = "原图url")
     private String originUrl;
 
-    @ApiModelProperty(value = "缩略图")
+    @ApiModelProperty(value = "缩略图url")
     private String thumbUrl;
 
     @ApiModelProperty(value = "文件名")

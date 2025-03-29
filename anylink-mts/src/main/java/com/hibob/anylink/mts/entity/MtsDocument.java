@@ -24,8 +24,14 @@ public class MtsDocument {
     @TableField(value = "file_name")
     private String fileName;
 
-    @TableField(value = "url")
-    private String url;
+    @TableField(value = "store_source")
+    private String storeSource;
+
+    @TableField(value = "bucket_name")
+    private String bucketName;
+
+    @TableField(value = "full_path")
+    private String fullPath;
 
     @TableField(value = "expire")
     private long expire;
