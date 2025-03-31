@@ -321,9 +321,9 @@ services:
       - minio-init
 
 
-  anylink-netty:
+  anylink-netty-1:
     image: anylink-netty  # 指定镜像名称
-    container_name: anylink-netty  # 为容器指定名称
+    container_name: anylink-netty-1  # 为容器指定名称
     build:
       context: ./anylink-netty
       dockerfile: ./Dockerfile
@@ -336,6 +336,31 @@ services:
     networks:
       micro-net:
         ipv4_address: 172.18.105.1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/anylink-netty/healthcheck"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      - nacos-init
+      - redis
+      - kafka-init
+
+  anylink-netty-2:
+    image: anylink-netty  # 指定镜像名称
+    container_name: anylink-netty-2  # 为容器指定名称
+    build:
+      context: ./anylink-netty
+      dockerfile: ./Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CLOUD_NACOS_CONFIG_NAMESPACE: "dev20250303001"
+      SPRING_CLOUD_NACOS_DISCOVERY_NAMESPACE: "dev20250303001"
+      SPRING_CLOUD_NACOS_CONFIG_SERVER-ADDR: "nacos:8848"
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: "nacos:8848"
+    networks:
+      micro-net:
+        ipv4_address: 172.18.105.2
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/anylink-netty/healthcheck"]
       interval: 5s
@@ -386,7 +411,9 @@ services:
         condition: service_healthy
       anylink-mts:
         condition: service_healthy
-      anylink-netty:
+      anylink-netty-1:
+        condition: service_healthy
+      anylink-netty-2:
         condition: service_healthy
       anylink-user:
         condition: service_healthy

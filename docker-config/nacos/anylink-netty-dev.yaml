@@ -4,7 +4,7 @@ spring:
     port: 6379
     password:
   kafka:
-    bootstrap-servers: 127.0.0.1:9092
+    bootstrap-servers: 172.18.1.6:9092
 
 websocket: 
   topic-distribute: 
