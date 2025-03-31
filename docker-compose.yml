@@ -107,7 +107,7 @@ services:
       - minio_data:/data
     command: server /data --address ":9001" --console-address ":9002"  # 简化启动命令
     healthcheck:  # 添加健康检查
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ["CMD", "curl", "-f", "http://localhost:9001/minio/health/live"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -126,7 +126,7 @@ services:
     command:
       - |
         # 等待 MinIO 完全就绪
-        until curl -sf http://minio:9000/minio/health/live; do
+        until curl -sf http://minio:9001/minio/health/live; do
           echo "Waiting for MinIO cluster..."
           sleep 5
         done
@@ -138,7 +138,7 @@ services:
         fi
         
         # 配置别名（使用容器内地址）
-        mc alias set local http://minio:9000 admin 12345678 --api S3v4
+        mc alias set local http://minio:9001 admin 12345678 --api S3v4
         
         # 尝试列出存储桶，如果不存在会返回非零状态码
         if ! mc ls local/anylink > /dev/null 2>&1; then
