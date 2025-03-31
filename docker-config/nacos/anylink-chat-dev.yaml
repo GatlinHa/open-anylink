@@ -16,3 +16,5 @@ spring:
 logging:
   level:
     root: info
+  file:
+    path: ./logs/chat

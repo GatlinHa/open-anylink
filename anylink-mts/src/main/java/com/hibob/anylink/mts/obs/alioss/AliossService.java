@@ -72,13 +72,17 @@ public class AliossService implements ObsService {
     @Override
     public String getSignUrl(String bucketName, String ObjectName) {
         log.info("AliossService::getSignUrl");
-        try {
-            Date expiration = new Date(new Date().getTime() + aliossConfig.getUrlExpire() * 1000);
-            URL url = aliossClient.generatePresignedUrl(bucketName, ObjectName, expiration);
-            return url.toString();
-        } catch (Exception e) {
-            log.error("AliossService getSignUrl error: {}", e.getMessage());
-            return "";
+        if (aliossConfig.isPreSign()) {
+            try {
+                Date expiration = new Date(new Date().getTime() + aliossConfig.getUrlExpire() * 1000);
+                URL url = aliossClient.generatePresignedUrl(bucketName, ObjectName, expiration);
+                return url.toString();
+            } catch (Exception e) {
+                log.error("AliossService getSignUrl error: {}", e.getMessage());
+                return "";
+            }
+        } else  {
+            return  "https://" + bucketName + "." + aliossConfig.getEndpoint() + "/" + ObjectName;
         }
     }
 

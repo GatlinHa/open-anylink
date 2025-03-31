@@ -14,3 +14,5 @@ jwt:
 logging:
   level:
     root: info
+  file:
+    path: ./logs/agw

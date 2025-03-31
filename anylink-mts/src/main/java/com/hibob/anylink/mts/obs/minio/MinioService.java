@@ -80,19 +80,22 @@ public class MinioService implements ObsService {
     @Override
     public String getSignUrl(String bucketName, String ObjectName) {
         log.info("MinioService::getSignUrl");
-        try {
-            String url = minioClient.getPresignedObjectUrl(
-                    GetPresignedObjectUrlArgs
-                            .builder()
-                            .method(Method.GET)
-                            .bucket(bucketName)
-                            .object(ObjectName)
-                            .expiry((int) minioConfig.getUrlExpire(), TimeUnit.SECONDS)
-                            .build());
-            return url;
-        } catch (Exception e) {
-            log.error("MinioService getSignUrl error: {}", e.getMessage());
-            return "";
+        if (minioConfig.isPreSign()) {
+            try {
+                return minioClient.getPresignedObjectUrl(
+                        GetPresignedObjectUrlArgs
+                                .builder()
+                                .method(Method.GET)
+                                .bucket(bucketName)
+                                .object(ObjectName)
+                                .expiry((int) minioConfig.getUrlExpire(), TimeUnit.SECONDS)
+                                .build());
+            } catch (Exception e) {
+                log.error("MinioService getSignUrl error: {}", e.getMessage());
+                return "";
+            }
+        } else  {
+            return  minioConfig.getEndpoint() + "/" + bucketName + "/" + ObjectName;
         }
     }
 }

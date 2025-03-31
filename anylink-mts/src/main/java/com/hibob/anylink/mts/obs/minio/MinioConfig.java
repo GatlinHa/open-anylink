@@ -29,6 +29,9 @@ public class MinioConfig extends ObsConfig {
     @Value("${obs.minio.bucket-long}")
     private String bucketLong;
 
+    @Value("${obs.minio.pre-sign:true}")
+    private boolean preSign;
+
     @Bean
     public MinioClient minioClient(){
         return MinioClient.builder()

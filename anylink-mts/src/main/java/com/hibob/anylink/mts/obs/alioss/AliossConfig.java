@@ -29,6 +29,9 @@ public class AliossConfig extends ObsConfig {
     @Value("${obs.alioss.bucket-long}")
     private String bucketLong;
 
+    @Value("${obs.alioss.pre-sign:true}")
+    private boolean preSign;
+
     @Bean
     public OSS aliossClient() throws ClientException {
         EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider();

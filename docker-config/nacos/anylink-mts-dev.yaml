@@ -10,7 +10,7 @@ spring:
     password:
 
 obs:
-  type: minio
+  source: minio
   minio:
     endpoint: http://127.0.0.1:9000
     endpoint-internal: http://172.18.1.5:9000
@@ -23,18 +23,19 @@ obs:
     endpoint: blank
     endpoint-internal: blank
     region: blank
-    bucket: blank
+    bucket-ttl: blank
+    bucket-long: blank
 
 custom:
   snow-flake:
     worker-datacenter-config: 
       |-
         {
-          "172.18.0.104:8040": {
+          "172.18.104.1:8040": {
             "worker-id": 0,
             "datacenter-id": 0
           },
-          "172.18.0.104:8041": {
+          "172.18.104.2:8040": {
             "worker-id": 1,
             "datacenter-id": 0
           }
@@ -43,4 +44,5 @@ custom:
 logging:
   level:
     root: info
-    
+  file:
+    path: ./logs/mts

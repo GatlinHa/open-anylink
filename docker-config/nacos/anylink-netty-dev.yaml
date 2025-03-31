@@ -10,16 +10,16 @@ websocket:
   topic-distribute: 
     |-
       {
-        "172.18.0.105:8000": {
+        "172.18.105.1:8000": {
           "topic": "topic-netty-0"
         },
-        "172.18.0.105:8001": {
+        "172.18.105.2:8000": {
           "topic": "topic-netty-1"
         },
-        "172.18.0.105:8002": {
+        "172.18.105.3:8000": {
           "topic": "topic-netty-2"
         },
-        "172.18.0.105:8003": {
+        "172.18.105.4:8000": {
           "topic": "topic-netty-3"
         }
       }
@@ -27,3 +27,5 @@ websocket:
 logging:
   level:
     root: info
+  file:
+    path: ./logs/netty

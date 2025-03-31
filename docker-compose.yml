@@ -232,7 +232,7 @@ services:
       - "8080:8080"
     networks:
       micro-net:
-        ipv4_address: 172.18.0.101
+        ipv4_address: 172.18.101.1
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/api/anylink-agw/healthcheck"]
       interval: 5s
@@ -256,7 +256,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: "nacos:8848"
     networks:
       micro-net:
-        ipv4_address: 172.18.0.102
+        ipv4_address: 172.18.102.1
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8020/api/anylink-chat/healthcheck"]
       interval: 5s
@@ -282,7 +282,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: "nacos:8848"
     networks:
       micro-net:
-        ipv4_address: 172.18.0.103
+        ipv4_address: 172.18.103.1
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8030/api/anylink-groupmng/healthcheck"]
       interval: 5s
@@ -308,7 +308,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: "nacos:8848"
     networks:
       micro-net:
-        ipv4_address: 172.18.0.104
+        ipv4_address: 172.18.104.1
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8040/api/anylink-mts/healthcheck"]
       interval: 5s
@@ -335,7 +335,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: "nacos:8848"
     networks:
       micro-net:
-        ipv4_address: 172.18.0.105
+        ipv4_address: 172.18.105.1
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/anylink-netty/healthcheck"]
       interval: 5s
@@ -360,7 +360,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: "nacos:8848"
     networks:
       micro-net:
-        ipv4_address: 172.18.0.106
+        ipv4_address: 172.18.106.1
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8010/api/anylink-user/healthcheck"]
       interval: 5s

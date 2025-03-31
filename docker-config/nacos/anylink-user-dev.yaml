@@ -21,3 +21,5 @@ custom:
 logging:
   level:
     root: info
+  file:
+    path: ./logs/user
