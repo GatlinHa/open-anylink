@@ -62,6 +62,7 @@ obs:
     region: #启动时从配置中心读取
     bucket-ttl: #启动时从配置中心读取
     bucket-long: #启动时从配置中心读取
+    pre-sign: #启动时从配置中心读取
 
 #自定义配置
 custom:
