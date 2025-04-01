@@ -17,6 +17,7 @@ public class KafkaConsumer {
     @KafkaListener(topics = "${websocket.consumer.topic}")
     public void onMessage(ConsumerRecord<String, Msg> record) {
         Msg msg = record.value();
+        log.info("receive a message from kafka: {}", msg);
         if (msg.getHeader().getMagic() != Const.MAGIC) {
             log.error("magic is not correct, the message is: \n{}", msg);
             return;
