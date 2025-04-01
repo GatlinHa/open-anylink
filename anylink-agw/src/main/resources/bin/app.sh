@@ -14,10 +14,8 @@ APP_NAME=anylink-agw
 JAR_NAME=$(ls $SERVICE_DIR | grep "^$APP_NAME-[0-9.]\+\.jar$" | head -n 1)
 ##PID 代表是PID文件
 PID=$APP_NAME\.pid
-
-##日志目录
-LOG_DIR=$SERVICE_DIR/logs
-LOG_FILE=$LOG_DIR/app-info.log
+##健康检查URL
+HEALTH_CHECK_URL="http://localhost:8080/api/anylink-agw/healthcheck"
 
 # 判断jar包是否存在
 if ! test -e "$SERVICE_DIR/$JAR_NAME"; then
@@ -51,25 +49,15 @@ start(){
   if [ $? -eq "0" ]; then
     echo ">>> ${JAR_NAME} is already running PID=${pid} <<<"
   else
-    # 备份 LOG_DIR
-    if [ -d "$LOG_DIR" ]; then
-      timestamp=$(date +"%Y%m%d%H%M%S")
-      backup_dir="${LOG_DIR}_${timestamp}"
-      mv "$LOG_DIR" "$backup_dir"
-      echo ">>> Backed up $LOG_DIR to $backup_dir <<<"
-    fi
-    # 创建新的 LOG_DIR
-    mkdir -p "$LOG_DIR"
-
     nohup java -Xms512m -Xmx512m -jar $JAR_NAME --spring.profiles.active=$SPRING_PROFILES_ACTIVE --spring.cloud.nacos.config.namespace=$NACOS_CONFIG_NAMESPACE --spring.cloud.nacos.discovery.namespace=$NACOS_DISCOVERY_NAMESPACE --spring.cloud.nacos.config.server-addr=$NACOS_CONFIG_SERVER_ADDR --spring.cloud.nacos.discovery.server-addr=$NACOS_DISCOVERY_SERVER_ADDR >/dev/null 2>&1 &
     echo $! > $PID
     echo ">>> starting $JAR_NAME, PID=$! <<<"
 
-    # 循环检查 LOG_FILE 中是否包含关键字
     max_attempts=60
     attempt=0
     while [ $attempt -lt $max_attempts ]; do
-      if [ -f "$LOG_FILE" ] && grep -q "Started .* in [0-9.]* seconds" "$LOG_FILE"; then
+      status_code=$(curl -s -o /dev/null -w "%{http_code}" $HEALTH_CHECK_URL)
+      if [ "$status_code" == "200" ]; then
         echo ">>> Application started successfully <<<"
         break
       else
