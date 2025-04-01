@@ -30,7 +30,7 @@ public class ObsFactory {
         }
     }
 
-    public static ObsService ObsService(String source) {
+    public static ObsService getObsService(String source) {
         switch (source) {
             case "minio":
                 return SpringContextUtil.getBean(MinioService.class);

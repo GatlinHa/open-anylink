@@ -119,7 +119,7 @@ public class FileService {
                 source = mtsAudio.getStoreSource();
                 bucket = mtsAudio.getBucketName();
                 fullPath = mtsAudio.getFullPath();
-                url = ObsFactory.ObsService(source).getSignUrl(bucket, fullPath);
+                url = ObsFactory.getObsService(source).getSignUrl(bucket, fullPath);
                 redisTemplate.opsForValue().set(redisKey, url, Duration.ofSeconds(obsConfig.getUrlExpire()));
             }
 
@@ -203,7 +203,7 @@ public class FileService {
                 source = mtsVideo.getStoreSource();
                 bucket = mtsVideo.getBucketName();
                 fullPath = mtsVideo.getFullPath();
-                url = ObsFactory.ObsService(source).getSignUrl(bucket, fullPath);
+                url = ObsFactory.getObsService(source).getSignUrl(bucket, fullPath);
                 redisTemplate.opsForValue().set(redisKey, url, Duration.ofSeconds(obsConfig.getUrlExpire()));
             }
 
@@ -297,8 +297,8 @@ public class FileService {
                 bucket = mtsImage.getBucketName();
                 originPath = mtsImage.getOriginPath();
                 thumbPath = mtsImage.getThumbPath();
-                originUrl = ObsFactory.ObsService(source).getSignUrl(bucket, originPath);
-                thumbUrl = ObsFactory.ObsService(source).getSignUrl(bucket, thumbPath);
+                originUrl = ObsFactory.getObsService(source).getSignUrl(bucket, originPath);
+                thumbUrl = ObsFactory.getObsService(source).getSignUrl(bucket, thumbPath);
                 Map<String, String> map = new HashMap<>();
                 map.put("originUrl", originUrl);
                 map.put("thumbUrl", thumbUrl);
@@ -402,7 +402,7 @@ public class FileService {
                 source = mtsDocument.getStoreSource();
                 bucket = mtsDocument.getBucketName();
                 fullPath = mtsDocument.getFullPath();
-                url = ObsFactory.ObsService(source).getSignUrl(bucket, fullPath);
+                url = ObsFactory.getObsService(source).getSignUrl(bucket, fullPath);
                 redisTemplate.opsForValue().set(redisKey, url, Duration.ofSeconds(obsConfig.getUrlExpire()));
             }
 
@@ -500,8 +500,8 @@ public class FileService {
 
             // 如果redis中不存在url，则需要生成签名url
             if (!StringUtils.hasLength(originUrl) || !StringUtils.hasLength(thumbUrl)) {
-                originUrl = ObsFactory.ObsService(source).getSignUrl(bucket, originPath);
-                thumbUrl = ObsFactory.ObsService(source).getSignUrl(bucket, thumbPath);
+                originUrl = ObsFactory.getObsService(source).getSignUrl(bucket, originPath);
+                thumbUrl = ObsFactory.getObsService(source).getSignUrl(bucket, thumbPath);
                 Map<String, String> map = new HashMap<>();
                 map.put("originUrl", originUrl);
                 map.put("thumbUrl", thumbUrl);
@@ -534,7 +534,7 @@ public class FileService {
             String url = (String) redisTemplate.opsForValue().get(redisKey);
             // 如果redis中不存在url，则需要生成签名url
             if (!StringUtils.hasLength(url)) {
-                url = ObsFactory.ObsService(source).getSignUrl(bucket, fullPath);
+                url = ObsFactory.getObsService(source).getSignUrl(bucket, fullPath);
                 redisTemplate.opsForValue().set(redisKey, url, Duration.ofSeconds(obsConfig.getUrlExpire()));
             }
 
@@ -563,7 +563,7 @@ public class FileService {
             String url = (String) redisTemplate.opsForValue().get(redisKey);
             // 如果redis中不存在url，则需要生成签名url
             if (!StringUtils.hasLength(url)) {
-                url = ObsFactory.ObsService(source).getSignUrl(bucket, fullPath);
+                url = ObsFactory.getObsService(source).getSignUrl(bucket, fullPath);
                 redisTemplate.opsForValue().set(redisKey, url, Duration.ofSeconds(obsConfig.getUrlExpire()));
             }
 
@@ -592,7 +592,7 @@ public class FileService {
             String url = (String) redisTemplate.opsForValue().get(redisKey);
             // 如果redis中不存在url，则需要生成签名url
             if (!StringUtils.hasLength(url)) {
-                url = ObsFactory.ObsService(source).getSignUrl(bucket, fullPath);
+                url = ObsFactory.getObsService(source).getSignUrl(bucket, fullPath);
                 redisTemplate.opsForValue().set(redisKey, url, Duration.ofSeconds(obsConfig.getUrlExpire()));
             }
 
