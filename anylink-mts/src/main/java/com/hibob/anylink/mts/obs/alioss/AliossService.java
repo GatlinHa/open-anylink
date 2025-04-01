@@ -24,7 +24,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AliossService implements ObsService {
     private final AliossConfig aliossConfig;
-    private final OSS aliossClient;
+    private final OSS uploadClient;
+    private final OSS signClient;
 
     @Override
     public ObsUploadRet uploadFile(MultipartFile file, String randomFileName, int storeType) {
@@ -37,7 +38,7 @@ public class AliossService implements ObsService {
             String fullName = prefixPath + "/" + datePath + "/" + uuidPath + "/" + randomFileName;
 
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, fullName, file.getInputStream());
-            aliossClient.putObject(putObjectRequest);
+            uploadClient.putObject(putObjectRequest);
             String signUrl = getSignUrl(bucket, fullName);
             return new ObsUploadRet(bucket, fullName, signUrl);
         } catch (Exception e) {
@@ -60,7 +61,7 @@ public class AliossService implements ObsService {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(contentType);
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, fullName, stream, metadata);
-            aliossClient.putObject(putObjectRequest);
+            uploadClient.putObject(putObjectRequest);
             String signUrl = getSignUrl(bucket, fullName);
             return new ObsUploadRet(bucket, fullName, signUrl);
         } catch (Exception e) {
@@ -75,7 +76,7 @@ public class AliossService implements ObsService {
         if (aliossConfig.isPreSign()) {
             try {
                 Date expiration = new Date(new Date().getTime() + aliossConfig.getUrlExpire() * 1000);
-                URL url = aliossClient.generatePresignedUrl(bucketName, ObjectName, expiration);
+                URL url = signClient.generatePresignedUrl(bucketName, ObjectName, expiration);
                 return url.toString();
             } catch (Exception e) {
                 log.error("AliossService getSignUrl error: {}", e.getMessage());
