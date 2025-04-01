@@ -83,7 +83,7 @@ public class AliossService implements ObsService {
                 return "";
             }
         } else  {
-            return  "https://" + bucketName + "." + aliossConfig.getEndpoint() + "/" + ObjectName;
+            return "https://" + bucketName + "." + aliossConfig.getEndpoint().substring(8)  + "/" + ObjectName;
         }
     }
 
