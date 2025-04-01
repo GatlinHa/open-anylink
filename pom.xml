@@ -12,7 +12,7 @@
 
     <groupId>com.hibob</groupId>
     <artifactId>anylink</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>pom</packaging>
     <name>anylink</name>
     <description>anylink</description>
