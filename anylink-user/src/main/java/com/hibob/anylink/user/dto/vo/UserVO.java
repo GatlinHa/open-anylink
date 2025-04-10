@@ -1,5 +1,7 @@
 package com.hibob.anylink.user.dto.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,6 +19,7 @@ public class UserVO {
     private String nickName;
 
     @ApiModelProperty(value = "头像Id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long avatarId;
 
     @ApiModelProperty(value = "头像url")

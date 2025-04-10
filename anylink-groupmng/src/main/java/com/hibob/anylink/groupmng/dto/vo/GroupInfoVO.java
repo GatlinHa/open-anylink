@@ -1,5 +1,7 @@
 package com.hibob.anylink.groupmng.dto.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -18,6 +20,7 @@ public class GroupInfoVO {
     private String announcement;
 
     @ApiModelProperty(value = "群头像Id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long avatarId;
 
     @ApiModelProperty(value = "群头像")
