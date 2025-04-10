@@ -21,7 +21,8 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
             " t2.store_source as source, " +
             " t2.bucket_name as bucket, " +
             " t2.origin_path as originPath, " +
-            " t2.thumb_path as thumbPath " +
+            " t2.thumb_path as thumbPath, " +
+            " t1.created_time as createdTime " +
             " from anylink_mts_object t1 " +
             " INNER JOIN anylink_mts_image t2 " +
             " ON t1.foreign_id = t2.image_id " +
@@ -44,7 +45,8 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
             " t2.audio_size as size, " +
             " t2.store_source as source, " +
             " t2.bucket_name as bucket, " +
-            " t2.full_path as fullPath " +
+            " t2.full_path as fullPath, " +
+            " t1.created_time as createdTime " +
             " from anylink_mts_object t1 " +
             " INNER JOIN anylink_mts_audio t2 " +
             " ON t1.foreign_id = t2.audio_id " +
@@ -66,7 +68,8 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
             " t2.video_size as size, " +
             " t2.store_source as source, " +
             " t2.bucket_name as bucket, " +
-            " t2.full_path as fullPath " +
+            " t2.full_path as fullPath, " +
+            " t1.created_time as createdTime " +
             " from anylink_mts_object t1 " +
             " INNER JOIN anylink_mts_video t2 " +
             " ON t1.foreign_id = t2.video_id " +
@@ -89,7 +92,8 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
             " t2.document_size as size, " +
             " t2.store_source as source, " +
             " t2.bucket_name as bucket, " +
-            " t2.full_path as fullPath " +
+            " t2.full_path as fullPath, " +
+            " t1.created_time as createdTime " +
             " from anylink_mts_object t1 " +
             " INNER JOIN anylink_mts_document t2 " +
             " ON t1.foreign_id = t2.document_id " +

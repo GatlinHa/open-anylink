@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @ApiModel("上传视频后返回的参数")
 public class VideoVO {
@@ -19,4 +21,6 @@ public class VideoVO {
     @ApiModelProperty(value = "文件大小")
     private long size;
 
+    @ApiModelProperty(value = "创建时间")
+    private LocalDateTime createdTime;
 }

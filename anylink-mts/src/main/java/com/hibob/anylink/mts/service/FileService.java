@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,6 +129,7 @@ public class FileService {
             vo.setDuration(mtsAudio.getAudioDuration());
             vo.setFileName(mtsAudio.getFileName());
             vo.setSize(mtsAudio.getAudioSize());
+            vo.setCreatedTime(LocalDateTime.now());
             return ResultUtil.success(vo);
         }
 
@@ -167,6 +169,7 @@ public class FileService {
         vo.setDuration(dto.getDuration());
         vo.setFileName(fileName);
         vo.setSize(file.getSize());
+        vo.setCreatedTime(LocalDateTime.now());
         return ResultUtil.success(vo);
     }
 
@@ -211,6 +214,7 @@ public class FileService {
             vo.setUrl(url);
             vo.setFileName(mtsVideo.getFileName());
             vo.setSize(mtsVideo.getVideoSize());
+            vo.setCreatedTime(LocalDateTime.now());
             return ResultUtil.success(vo);
         }
 
@@ -248,6 +252,7 @@ public class FileService {
         vo.setUrl(url);
         vo.setFileName(fileName);
         vo.setSize(file.getSize());
+        vo.setCreatedTime(LocalDateTime.now());
         return ResultUtil.success(vo);
     }
 
@@ -310,6 +315,7 @@ public class FileService {
             vo.setThumbUrl(thumbUrl);
             vo.setFileName(mtsImage.getFileName());
             vo.setSize(mtsImage.getImageSize());
+            vo.setCreatedTime(LocalDateTime.now());
             return ResultUtil.success(vo);
         }
 
@@ -366,6 +372,7 @@ public class FileService {
         vo.setThumbUrl(thumbUrl);
         vo.setFileName(fileName);
         vo.setSize(file.getSize());
+        vo.setCreatedTime(LocalDateTime.now());
         return ResultUtil.success(vo);
     }
 
@@ -411,6 +418,7 @@ public class FileService {
             vo.setUrl(url);
             vo.setFileName(mtsDocument.getFileName());
             vo.setSize(mtsDocument.getDocumentSize());
+            vo.setCreatedTime(LocalDateTime.now());
             return ResultUtil.success(vo);
         }
 
@@ -449,6 +457,7 @@ public class FileService {
         vo.setUrl(url);
         vo.setFileName(fileName);
         vo.setSize(file.getSize());
+        vo.setCreatedTime(LocalDateTime.now());
         return ResultUtil.success(vo);
     }
 
@@ -482,6 +491,7 @@ public class FileService {
             String bucket = item.get("bucket").toString();
             String originPath = item.get("originPath").toString();
             String thumbPath = item.get("thumbPath").toString();
+            LocalDateTime createdTime = (LocalDateTime)item.get("createdTime");
 
             String originUrl = "";
             String thumbUrl = "";
@@ -514,6 +524,7 @@ public class FileService {
             vo.setThumbUrl(thumbUrl);
             vo.setFileName(fileName);
             vo.setSize(size);
+            vo.setCreatedTime(createdTime);
             return vo;
         }).collect(Collectors.toList());
         return voList;
@@ -529,6 +540,7 @@ public class FileService {
             String source = item.get("source").toString();
             String bucket = item.get("bucket").toString();
             String fullPath = item.get("fullPath").toString();
+            LocalDateTime createdTime = (LocalDateTime)item.get("createdTime");
 
             String redisKey = RedisKey.MTS_OBJECT_URL + objectId;
             String url = (String) redisTemplate.opsForValue().get(redisKey);
@@ -544,6 +556,7 @@ public class FileService {
             vo.setDuration(duration);
             vo.setFileName(fileName);
             vo.setSize(size);
+            vo.setCreatedTime(createdTime);
             return vo;
         }).collect(Collectors.toList());
         return voList;
@@ -558,6 +571,7 @@ public class FileService {
             String source = item.get("source").toString();
             String bucket = item.get("bucket").toString();
             String fullPath = item.get("fullPath").toString();
+            LocalDateTime createdTime = (LocalDateTime)item.get("createdTime");
 
             String redisKey = RedisKey.MTS_OBJECT_URL + objectId;
             String url = (String) redisTemplate.opsForValue().get(redisKey);
@@ -572,6 +586,7 @@ public class FileService {
             vo.setUrl(url);
             vo.setFileName(fileName);
             vo.setSize(size);
+            vo.setCreatedTime(createdTime);
             return vo;
         }).collect(Collectors.toList());
         return voList;
@@ -587,6 +602,7 @@ public class FileService {
             String source = item.get("source").toString();
             String bucket = item.get("bucket").toString();
             String fullPath = item.get("fullPath").toString();
+            LocalDateTime createdTime = (LocalDateTime)item.get("createdTime");
 
             String redisKey = RedisKey.MTS_OBJECT_URL + objectId;
             String url = (String) redisTemplate.opsForValue().get(redisKey);
@@ -602,6 +618,7 @@ public class FileService {
             vo.setUrl(url);
             vo.setFileName(fileName);
             vo.setSize(size);
+            vo.setCreatedTime(createdTime);
             return vo;
         }).collect(Collectors.toList());
         return voList;

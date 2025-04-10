@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @ApiModel("上传音频后返回的参数")
 public class AudioVO {
@@ -22,4 +24,6 @@ public class AudioVO {
     @ApiModelProperty(value = "文件大小")
     private long size;
 
+    @ApiModelProperty(value = "创建时间")
+    private LocalDateTime createdTime;
 }
