@@ -28,5 +28,5 @@ public interface ObsService {
      * @param ObjectName 全路径名
      * @return
      */
-    ObsUploadRet getUploadUrl(String bucketName, String ObjectName);
+    ObsUploadRet getUploadUrl(String contentType, String bucketName, String ObjectName);
 }

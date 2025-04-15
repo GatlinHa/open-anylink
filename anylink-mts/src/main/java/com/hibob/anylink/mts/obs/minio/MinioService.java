@@ -77,7 +77,7 @@ public class MinioService implements ObsService {
     }
 
     @Override
-    public ObsUploadRet getUploadUrl(String bucketName, String ObjectName) {
+    public ObsUploadRet getUploadUrl(String contentType, String bucketName, String ObjectName) {
         log.info("MinioService::getUploadUrl 2");
         if (minioConfig.isPreSign()) {
             try {

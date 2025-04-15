@@ -141,14 +141,15 @@ public class FileService {
             ObsUploadRet thumbObsUploadRet;
             if (mtsImage != null && !mtsImage.isUploaded()) {
                 // 如果mtsImage有记录，但是isUploaded状态为false，表示这个文件没有上传成功，这里直接复用之前的记录
+                String contentType = mtsImage.getImageType();
                 String bucketName = mtsImage.getBucketName();
                 String originPath = mtsImage.getOriginPath();
                 String  thumbPath = mtsImage.getThumbPath();
-                originObsUploadRet = obsService.getUploadUrl(bucketName, originPath);
+                originObsUploadRet = obsService.getUploadUrl(contentType, bucketName, originPath);
                 if (dto.getSize() < obsConfig.getImageThumbSize()) {
                     thumbObsUploadRet = originObsUploadRet;
                 } else {
-                    thumbObsUploadRet = obsService.getUploadUrl(bucketName, thumbPath);
+                    thumbObsUploadRet = obsService.getUploadUrl(contentType, bucketName, thumbPath);
                 }
                 if (originObsUploadRet == null || thumbObsUploadRet == null) {
                     return ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_UPLOAD_PRESIGN_URL);
@@ -243,9 +244,10 @@ public class FileService {
             ObsUploadRet obsUploadRet;
             if (mtsAudio != null && !mtsAudio.isUploaded()) {
                 // 如果mtsAudio有记录，但是isUploaded状态为false，表示这个文件没有上传成功，这里直接复用之前的记录
+                String contentType = mtsAudio.getAudioType();
                 String bucketName = mtsAudio.getBucketName();
                 String fullPath = mtsAudio.getFullPath();
-                obsUploadRet = obsService.getUploadUrl(bucketName, fullPath);
+                obsUploadRet = obsService.getUploadUrl(contentType, bucketName, fullPath);
                 if (!StringUtils.hasLength(obsUploadRet.getUrl()) ) {
                     return ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_UPLOAD_PRESIGN_URL);
                 }
@@ -331,9 +333,10 @@ public class FileService {
             ObsUploadRet obsUploadRet;
             if (mtsVideo != null && !mtsVideo.isUploaded()) {
                 // 如果mtsVideo有记录，但是isUploaded状态为false，表示这个文件没有上传成功，这里直接复用之前的记录
+                String contentType = mtsVideo.getVideoType();
                 String bucketName = mtsVideo.getBucketName();
                 String fullPath = mtsVideo.getFullPath();
-                obsUploadRet = obsService.getUploadUrl(bucketName, fullPath);
+                obsUploadRet = obsService.getUploadUrl(contentType, bucketName, fullPath);
                 if (!StringUtils.hasLength(obsUploadRet.getUrl()) ) {
                     return ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_UPLOAD_PRESIGN_URL);
                 }
@@ -418,9 +421,10 @@ public class FileService {
             ObsUploadRet obsUploadRet;
             if (mtsDocument != null && !mtsDocument.isUploaded()) {
                 // 如果mtsDocument有记录，但是isUploaded状态为false，表示这个文件没有上传成功，这里直接复用之前的记录
+                String contentType = mtsDocument.getDocumentType();
                 String bucketName = mtsDocument.getBucketName();
                 String fullPath = mtsDocument.getFullPath();
-                obsUploadRet = obsService.getUploadUrl(bucketName, fullPath);
+                obsUploadRet = obsService.getUploadUrl(contentType, bucketName, fullPath);
                 if (!StringUtils.hasLength(obsUploadRet.getUrl()) ) {
                     return ResultUtil.error(ServiceErrorCode.ERROR_MTS_FILE_UPLOAD_PRESIGN_URL);
                 }
