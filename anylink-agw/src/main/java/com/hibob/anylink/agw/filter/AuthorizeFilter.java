@@ -79,7 +79,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         JSONObject value = JSON.parseObject((String) redisTemplate.opsForValue().get(key));
         if (!redisTemplate.hasKey(key) || !value.getString("token").equals(token)) {
             log.error("The token has been deleted, isRefreshToken: {}, url:{}", isRefreshToken, exchange.getRequest().getURI());
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+            exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);
             return exchange.getResponse().setComplete();
         }
         String singSecret = (String) value.get("secret");
