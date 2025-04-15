@@ -1,7 +1,6 @@
 package com.hibob.anylink.mts.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -12,8 +11,11 @@ import java.util.Date;
 public class MtsVideo {
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "video_id")
+    @TableField(value = "video_id")
     private String videoId;
+
+    @TableField(value = "store_type")
+    private int storeType;
 
     @TableField(value = "video_type")
     private String videoType;
@@ -35,6 +37,9 @@ public class MtsVideo {
 
     @TableField(value = "expire")
     private long expire;
+
+    @TableField(value = "uploaded")
+    private boolean uploaded;
 
     @TableField(value = "created_account")
     private String createdAccount;

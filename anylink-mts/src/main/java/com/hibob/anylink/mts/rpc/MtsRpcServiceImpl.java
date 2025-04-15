@@ -22,49 +22,61 @@ public class MtsRpcServiceImpl implements MtsRpcService {
 
     @Override
     public Map<String, Map<String, Object>> queryImageSignUrl(List<Long> objectIds) {
-        List<ImageVO> imageVOS = fileService.getImageVOS(objectIds);
         Map<String, Map<String, Object>> result = new HashMap<>();
+        if (objectIds == null || objectIds.isEmpty()) {
+            return result;
+        }
+        List<ImageVO> imageVOS = fileService.getImageVOS(objectIds);
         imageVOS.forEach(item -> {
             Map<String, Object> map = new HashMap<>();
             map.put("originUrl", item.getOriginUrl());
             map.put("thumbUrl", item.getThumbUrl());
-            result.put(item.getObjectId(), map);
+            result.put(item.getObjectId().toString(), map);
         });
         return result;
     }
 
     @Override
     public Map<String, Map<String, Object>> queryAudioSignUrl(List<Long> objectIds) {
-        List<AudioVO> audioVOS = fileService.getAudioVOS(objectIds);
         Map<String, Map<String, Object>> result = new HashMap<>();
+        if (objectIds == null || objectIds.isEmpty()) {
+            return result;
+        }
+        List<AudioVO> audioVOS = fileService.getAudioVOS(objectIds);
         audioVOS.forEach(item -> {
             Map<String, Object> map = new HashMap<>();
-            map.put("url", item.getUrl());
-            result.put(item.getObjectId(), map);
+            map.put("url", item.getDownloadUrl());
+            result.put(item.getObjectId().toString(), map);
         });
         return result;
     }
 
     @Override
     public Map<String, Map<String, Object>> queryVideoSignUrl(List<Long> objectIds) {
-        List<VideoVO> videoVOS = fileService.getVideoVOS(objectIds);
         Map<String, Map<String, Object>> result = new HashMap<>();
+        if (objectIds == null || objectIds.isEmpty()) {
+            return result;
+        }
+        List<VideoVO> videoVOS = fileService.getVideoVOS(objectIds);
         videoVOS.forEach(item -> {
             Map<String, Object> map = new HashMap<>();
-            map.put("url", item.getUrl());
-            result.put(item.getObjectId(), map);
+            map.put("url", item.getDownloadUrl());
+            result.put(item.getObjectId().toString(), map);
         });
         return result;
     }
 
     @Override
     public Map<String, Map<String, Object>> queryDocumentSignUrl(List<Long> objectIds) {
-        List<DocumentVO> documentVOS = fileService.getDocumentVOS(objectIds);
         Map<String, Map<String, Object>> result = new HashMap<>();
+        if (objectIds == null || objectIds.isEmpty()) {
+            return result;
+        }
+        List<DocumentVO> documentVOS = fileService.getDocumentVOS(objectIds);
         documentVOS.forEach(item -> {
             Map<String, Object> map = new HashMap<>();
-            map.put("url", item.getUrl());
-            result.put(item.getObjectId(), map);
+            map.put("url", item.getDownloadUrl());
+            result.put(item.getObjectId().toString(), map);
         });
         return result;
     }

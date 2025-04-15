@@ -18,6 +18,9 @@ public class MtsObject {
     @TableField(value = "object_type")
     private int objectType;
 
+    @TableField(value = "store_type")
+    private int storeType;
+
     @TableField(value = "foreign_id")
     private String foreignId;
 

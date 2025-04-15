@@ -16,8 +16,13 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
      */
     @Select("<script>" +
             " select t1.object_id as objectId, " +
+            " t2.image_type as imageType, " +
             " t2.file_name as fileName, " +
             " t2.image_size as size, " +
+            " t2.origin_width as originWidth, " +
+            " t2.origin_height as originHeight, " +
+            " t2.thumb_width as thumbWidth, " +
+            " t2.thumb_height as thumbHeight, " +
             " t2.store_source as source, " +
             " t2.bucket_name as bucket, " +
             " t2.origin_path as originPath, " +
@@ -26,6 +31,8 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
             " from anylink_mts_object t1 " +
             " INNER JOIN anylink_mts_image t2 " +
             " ON t1.foreign_id = t2.image_id " +
+            " AND t1.store_type = t2.store_type " +
+            " AND t2.uploaded = true " +
             " AND t1.object_id IN " +
             " <foreach item='item' index='index' collection='objectIds' open='(' separator=',' close=')'>" +
             " #{item}" +
@@ -50,6 +57,8 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
             " from anylink_mts_object t1 " +
             " INNER JOIN anylink_mts_audio t2 " +
             " ON t1.foreign_id = t2.audio_id " +
+            " AND t1.store_type = t2.store_type " +
+            " AND t2.uploaded = true " +
             " AND t1.object_id IN " +
             " <foreach item='item' index='index' collection='objectIds' open='(' separator=',' close=')'>" +
             " #{item}" +
@@ -73,6 +82,8 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
             " from anylink_mts_object t1 " +
             " INNER JOIN anylink_mts_video t2 " +
             " ON t1.foreign_id = t2.video_id " +
+            " AND t1.store_type = t2.store_type " +
+            " AND t2.uploaded = true " +
             " AND t1.object_id IN " +
             " <foreach item='item' index='index' collection='objectIds' open='(' separator=',' close=')'>" +
             " #{item}" +
@@ -97,6 +108,8 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
             " from anylink_mts_object t1 " +
             " INNER JOIN anylink_mts_document t2 " +
             " ON t1.foreign_id = t2.document_id " +
+            " AND t1.store_type = t2.store_type " +
+            " AND t2.uploaded = true " +
             " AND t1.object_id IN " +
             " <foreach item='item' index='index' collection='objectIds' open='(' separator=',' close=')'>" +
             " #{item}" +

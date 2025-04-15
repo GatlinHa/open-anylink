@@ -25,15 +25,25 @@ public class FileController {
     private final FileService fileService;
 
     /**
-     * 上传文件
-     * 注意：由于请求体参数要和接收文件的参数类型MultipartFile兼容，这里要把MultipartFile参数放在Req属性中，并且要取消@RequestBody注解
+     * 预签名方式上传文件，这个请求用于获取预签名URL
      * @param dto
      * @return
      */
-    @ApiOperation(value = "上传文件", notes = "上传文件：头像，自定义表情，文件")
-    @PostMapping("/upload")
-    public ResponseEntity<IMHttpResponse> upload(@Valid UploadReq dto) {
-        return fileService.upload(dto);
+    @ApiOperation(value = "获取上传文件的预签名URL", notes = "获取上传文件的预签名URL")
+    @PostMapping("/getUploadUrl")
+    public ResponseEntity<IMHttpResponse> getUploadUrl(@Valid GetUploadUrlReq dto) {
+        return fileService.getUploadUrl(dto);
+    }
+
+    /**
+     * 客户端上报上传结果
+     * @param dto
+     * @return
+     */
+    @ApiOperation(value = "客户端上报上传结果", notes = "客户端上报上传结果")
+    @PostMapping("/reportUploaded")
+    public ResponseEntity<IMHttpResponse> reportUploaded(@Valid ReportUploaded dto) {
+        return fileService.reportUploaded(dto);
     }
 
     /**

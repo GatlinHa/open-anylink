@@ -15,8 +15,8 @@ public class UploadReq {
 
     @ApiModelProperty(value = "存储时长类型")
     @NotNull
-    @Max(value = 1, message = "临时存储")
-    @Min(value = 0, message = "永久存储")
+    @Max(value = 1, message = "取值范围非法")
+    @Min(value = 0, message = "取值范围非法")
     private int storeType;
 
     @ApiModelProperty(value = "录音的时长")

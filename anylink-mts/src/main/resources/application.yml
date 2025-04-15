@@ -45,7 +45,8 @@ obs:
   document:
     max-limit: 10 #单位M
   ttl: 15 #单位天
-  url-expire: 86400 #单位s
+  download-url-expire: 86400 #单位s
+  upload-url-expire: 120 #单位s
 
   minio:
     endpoint: #启动时从配置中心读取

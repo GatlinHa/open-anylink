@@ -33,17 +33,7 @@ public class AliossConfig extends ObsConfig {
     private boolean preSign;
 
     @Bean
-    public OSS uploadClient() throws ClientException {
-        EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider();
-        return OSSClientBuilder.create()
-                .endpoint(endpointInternal)
-                .credentialsProvider(credentialsProvider)
-                .region(region)
-                .build();
-    }
-
-    @Bean
-    public OSS signClient() throws ClientException {
+    public OSS aliossClient() throws ClientException {
         EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider();
         return OSSClientBuilder.create()
                 .endpoint(endpoint)

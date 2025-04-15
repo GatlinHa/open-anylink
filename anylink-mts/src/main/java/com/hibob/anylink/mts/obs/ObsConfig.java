@@ -29,7 +29,9 @@ public class ObsConfig {
     @Value("${obs.ttl}")
     private int ttl;
 
-    @Value("${obs.url-expire}")
-    private long urlExpire;
+    @Value("${obs.download-url-expire}")
+    private long downloadUrlExpire;
 
+    @Value("${obs.upload-url-expire}")
+    private long uploadUrlExpire;
 }

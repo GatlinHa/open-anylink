@@ -1,7 +1,6 @@
 package com.hibob.anylink.mts.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -12,8 +11,11 @@ import java.util.Date;
 public class MtsAudio {
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "audio_id")
+    @TableField(value = "audio_id")
     private String audioId;
+
+    @TableField(value = "store_type")
+    private int storeType;
 
     @TableField(value = "audio_type")
     private String audioType;
@@ -38,6 +40,9 @@ public class MtsAudio {
 
     @TableField(value = "expire")
     private long expire;
+
+    @TableField(value = "uploaded")
+    private boolean uploaded;
 
     @TableField(value = "created_account")
     private String createdAccount;

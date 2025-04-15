@@ -5,15 +5,11 @@ import com.hibob.anylink.mts.obs.ObsService;
 import com.hibob.anylink.mts.obs.ObsUploadRet;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
 import io.minio.http.Method;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -27,59 +23,8 @@ public class MinioService implements ObsService {
     private final MinioClient minioClient;
 
     @Override
-    public ObsUploadRet uploadFile(MultipartFile file, String randomFileName, int storeType) {
-        log.info("MinioService::uploadFile file");
-        String bucket = 0 == storeType ? minioConfig.getBucketLong() : minioConfig.getBucketTtl();
-        try {
-            String prefixPath = FileType.determineFileType(file.getContentType()).name();
-            String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-            String uuidPath = UUID.randomUUID().toString();
-            String fullName = prefixPath + "/" + datePath + "/" + uuidPath + "/" + randomFileName;
-
-            minioClient.putObject(PutObjectArgs.builder()
-                    .bucket(bucket)
-                    .object(fullName)
-                    .stream(file.getInputStream(), file.getSize(), -1)
-                    .contentType(file.getContentType())
-                    .build());
-            String signUrl = getSignUrl(bucket, fullName);
-            return new ObsUploadRet(bucket, fullName, signUrl);
-        }
-        catch (Exception e) {
-            log.error("MinioService upload file error: {}", e.getMessage());
-            return null;
-        }
-    }
-
-    @Override
-    public ObsUploadRet uploadFile(byte[] fileByte, String contentType, String randomFileName, int storeType) {
-        log.info("MinioService::uploadFile fileByte");
-        String bucket = 0 == storeType ? minioConfig.getBucketLong() : minioConfig.getBucketTtl();
-        try {
-            String prefixPath = FileType.determineFileType(contentType).name();
-            String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-            String uuidPath = UUID.randomUUID().toString();
-            String fullName = prefixPath + "/" + datePath + "/" + uuidPath + "/" + randomFileName;
-
-            InputStream stream = new ByteArrayInputStream(fileByte);
-            minioClient.putObject(PutObjectArgs.builder()
-                    .bucket(bucket)
-                    .object(fullName)
-                    .stream(stream, fileByte.length, -1)
-                    .contentType(contentType)
-                    .build());
-            String signUrl = getSignUrl(bucket, fullName);
-            return new ObsUploadRet(bucket, fullName, signUrl);
-        }
-        catch (Exception e) {
-            log.error("MinioService upload file error: {}", e.getMessage());
-            return null;
-        }
-    }
-
-    @Override
-    public String getSignUrl(String bucketName, String ObjectName) {
-        log.info("MinioService::getSignUrl");
+    public String getDownloadUrl(String bucketName, String ObjectName) {
+        log.info("MinioService::getDownloadUrl");
         if (minioConfig.isPreSign()) {
             try {
                 return minioClient.getPresignedObjectUrl(
@@ -88,14 +33,70 @@ public class MinioService implements ObsService {
                                 .method(Method.GET)
                                 .bucket(bucketName)
                                 .object(ObjectName)
-                                .expiry((int) minioConfig.getUrlExpire(), TimeUnit.SECONDS)
+                                .expiry((int) minioConfig.getDownloadUrlExpire(), TimeUnit.SECONDS)
                                 .build());
             } catch (Exception e) {
-                log.error("MinioService getSignUrl error: {}", e.getMessage());
+                log.error("MinioService getDownloadUrl error: {}", e.getMessage());
                 return "";
             }
         } else  {
+            // 直接下载文件，需要bucket具有公共读权限，目前只针对本地Docker开发环境
             return  minioConfig.getEndpoint() + "/" + bucketName + "/" + ObjectName;
+        }
+    }
+
+    @Override
+    public ObsUploadRet getUploadUrl(String contentType, String randomFileName, int storeType) {
+        log.info("MinioService::getUploadUrl method 1");
+
+        String bucketName = 0 == storeType ? minioConfig.getBucketLong() : minioConfig.getBucketTtl();
+        String prefixPath = FileType.determineFileType(contentType).name();
+        String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String uuidPath = UUID.randomUUID().toString();
+        String fullName = prefixPath + "/" + datePath + "/" + uuidPath + "/" + randomFileName;
+
+        if (minioConfig.isPreSign()) {
+            try {
+                String url = minioClient.getPresignedObjectUrl(
+                        GetPresignedObjectUrlArgs
+                                .builder()
+                                .method(Method.PUT)
+                                .bucket(bucketName)
+                                .object(fullName)
+                                .expiry((int) minioConfig.getUploadUrlExpire(), TimeUnit.SECONDS)
+                                .build());
+                return new ObsUploadRet(bucketName, fullName, url);
+            } catch (Exception e) {
+                log.error("MinioService getDownloadUrl error: {}", e.getMessage());
+                return null;
+            }
+        } else  {
+            // 直接上传文件，需要bucket具有公共写权限，目前只针对本地Docker开发环境
+            return new ObsUploadRet(bucketName, fullName, minioConfig.getEndpoint() + "/" + bucketName + "/" + fullName);
+        }
+    }
+
+    @Override
+    public ObsUploadRet getUploadUrl(String bucketName, String ObjectName) {
+        log.info("MinioService::getUploadUrl 2");
+        if (minioConfig.isPreSign()) {
+            try {
+                String url = minioClient.getPresignedObjectUrl(
+                        GetPresignedObjectUrlArgs
+                                .builder()
+                                .method(Method.PUT)
+                                .bucket(bucketName)
+                                .object(ObjectName)
+                                .expiry((int) minioConfig.getUploadUrlExpire(), TimeUnit.SECONDS)
+                                .build());
+                return new ObsUploadRet(bucketName, ObjectName, url);
+            } catch (Exception e) {
+                log.error("MinioService getDownloadUrl error: {}", e.getMessage());
+                return null;
+            }
+        } else  {
+            // 直接上传文件，需要bucket具有公共写权限，目前只针对本地Docker开发环境
+            return new ObsUploadRet(bucketName, ObjectName, minioConfig.getEndpoint() + "/" + bucketName + "/" + ObjectName);
         }
     }
 }
