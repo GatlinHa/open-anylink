@@ -507,6 +507,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         // TODO 这里要分页查询
         log.info("UserService::findByNick");
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.select(User.class, tableFieldInfo -> !tableFieldInfo.getColumn().equals("password"));
         queryWrapper.like(User::getNickName, dto.getKeyWords());
         List<User> lists = this.list(queryWrapper);
         List<String> accountList = lists.stream().map(User::getAccount).collect(Collectors.toList());
@@ -553,6 +554,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     private User getOneByAccount(String account) {
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.select(User.class, tableFieldInfo -> !tableFieldInfo.getColumn().equals("password"));
         queryWrapper.eq(User::getAccount, account);
         return this.getOne(queryWrapper);
     }

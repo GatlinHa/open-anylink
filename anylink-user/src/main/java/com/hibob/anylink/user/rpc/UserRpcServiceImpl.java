@@ -48,6 +48,7 @@ public class UserRpcServiceImpl implements UserRpcService {
     public Map<String, Object> queryUserInfo(String account) {
         log.info("UserRpcServiceImpl::queryUserInfo start......");
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.select(User.class, tableFieldInfo -> !tableFieldInfo.getColumn().equals("password"));
         queryWrapper.eq(User::getAccount, account);
         List<User> users = userMapper.selectList(queryWrapper);
         if (users.size() > 0) {
@@ -82,6 +83,7 @@ public class UserRpcServiceImpl implements UserRpcService {
     public Map<String, Map<String, Object>> queryUserInfoBatch(List<String> accountList) {
         log.info("UserRpcServiceImpl::queryUserInfoBatch start......");
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.select(User.class, tableFieldInfo -> !tableFieldInfo.getColumn().equals("password"));
         queryWrapper.in(User::getAccount, accountList.toArray());
         List<User> users = userMapper.selectList(queryWrapper);
         Map<String, Integer> statusMap = userStatusMapper.queryStatusByAccountList(accountList);
