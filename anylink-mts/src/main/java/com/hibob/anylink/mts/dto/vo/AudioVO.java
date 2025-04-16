@@ -1,5 +1,6 @@
 package com.hibob.anylink.mts.dto.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
@@ -19,20 +20,26 @@ public class AudioVO {
     private Long objectId;
 
     @ApiModelProperty(value = "下载用的url")
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private String downloadUrl;
 
     @ApiModelProperty(value = "上传用的url")
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private String uploadUrl;
 
     @ApiModelProperty(value = "时长")
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private int duration;
 
     @ApiModelProperty(value = "文件名")
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private String fileName;
 
     @ApiModelProperty(value = "文件大小")
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private long size;
 
     @ApiModelProperty(value = "创建时间")
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private LocalDateTime createdTime;
 }

@@ -80,6 +80,8 @@ CREATE TABLE `anylink_mts_video`
     `store_type` TINYINT(1) NOT NULL COMMENT '存储类型：0永久存储，1临时存储',
     `video_type` VARCHAR(255) NOT NULL COMMENT '视频类型',
     `video_size` BIGINT NOT NULL COMMENT '视频大小',
+    `video_width` INT NOT NULL DEFAULT 0 COMMENT '视频的宽度',
+    `video_height` INT NOT NULL DEFAULT 0 COMMENT '视频的高度',
     `file_name` VARCHAR(255) NOT NULL COMMENT '文件名',
     `store_source` VARCHAR(64) NOT NULL COMMENT '存储源',
     `bucket_name` VARCHAR(64) NOT NULL COMMENT '桶名',

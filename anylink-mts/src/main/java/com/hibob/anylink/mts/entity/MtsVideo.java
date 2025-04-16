@@ -23,6 +23,12 @@ public class MtsVideo {
     @TableField(value = "video_size")
     private long videoSize;
 
+    @TableField(value = "video_width")
+    private int videoWidth;
+
+    @TableField(value = "video_height")
+    private int videoHeight;
+
     @TableField(value = "file_name")
     private String fileName;
 

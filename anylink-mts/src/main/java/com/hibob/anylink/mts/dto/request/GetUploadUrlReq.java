@@ -48,4 +48,10 @@ public class GetUploadUrlReq {
 
     @ApiModelProperty(value = "缩略图的高度")
     private  int thumbHeight;
+
+    @ApiModelProperty(value = "视频的宽度")
+    private int videoWidth;
+
+    @ApiModelProperty(value = "视频的高度")
+    private int videoHeight;
 }

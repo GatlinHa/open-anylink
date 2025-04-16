@@ -75,6 +75,8 @@ public interface MtsObjectMapper extends BaseMapper<MtsObject> {
             " select t1.object_id as objectId, " +
             " t2.file_name as fileName, " +
             " t2.video_size as size, " +
+            " t2.video_width as width, " +
+            " t2.video_height as height, " +
             " t2.store_source as source, " +
             " t2.bucket_name as bucket, " +
             " t2.full_path as fullPath, " +

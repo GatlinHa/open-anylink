@@ -353,6 +353,8 @@ public class FileService {
                 mtsVideo.setStoreType(storeType);
                 mtsVideo.setVideoType(contentType);
                 mtsVideo.setVideoSize(dto.getSize());
+                mtsVideo.setVideoWidth(dto.getVideoWidth());
+                mtsVideo.setVideoHeight(dto.getVideoHeight());
                 mtsVideo.setFileName(truncateFileName(dto.getFileName()));
                 mtsVideo.setStoreSource(obsConfig.getSource());
                 mtsVideo.setBucketName(obsUploadRet.getBucket());
@@ -597,6 +599,8 @@ public class FileService {
             Long objectId = (Long) item.get("objectId");
             String fileName = item.get("fileName").toString();
             long size = (long) item.get("size");
+            int width = (int) item.get("width");
+            int height = (int) item.get("height");
             String source = item.get("source").toString();
             String bucket = item.get("bucket").toString();
             String fullPath = item.get("fullPath").toString();
@@ -615,6 +619,8 @@ public class FileService {
             vo.setDownloadUrl(url);
             vo.setFileName(fileName);
             vo.setSize(size);
+            vo.setWidth(width);
+            vo.setHeight(height);
             vo.setCreatedTime(createdTime);
             return vo;
         }).collect(Collectors.toList());
