@@ -232,7 +232,10 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         String account = dto.getAccount();
         String clientId = dto.getClientId();
         String uniqueId = CommonUtil.conUniqueId(account, clientId);
-        User user = getOneByAccount(account);
+        LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(User::getAccount, account);
+        User user =  this.getOne(queryWrapper);
+
         if (user == null) {
             log.error("no register");
             return ResultUtil.error(ServiceErrorCode.ERROR_LOGIN);
@@ -356,7 +359,9 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             return ResultUtil.error(ServiceErrorCode.ERROR_NEW_PASSWORD_EQUAL_OLD);
         }
 
-        User user = getOneByAccount(account);
+        LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(User::getAccount, account);
+        User user =  this.getOne(queryWrapper);
         if (!passwordEncoder.matches(oldPasswordStr, user.getPassword())) {
             log.error("password error");
             return ResultUtil.error(ServiceErrorCode.ERROR_OLD_PASSWORD_ERROR);
