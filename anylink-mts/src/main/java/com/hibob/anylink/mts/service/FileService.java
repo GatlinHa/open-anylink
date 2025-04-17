@@ -134,6 +134,13 @@ public class FileService {
             vo.setObjectId(objectId);
             vo.setOriginUrl(originUrl);
             vo.setThumbUrl(thumbUrl);
+            vo.setImageType(mtsImage.getImageType());
+            vo.setFileName(mtsImage.getFileName());
+            vo.setSize(mtsImage.getImageSize());
+            vo.setOriginWidth(mtsImage.getOriginWidth());
+            vo.setOriginHeight(mtsImage.getOriginHeight());
+            vo.setThumbWidth(mtsImage.getThumbWidth());
+            vo.setThumbHeight(mtsImage.getThumbHeight());
             vo.setCreatedTime(LocalDateTime.now());
             return ResultUtil.success(vo);
         } else {
@@ -238,6 +245,9 @@ public class FileService {
             vo.setScope(1);
             vo.setObjectId(objectId);
             vo.setDownloadUrl(url);
+            vo.setDuration(mtsAudio.getAudioDuration());
+            vo.setFileName(mtsAudio.getFileName());
+            vo.setSize(mtsAudio.getAudioSize());
             vo.setCreatedTime(LocalDateTime.now());
             return ResultUtil.success(vo);
         } else {
@@ -327,6 +337,10 @@ public class FileService {
             vo.setScope(1);
             vo.setObjectId(objectId);
             vo.setDownloadUrl(url);
+            vo.setFileName(mtsVideo.getFileName());
+            vo.setSize(mtsVideo.getVideoSize());
+            vo.setWidth(mtsVideo.getVideoWidth());
+            vo.setHeight(mtsVideo.getVideoHeight());
             vo.setCreatedTime(LocalDateTime.now());
             return ResultUtil.success(vo);
         } else {
@@ -417,6 +431,9 @@ public class FileService {
             vo.setScope(1);
             vo.setObjectId(objectId);
             vo.setDownloadUrl(url);
+            vo.setDocumentType(mtsDocument.getDocumentType());
+            vo.setFileName(mtsDocument.getFileName());
+            vo.setSize(mtsDocument.getDocumentSize());
             vo.setCreatedTime(LocalDateTime.now());
             return ResultUtil.success(vo);
         } else {
