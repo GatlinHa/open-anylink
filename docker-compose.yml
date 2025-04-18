@@ -149,6 +149,10 @@ services:
         
         # 设置存储桶的访问策略为 public
         mc anonymous set public local/anylink
+        
+        # 设置存储桶的公共写权限
+        mc policy set upload local/anylink
+        
         echo "Bucket initialization completed!"
 
   kafka:
