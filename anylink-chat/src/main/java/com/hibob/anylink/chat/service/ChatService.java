@@ -6,7 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.hibob.anylink.chat.dto.request.*;
 import com.hibob.anylink.chat.dto.vo.*;
-import com.hibob.anylink.chat.entity.MsgDb;
+import com.hibob.anylink.chat.entity.AtTable;
+import com.hibob.anylink.chat.entity.MsgTable;
 import com.hibob.anylink.chat.entity.Partition;
 import com.hibob.anylink.chat.entity.Session;
 import com.hibob.anylink.chat.mapper.PartitionMapper;
@@ -233,6 +234,36 @@ public class ChatService {
         return ResultUtil.success();
     }
 
+    public ResponseEntity<IMHttpResponse> queryAt() {
+        // 先从session表中查询群聊的sessionId和readMsgId
+        String account = ReqSession.getSession().getAccount();
+        LambdaQueryWrapper<Session> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Session::getAccount, account)
+                .eq(Session::getSessionType, MsgType.GROUP_CHAT.getNumber())
+                .eq(Session::getClosed, false)
+                .select(Session::getSessionId, Session::getReadMsgId);
+        List<Session> sessions = sessionMapper.selectList(queryWrapper);
+        if (sessions == null || sessions.isEmpty()) {
+            return ResultUtil.success();
+        }
+
+        List<Criteria> criteriaList = new ArrayList<>();
+        for (Session session : sessions) {
+            String sessionId = session.getSessionId();
+            long readMsgId = session.getReadMsgId();
+            Criteria c = Criteria.where("sessionId").is(sessionId).and("msgId").gt(readMsgId);
+            criteriaList.add(c);
+        }
+
+        Criteria criteria = Criteria.where("toId").is(account).orOperator(criteriaList.toArray(new Criteria[0]));
+        Query query = new Query(criteria);
+        List<AtMessageVO> vos = mongoTemplate.find(query, AtTable.class)
+                .stream()
+                .map(item -> BeanUtil.copyProperties(item, AtMessageVO.class))
+                .collect(Collectors.toList());
+        return ResultUtil.success(vos);
+    }
+
     /**
      * 从缓存或数据库获取消息
      * @param session 会话对象
@@ -313,8 +344,8 @@ public class ChatService {
         }
 
         if (!msgIdInMongoDb.isEmpty()) {
-            List<MsgDb> msgDbs = getMsgFromDbByIn(session.getSessionId(), msgIdInMongoDb);
-            msgList.addAll(msgDbs.stream().map(item -> BeanUtil.copyProperties(item, MsgVO.class)).collect(Collectors.toList()));
+            List<MsgTable> msgTables = getMsgFromDbByIn(session.getSessionId(), msgIdInMongoDb);
+            msgList.addAll(msgTables.stream().map(item -> BeanUtil.copyProperties(item, MsgVO.class)).collect(Collectors.toList()));
         }
 
         if (!msgList.isEmpty()) {
@@ -420,11 +451,11 @@ public class ChatService {
         return vo;
     }
 
-    private List<MsgDb> getMsgFromDbByIn(String sessionId, List<Long> msgIds) {
+    private List<MsgTable> getMsgFromDbByIn(String sessionId, List<Long> msgIds) {
         Query query = new Query();
         query.addCriteria(Criteria.where("sessionId").is(sessionId).and("msgId").in(msgIds));
         query.with(Sort.by(Sort.Order.asc("msgId")));
-        List<MsgDb> msgList = mongoTemplate.find(query, MsgDb.class);
+        List<MsgTable> msgList = mongoTemplate.find(query, MsgTable.class);
         return msgList;
     }
 
@@ -435,10 +466,10 @@ public class ChatService {
                 .and("msgId").gt(lastMsgId)
                 .and("msgTime").gte(startTime).lt(endTime));
 
-        long count = mongoTemplate.count(query, MsgDb.class);
+        long count = mongoTemplate.count(query, MsgTable.class);
         query.with(Sort.by(Sort.Order.asc("msgId")));
         query.limit(pageSize);
-        List<MsgVO> msgList = mongoTemplate.find(query, MsgDb.class)
+        List<MsgVO> msgList = mongoTemplate.find(query, MsgTable.class)
                 .stream().map(item -> BeanUtil.copyProperties(item, MsgVO.class)).collect(Collectors.toList());
         if (!msgList.isEmpty()) {
             lastMsgId = msgList.get(msgList.size() - 1).getMsgId();  //lastMsgId更新
@@ -478,7 +509,7 @@ public class ChatService {
             criteria.and("msgTime").lt(endTime);
         }
         query.addCriteria(criteria);
-        return (int) mongoTemplate.count(query, MsgDb.class);
+        return (int) mongoTemplate.count(query, MsgTable.class);
     }
 
 }

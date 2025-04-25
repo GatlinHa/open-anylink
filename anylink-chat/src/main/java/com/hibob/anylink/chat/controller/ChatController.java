@@ -102,4 +102,11 @@ public class ChatController {
     public ResponseEntity<IMHttpResponse> updatePartition(@Valid @RequestBody PartitionUpdateReq dto) {
         return chatService.updatePartition(dto);
     }
+
+    @ApiOperation(value = "查询@消息", notes = "查询@消息")
+    @ApiCommonHeader
+    @GetMapping("/queryAt")
+    public ResponseEntity<IMHttpResponse> queryAt() {
+        return chatService.queryAt();
+    }
 }

@@ -10,16 +10,12 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.Date;
 
 @Data
-@Document("anylink_chat_msg") //项目启动后会自动创建这张表，以及索引（索引需要打开auto-index-creation开关）
-public class MsgDb {
+@Document("anylink_chat_at") //项目启动后会自动创建这张表，以及索引（索引需要打开auto-index-creation开关）
+public class AtTable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private String id;
-
-    @Field("session_id")
-    @Indexed
-    private String sessionId;
 
     @Field("from_id")
     private String fromId;
@@ -27,24 +23,25 @@ public class MsgDb {
     @Field("from_client")
     private String fromClient;
 
-    /**
-     * 消息接收方，如果是单聊就是toId，如果是群聊就是groupId
-     */
-    @Field("remote_id")
-    private String remoteId;
+    @Field("to_id")
+    @Indexed
+    private String toId;
+
+    @Field("session_id")
+    @Indexed
+    private String sessionId;
+
+    @Field("group_id")
+    private String groupId;
 
     @Field("msg_id")
     @Indexed
     private long msgId;
 
-    @Field("msg_type")
-    private int msgType;
-
-    @Field("content")
-    private String content;
+    @Field("refer_msg_id")
+    private long referMsgId;
 
     @Field("msg_time")
-    @Indexed
     private Date msgTime;
 
     @Field("create_time")

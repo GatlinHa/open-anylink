@@ -4,7 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.hibob.anylink.chat.entity.MsgDb;
+import com.hibob.anylink.chat.entity.AtTable;
+import com.hibob.anylink.chat.entity.MsgTable;
 import com.hibob.anylink.chat.entity.RefMsgId;
 import com.hibob.anylink.chat.entity.Session;
 import com.hibob.anylink.chat.mapper.RefMsgIdMapper;
@@ -79,19 +80,19 @@ public class ChatRpcServiceImpl implements ChatRpcService {
     @Override
     public boolean saveMsg(Map<String, Object> msg) {
         String sessionId = (String) msg.get("sessionId");
-        MsgDb msgDb = new MsgDb();
-        msgDb.setSessionId(sessionId);
-        msgDb.setFromId((String) msg.get("fromId"));
-        msgDb.setFromClient((String) msg.get("fromClient"));
-        msgDb.setRemoteId((String) msg.get("remoteId"));
-        msgDb.setMsgId((long) msg.get("msgId"));
-        msgDb.setMsgType((int) msg.get("msgType"));
-        msgDb.setContent((String) msg.get("content")); //客户端负责加密内容
-        msgDb.setMsgTime((Date) msg.get("msgTime"));
-        msgDb.setCreateTime(new Date());
-        MsgDb insert = mongoTemplate.insert(msgDb);
+        MsgTable msgTable = new MsgTable();
+        msgTable.setSessionId(sessionId);
+        msgTable.setFromId((String) msg.get("fromId"));
+        msgTable.setFromClient((String) msg.get("fromClient"));
+        msgTable.setRemoteId((String) msg.get("remoteId"));
+        msgTable.setMsgId((long) msg.get("msgId"));
+        msgTable.setMsgType((int) msg.get("msgType"));
+        msgTable.setContent((String) msg.get("content")); //客户端负责加密内容
+        msgTable.setMsgTime((Date) msg.get("msgTime"));
+        msgTable.setCreateTime(new Date());
+        MsgTable insert = mongoTemplate.insert(msgTable);
         if (insert.getId() != null) { //如果入库成功，id会有值
-            insertToRedis((long) msg.get("msgId"), sessionId, msgDb);
+            insertToRedis((long) msg.get("msgId"), sessionId, msgTable);
             return true;
         }
         else {
@@ -168,6 +169,37 @@ public class ChatRpcServiceImpl implements ChatRpcService {
     @Override
     public boolean updateGroupSessionsForLeave(List<Map<String, Object>> sessionList) {
         return sessionMapper.batchUpdateForLeave(sessionList) > 0;
+    }
+
+    @Override
+    public void asyncSaveAt(Map<String, Object> msg) {
+        CompletableFuture<Integer> future =
+                CompletableFuture.supplyAsync(() -> saveAt(msg) ? 1 : 0, threadPoolExecutor);
+        future.whenComplete((result, throwable) -> {
+            if (throwable != null) {
+                log.error("asyncSaveAt execute exception: {}", throwable.getCause());
+            }
+        });
+    }
+
+    private boolean saveAt(Map<String, Object> msg) {
+        AtTable atTable = new AtTable();
+        atTable.setFromId((String) msg.get("fromId"));
+        atTable.setFromClient((String) msg.get("fromClient"));
+        atTable.setToId((String) msg.get("toId"));
+        atTable.setSessionId((String) msg.get("sessionId"));
+        atTable.setGroupId((String) msg.get("groupId"));
+        atTable.setMsgId((Long) msg.get("msgId"));
+        atTable.setReferMsgId((Long) msg.get("referMsgId"));
+        atTable.setMsgTime((Date) msg.get("msgTime"));
+        atTable.setCreateTime(new Date());
+        AtTable insert = mongoTemplate.insert(atTable);
+        if (insert.getId() != null) { //如果入库成功，id会有值
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
 }

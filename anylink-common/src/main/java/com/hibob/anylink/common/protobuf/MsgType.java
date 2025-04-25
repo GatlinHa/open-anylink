@@ -99,6 +99,14 @@ public enum MsgType
   STATUS_SYNC(10),
   /**
    * <pre>
+   * &#64;消息
+   * </pre>
+   *
+   * <code>AT = 11;</code>
+   */
+  AT(11),
+  /**
+   * <pre>
    * 系统消息之创建群组
    * </pre>
    *
@@ -363,6 +371,14 @@ public enum MsgType
   public static final int STATUS_SYNC_VALUE = 10;
   /**
    * <pre>
+   * &#64;消息
+   * </pre>
+   *
+   * <code>AT = 11;</code>
+   */
+  public static final int AT_VALUE = 11;
+  /**
+   * <pre>
    * 系统消息之创建群组
    * </pre>
    *
@@ -562,6 +578,7 @@ public enum MsgType
       case 8: return STATUS_REQ;
       case 9: return STATUS_RES;
       case 10: return STATUS_SYNC;
+      case 11: return AT;
       case 21: return SYS_GROUP_CREATE;
       case 22: return SYS_GROUP_ADD_MEMBER;
       case 23: return SYS_GROUP_DEL_MEMBER;

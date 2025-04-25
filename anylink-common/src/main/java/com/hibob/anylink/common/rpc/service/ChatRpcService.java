@@ -40,4 +40,11 @@ public interface ChatRpcService {
      */
     boolean updateGroupSessionsForLeave(List<Map<String, Object>> list);
 
+    /**
+     * @消息异步入库
+     * @param msg
+     * @return
+     */
+    void asyncSaveAt(Map<String, Object> msg);
+
 }

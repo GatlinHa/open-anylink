@@ -20,18 +20,18 @@ package com.hibob.anylink.common.protobuf;
  * | 8 | seq          |   -  |    -      |    M    |     M     |       M       |        M        |     O    |        O       |    M     |       todo        |         todo        |
  * | 9 | sessionId    |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    M     |       todo        |         todo        |
  * +---+--------------+------+-----------+---------|-----------+---------------+-----------------+----------+----------------+----------+-------------------+---------------------+
- * NO      filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX
- * +---+--------------+------------+------------+-------------+------------+
- * | 1 | fromId       |      M     |      M     |      M      |      -     |
- * | 2 | fromClient   |      M     |      M     |      M      |      -     |
- * | 3 | toId         |      -     |      -     |      -      |      -     |
- * | 4 | toClient     |      -     |      -     |      -      |      -     |
- * | 5 | groupId      |      -     |      -     |      -      |      M     |
- * | 6 | msgId        |      -     |      -     |      -      |      M     |
- * | 7 | content      |      M     |      M     |      M      |      M     |
- * | 8 | seq          |      -     |      -     |      -      |      -     |
- * | 9 | sessionId    |      -     |      -     |      -      |      M     |
- * +---+--------------+------------+------------+-------------+------------+
+ * NO      filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX   AT(up)   AT(down)
+ * +---+--------------+------------+------------+-------------+------------+---------+---------+
+ * | 1 | fromId       |      M     |      M     |      M      |      -     |    M    |    M    |
+ * | 2 | fromClient   |      M     |      M     |      M      |      -     |    M    |    M    |
+ * | 3 | toId         |      -     |      -     |      -      |      -     |    -    |    M    |
+ * | 4 | toClient     |      -     |      -     |      -      |      -     |    -    |    M    |
+ * | 5 | groupId      |      -     |      -     |      -      |      M     |    M    |    M    |
+ * | 6 | msgId        |      -     |      -     |      -      |      M     |    -    |    M    |
+ * | 7 | content      |      M     |      M     |      M      |      M     |    M    |    M    |
+ * | 8 | seq          |      -     |      -     |      -      |      -     |    M    |    M    |
+ * | 9 | sessionId    |      -     |      -     |      -      |      M     |    M    |    M    |
+ * +---+--------------+------------+------------+-------------+------------+---------+---------+
  * </pre>
  *
  * Protobuf type {@code com.hibob.anylink.common.protobuf.Body}
@@ -805,18 +805,18 @@ private static final long serialVersionUID = 0L;
    * | 8 | seq          |   -  |    -      |    M    |     M     |       M       |        M        |     O    |        O       |    M     |       todo        |         todo        |
    * | 9 | sessionId    |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    M     |       todo        |         todo        |
    * +---+--------------+------+-----------+---------|-----------+---------------+-----------------+----------+----------------+----------+-------------------+---------------------+
-   * NO      filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX
-   * +---+--------------+------------+------------+-------------+------------+
-   * | 1 | fromId       |      M     |      M     |      M      |      -     |
-   * | 2 | fromClient   |      M     |      M     |      M      |      -     |
-   * | 3 | toId         |      -     |      -     |      -      |      -     |
-   * | 4 | toClient     |      -     |      -     |      -      |      -     |
-   * | 5 | groupId      |      -     |      -     |      -      |      M     |
-   * | 6 | msgId        |      -     |      -     |      -      |      M     |
-   * | 7 | content      |      M     |      M     |      M      |      M     |
-   * | 8 | seq          |      -     |      -     |      -      |      -     |
-   * | 9 | sessionId    |      -     |      -     |      -      |      M     |
-   * +---+--------------+------------+------------+-------------+------------+
+   * NO      filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX   AT(up)   AT(down)
+   * +---+--------------+------------+------------+-------------+------------+---------+---------+
+   * | 1 | fromId       |      M     |      M     |      M      |      -     |    M    |    M    |
+   * | 2 | fromClient   |      M     |      M     |      M      |      -     |    M    |    M    |
+   * | 3 | toId         |      -     |      -     |      -      |      -     |    -    |    M    |
+   * | 4 | toClient     |      -     |      -     |      -      |      -     |    -    |    M    |
+   * | 5 | groupId      |      -     |      -     |      -      |      M     |    M    |    M    |
+   * | 6 | msgId        |      -     |      -     |      -      |      M     |    -    |    M    |
+   * | 7 | content      |      M     |      M     |      M      |      M     |    M    |    M    |
+   * | 8 | seq          |      -     |      -     |      -      |      -     |    M    |    M    |
+   * | 9 | sessionId    |      -     |      -     |      -      |      M     |    M    |    M    |
+   * +---+--------------+------------+------------+-------------+------------+---------+---------+
    * </pre>
    *
    * Protobuf type {@code com.hibob.anylink.common.protobuf.Body}

@@ -91,6 +91,25 @@ public abstract class MsgProcessor {
     }
 
     /**
+     * At消息入库，当前采用服务方异步入库，因此不支持等待回调结果。
+     * @param msg
+     * @param msgId
+     * @param toId
+     */
+    protected void saveAt(Msg msg, long msgId, long referMsgId, String toId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("fromId", msg.getBody().getFromId());
+        map.put("fromClient", msg.getBody().getFromClient());
+        map.put("toId", toId);
+        map.put("sessionId", msg.getBody().getSessionId());
+        map.put("groupId", msg.getBody().getGroupId());
+        map.put("msgId", msgId);
+        map.put("referMsgId", referMsgId);
+        map.put("msgTime", new Date());
+        rpcClient.getChatRpcService().asyncSaveAt(map);
+    }
+
+    /**
      * 回复已送达
      * @param ctx
      * @param msg
