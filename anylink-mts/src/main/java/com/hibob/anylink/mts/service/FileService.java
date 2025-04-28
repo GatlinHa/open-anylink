@@ -562,6 +562,7 @@ public class FileService {
             }
 
             ImageVO vo = new ImageVO();
+            vo.setScope(1);
             vo.setObjectId(objectId);
             vo.setOriginUrl(originUrl);
             vo.setThumbUrl(thumbUrl);
@@ -599,6 +600,7 @@ public class FileService {
             }
 
             AudioVO vo = new AudioVO();
+            vo.setScope(1);
             vo.setObjectId(objectId);
             vo.setDownloadUrl(url);
             vo.setDuration(duration);
@@ -632,6 +634,7 @@ public class FileService {
             }
 
             VideoVO vo = new VideoVO();
+            vo.setScope(1);
             vo.setObjectId(objectId);
             vo.setDownloadUrl(url);
             vo.setFileName(fileName);
@@ -665,6 +668,7 @@ public class FileService {
             }
 
             DocumentVO vo = new DocumentVO();
+            vo.setScope(1);
             vo.setObjectId(objectId);
             vo.setDocumentType(documentType);
             vo.setDownloadUrl(url);
