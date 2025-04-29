@@ -24,6 +24,7 @@ enum MsgType {
   STATUS_RES = 9; //连接状态响应
   STATUS_SYNC = 10; //端侧的连接状态同步给云端（比如在线，离开）
   AT = 11; //@消息
+  REVOKE = 12; //撤回消息
 
   SYS_GROUP_CREATE = 21; //系统消息之创建群组
   SYS_GROUP_ADD_MEMBER = 22; //系统消息之添加群组成员
@@ -71,18 +72,18 @@ message Header {
 | 8 | seq          |   -  |    -      |    M    |     M     |       M       |        M        |     O    |        O       |    M     |       todo        |         todo        |
 | 9 | sessionId    |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    M     |       todo        |         todo        |
 +---+--------------+------+-----------+---------|-----------+---------------+-----------------+----------+----------------+----------+-------------------+---------------------+
-  NO      filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX   AT(up)   AT(down)
-+---+--------------+------------+------------+-------------+------------+---------+---------+
-| 1 | fromId       |      M     |      M     |      M      |      -     |    M    |    M    |
-| 2 | fromClient   |      M     |      M     |      M      |      -     |    M    |    M    |
-| 3 | toId         |      -     |      -     |      -      |      -     |    -    |    M    |
-| 4 | toClient     |      -     |      -     |      -      |      -     |    -    |    M    |
-| 5 | groupId      |      -     |      -     |      -      |      M     |    M    |    M    |
-| 6 | msgId        |      -     |      -     |      -      |      M     |    -    |    M    |
-| 7 | content      |      M     |      M     |      M      |      M     |    M    |    M    |
-| 8 | seq          |      -     |      -     |      -      |      -     |    M    |    M    |
-| 9 | sessionId    |      -     |      -     |      -      |      M     |    M    |    M    |
-+---+--------------+------------+------------+-------------+------------+---------+---------+
+  NO      filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX   AT(up)   AT(down)  REVOKE
++---+--------------+------------+------------+-------------+------------+---------+---------+-----------+
+| 1 | fromId       |      M     |      M     |      M      |      -     |    M    |    M    |     M     |
+| 2 | fromClient   |      M     |      M     |      M      |      -     |    M    |    M    |     -     |
+| 3 | toId         |      -     |      -     |      -      |      -     |    -    |    M    |     o     |
+| 4 | toClient     |      -     |      -     |      -      |      -     |    -    |    M    |     -     |
+| 5 | groupId      |      -     |      -     |      -      |      M     |    M    |    M    |     o     |
+| 6 | msgId        |      -     |      -     |      -      |      M     |    -    |    M    |     M     |
+| 7 | content      |      M     |      M     |      M      |      M     |    M    |    M    |     M     |
+| 8 | seq          |      -     |      -     |      -      |      -     |    M    |    M    |     -     |
+| 9 | sessionId    |      -     |      -     |      -      |      M     |    M    |    M    |     M     |
++---+--------------+------------+------------+-------------+------------+---------+---------+-----------+
  */
 message Body {
   optional string fromId = 1;

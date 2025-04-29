@@ -107,6 +107,14 @@ public enum MsgType
   AT(11),
   /**
    * <pre>
+   * 撤回消息
+   * </pre>
+   *
+   * <code>REVOKE = 12;</code>
+   */
+  REVOKE(12),
+  /**
+   * <pre>
    * 系统消息之创建群组
    * </pre>
    *
@@ -379,6 +387,14 @@ public enum MsgType
   public static final int AT_VALUE = 11;
   /**
    * <pre>
+   * 撤回消息
+   * </pre>
+   *
+   * <code>REVOKE = 12;</code>
+   */
+  public static final int REVOKE_VALUE = 12;
+  /**
+   * <pre>
    * 系统消息之创建群组
    * </pre>
    *
@@ -579,6 +595,7 @@ public enum MsgType
       case 9: return STATUS_RES;
       case 10: return STATUS_SYNC;
       case 11: return AT;
+      case 12: return REVOKE;
       case 21: return SYS_GROUP_CREATE;
       case 22: return SYS_GROUP_ADD_MEMBER;
       case 23: return SYS_GROUP_DEL_MEMBER;

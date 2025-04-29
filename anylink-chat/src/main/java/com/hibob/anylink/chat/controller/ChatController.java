@@ -39,6 +39,13 @@ public class ChatController {
         return chatService.history(dto);
     }
 
+    @ApiOperation(value = "撤销某条消息", notes = "撤销某条消息")
+    @ApiCommonHeader
+    @PostMapping("/revokeMsg")
+    public ResponseEntity<IMHttpResponse> revokeMsg(@Valid @RequestBody RevokeMsgReq dto) {
+        return chatService.revokeMsg(dto);
+    }
+
     @ApiOperation(value = "查询会话记录（单群聊）", notes = "查询单会话记录（单群聊）")
     @ApiCommonHeader
     @GetMapping("/sessionList")

@@ -29,6 +29,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -67,6 +69,43 @@ public class ChatService {
         Date endTime = new Date(dto.getEndTime());
         int pageSize = dto.getPageSize();
         return ResultUtil.success(getMsgFromDB(sessionId, startTime, endTime, 0, pageSize));
+    }
+
+    public ResponseEntity<IMHttpResponse> revokeMsg(RevokeMsgReq dto) {
+        String redisKey = RedisKey.CHAT_SESSION_MSG + dto.getSessionId() + Const.SPLIT_C + dto.getRevokeMsgId();
+        Object o = redisTemplate.opsForValue().get(redisKey);
+        if (o != null) {
+            MsgVO msg = JSON.parseObject( (String) o, MsgVO.class);
+            if (!msg.isRevoke()) {
+                msg.setRevoke(true);
+                Long ttl = redisTemplate.getExpire(redisKey, TimeUnit.SECONDS);
+                redisTemplate.opsForValue().set(redisKey, JSON.toJSONString(msg), ttl == null ? msgTtlInRedis : ttl, TimeUnit.SECONDS);
+            }
+        }
+
+        Query query = new Query();
+        Criteria criteria = Criteria
+                .where("sessionId").is(dto.getSessionId())
+                .and("msgId").is(dto.getRevokeMsgId())
+                .and("revoke").in(false, null);
+        query.addCriteria(criteria);
+        List<MsgTable> msgList = mongoTemplate.find(query, MsgTable.class);
+        if (!msgList.isEmpty()) {
+            Update update = new Update().set("revoke", true);
+            mongoTemplate.updateMulti(query, update, MsgTable.class);
+        }
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("msgType", MsgType.REVOKE.getNumber());
+        map.put("fromId", ReqSession.getSession().getAccount());
+        map.put("fromClient", ReqSession.getSession().getClientId());
+        map.put("sessionId", dto.getSessionId());
+        map.put("isGroupChat", dto.getIsGroupChat());
+        map.put("remoteId", dto.getRemoteId());
+        map.put("revokeMsgId", dto.getRevokeMsgId());
+        rpcClient.getNettyRpcService().sendRevokeMsg(map);
+
+        return ResultUtil.success();
     }
 
     public ResponseEntity<IMHttpResponse> sessionList() {

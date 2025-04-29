@@ -27,4 +27,7 @@ public class MsgVO {
 
     @ApiModelProperty(value = "消息时间")
     private Date msgTime;
+
+    @ApiModelProperty(value = "撤销标记")
+    private boolean revoke;
 }

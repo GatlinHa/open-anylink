@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class GroupSystemMsgProcessor extends MsgProcessor implements SystemMsgProcessor {
+public class GroupSystemMsgSendProcessor extends MsgProcessor implements MsgSendProcessor {
 
     private final RefMsgIdConfig refMsgIdConfig;
     private final RpcClient rpcClient;
 
     @Override
-    public void processSystemMsg(Map<String, Object> msgMap) throws Exception {
+    public void process(Map<String, Object> msgMap) throws Exception {
         MsgType msgType = MsgType.forNumber((Integer) msgMap.get("msgType"));
         String groupId = (String) msgMap.get("groupId");
         Long msgId = refMsgIdConfig.generateMsgId(groupId);

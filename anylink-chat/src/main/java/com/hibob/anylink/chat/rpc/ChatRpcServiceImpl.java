@@ -88,6 +88,7 @@ public class ChatRpcServiceImpl implements ChatRpcService {
         msgTable.setMsgId((long) msg.get("msgId"));
         msgTable.setMsgType((int) msg.get("msgType"));
         msgTable.setContent((String) msg.get("content")); //客户端负责加密内容
+        msgTable.setRevoke(false);
         msgTable.setMsgTime((Date) msg.get("msgTime"));
         msgTable.setCreateTime(new Date());
         MsgTable insert = mongoTemplate.insert(msgTable);

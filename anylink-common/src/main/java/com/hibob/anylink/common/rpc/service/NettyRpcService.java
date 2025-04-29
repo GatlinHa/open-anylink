@@ -9,4 +9,11 @@ public interface NettyRpcService {
      * @return
      */
     void sendSysMsg(Map<String, Object> msg);
+
+    /**
+     * 发送撤回消息（异步）
+     * @param msg 撤回消息
+     * @return
+     */
+    void sendRevokeMsg(Map<String, Object> msg);
 }

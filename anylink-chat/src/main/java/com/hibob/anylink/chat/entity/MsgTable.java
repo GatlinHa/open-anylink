@@ -43,6 +43,10 @@ public class MsgTable {
     @Field("content")
     private String content;
 
+    @Field("revoke")
+    @Indexed
+    private boolean revoke;
+
     @Field("msg_time")
     @Indexed
     private Date msgTime;
