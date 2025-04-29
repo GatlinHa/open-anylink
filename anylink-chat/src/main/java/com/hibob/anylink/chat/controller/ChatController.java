@@ -46,6 +46,13 @@ public class ChatController {
         return chatService.revokeMsg(dto);
     }
 
+    @ApiOperation(value = "删除某条消息", notes = "删除某条消息")
+    @ApiCommonHeader
+    @PostMapping("/deleteMsg")
+    public ResponseEntity<IMHttpResponse> deleteMsg(@Valid @RequestBody DeleteMsgReq dto) {
+        return chatService.deleteMsg(dto);
+    }
+
     @ApiOperation(value = "查询会话记录（单群聊）", notes = "查询单会话记录（单群聊）")
     @ApiCommonHeader
     @GetMapping("/sessionList")

@@ -2,6 +2,7 @@ package com.hibob.anylink.chat.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.hibob.anylink.chat.typeHandler.LongListTypeHandler;
 import com.hibob.anylink.chat.typeHandler.StringListTypeHandler;
 import lombok.Data;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -57,6 +58,9 @@ public class Session {
 
     @TableField(value = "closed")
     private Boolean closed;
+
+    @TableField(value = "del_msg_ids", typeHandler = LongListTypeHandler.class)
+    private List<Long> delMsgIds;
 
     @TableField(value = "remote_read", exist = false)
     private long remoteRead;

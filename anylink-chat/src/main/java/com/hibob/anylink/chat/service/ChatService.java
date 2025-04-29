@@ -68,7 +68,8 @@ public class ChatService {
         Date startTime = new Date(dto.getStartTime());
         Date endTime = new Date(dto.getEndTime());
         int pageSize = dto.getPageSize();
-        return ResultUtil.success(getMsgFromDB(sessionId, startTime, endTime, 0, pageSize));
+        Session session = sessionMapper.selectSession(ReqSession.getSession().getAccount(), sessionId);
+        return ResultUtil.success(getMsgFromDB(session, startTime, endTime, 0, pageSize));
     }
 
     public ResponseEntity<IMHttpResponse> revokeMsg(RevokeMsgReq dto) {
@@ -105,6 +106,11 @@ public class ChatService {
         map.put("revokeMsgId", dto.getRevokeMsgId());
         rpcClient.getNettyRpcService().sendRevokeMsg(map);
 
+        return ResultUtil.success();
+    }
+
+    public ResponseEntity<IMHttpResponse> deleteMsg(DeleteMsgReq dto) {
+        sessionMapper.updateForDelMsg(ReqSession.getSession().getAccount(), dto.getSessionId(), dto.getDeleteMsgId());
         return ResultUtil.success();
     }
 
@@ -339,6 +345,9 @@ public class ChatService {
             String[] split = ((String)o).split(Const.SPLIT_V);
             long msgId = Long.parseLong(split[0]);
             long time = Long.parseLong(split[1]);
+            if (session.getDelMsgIds().contains(msgId)) {
+                continue;
+            }
 
             if (isGroupChat && !(boolean)groupInfo.get("historyBrowse")) {
                 // 判断每个msgId是否处于成员在群期间
@@ -498,12 +507,19 @@ public class ChatService {
         return msgList;
     }
 
-    private ChatMessageVO getMsgFromDB(String sessionId, Date startTime, Date endTime, long lastMsgId, int pageSize) {
+    private ChatMessageVO getMsgFromDB(Session session, Date startTime, Date endTime, long lastMsgId, int pageSize) {
         Query query = new Query();
-        query.addCriteria(Criteria
-                .where("sessionId").is(sessionId)
-                .and("msgId").gt(lastMsgId)
-                .and("msgTime").gte(startTime).lt(endTime));
+        Criteria criteria = Criteria
+                .where("sessionId").is(session.getSessionId())
+                .and("msgTime").gte(startTime).lt(endTime);
+
+        List<Long> delMsgIds = session.getDelMsgIds();
+        Criteria msgIdCondition = new Criteria().and("msgId").gt(lastMsgId);
+        if (delMsgIds != null && !delMsgIds.isEmpty()) {
+            msgIdCondition.andOperator(Criteria.where("msgId").nin(delMsgIds));
+        }
+        criteria.andOperator(msgIdCondition);
+        query.addCriteria(criteria);
 
         long count = mongoTemplate.count(query, MsgTable.class);
         query.with(Sort.by(Sort.Order.asc("msgId")));
@@ -534,16 +550,22 @@ public class ChatService {
         if (isLeaveGroup) {
             endTime = DateTimeUtil.getDateFromStr(leaveTime.get(leaveTime.size() - 1), "yyyy-MM-dd HH:mm:ss.SSSSSS");
         }
-        return getUnReadCount(session.getSessionId(), session.getAccount(), session.getReadMsgId(), endTime);
+        return getUnReadCount(session.getSessionId(), session.getAccount(), session.getReadMsgId(), endTime, session.getDelMsgIds());
     }
 
-    private int getUnReadCount(String sessionId, String account, long readMsgId, Date endTime) {
+    private int getUnReadCount(String sessionId, String account, long readMsgId, Date endTime, List<Long> delMsgIds) {
         Query query = new Query();
         Criteria criteria = Criteria
             .where("sessionId").is(sessionId)
             .and("fromId").ne(account) // 不是本人发的消息才记入未读
-            .and("msgId").gt(readMsgId)
             .and("msgType").in(MsgType.CHAT.getNumber(), MsgType.GROUP_CHAT.getNumber());
+
+        Criteria msgIdCondition = new Criteria().and("msgId").gt(readMsgId);
+        if (delMsgIds != null && !delMsgIds.isEmpty()) {
+            msgIdCondition.andOperator(Criteria.where("msgId").nin(delMsgIds));
+        }
+        criteria.andOperator(msgIdCondition);
+
         if (endTime != null) {
             criteria.and("msgTime").lt(endTime);
         }

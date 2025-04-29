@@ -16,7 +16,7 @@ public class RevokeMsgReq {
     private String sessionId;
 
     @NotNull
-    @ApiModelProperty(value = "查询的结束msgId(不含)")
+    @ApiModelProperty(value = "撤销的msgId")
     private Long revokeMsgId;
 
     @NotNull
