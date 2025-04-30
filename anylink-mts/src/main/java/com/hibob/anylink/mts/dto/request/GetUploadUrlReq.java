@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @ApiModel("文件上传请求")
 public class GetUploadUrlReq {
 
-    @ApiModelProperty(value = "存储时长类型")
+    @ApiModelProperty(value = "存储时长类型：0永久存储，1临时存储")
     @NotNull
     @Max(value = 1, message = "取值范围非法")
     @Min(value = 0, message = "取值范围非法")
