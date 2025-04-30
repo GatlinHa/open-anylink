@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class RevokeMsgSendProcessor extends MsgProcessor implements MsgSendProcessor {
+public class SendMsgRevokeProcessor extends MsgProcessor implements SendMsgProcessor {
 
     private final RefMsgIdConfig refMsgIdConfig;
     private final RpcClient rpcClient;

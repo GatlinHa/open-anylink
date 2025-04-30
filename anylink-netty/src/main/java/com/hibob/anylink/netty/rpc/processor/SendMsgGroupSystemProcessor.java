@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class GroupSystemMsgSendProcessor extends MsgProcessor implements MsgSendProcessor {
+public class SendMsgGroupSystemProcessor extends MsgProcessor implements SendMsgProcessor {
 
     private final RefMsgIdConfig refMsgIdConfig;
     private final RpcClient rpcClient;

@@ -3,8 +3,8 @@ package com.hibob.anylink.netty.rpc.processor;
 import com.hibob.anylink.common.protobuf.MsgType;
 import com.hibob.anylink.netty.utils.SpringContextUtil;
 
-public class MsgSendProcessorFactory {
-    public static MsgSendProcessor getProcessor(MsgType msgType) {
+public class SendMsgProcessorFactory {
+    public static SendMsgProcessor getProcessor(MsgType msgType) {
         switch (msgType) {
             case SYS_GROUP_CREATE:
             case SYS_GROUP_ADD_MEMBER:
@@ -24,9 +24,11 @@ public class MsgSendProcessorFactory {
             case SYS_GROUP_DROP:
             case SYS_GROUP_OWNER_TRANSFER:
             case SYS_GROUP_UPDATE_MEMBER_MUTED:
-                return SpringContextUtil.getBean(GroupSystemMsgSendProcessor.class);
+                return SpringContextUtil.getBean(SendMsgGroupSystemProcessor.class);
             case REVOKE:
-                return SpringContextUtil.getBean(RevokeMsgSendProcessor.class);
+                return SpringContextUtil.getBean(SendMsgRevokeProcessor.class);
+            case DELETE:
+                return SpringContextUtil.getBean(SendMsgDeleteProcessor.class);
             default:
                 return null;
         }

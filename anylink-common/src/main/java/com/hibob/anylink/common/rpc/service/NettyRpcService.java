@@ -4,16 +4,9 @@ import java.util.Map;
 
 public interface NettyRpcService {
     /**
-     * 发送系统消息给用户（异步）
-     * @param msg 系统消息
+     * 其他服务调用RPC接口发送消息（异步）
+     * @param msg xx消息
      * @return
      */
-    void sendSysMsg(Map<String, Object> msg);
-
-    /**
-     * 发送撤回消息（异步）
-     * @param msg 撤回消息
-     * @return
-     */
-    void sendRevokeMsg(Map<String, Object> msg);
+    void sendMsg(Map<String, Object> msg);
 }

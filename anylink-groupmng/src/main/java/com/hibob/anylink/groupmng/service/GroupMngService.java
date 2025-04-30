@@ -113,7 +113,7 @@ public class GroupMngService {
         msgMap.put("msgType", MsgType.SYS_GROUP_CREATE.getNumber());
         msgMap.put("groupId", groupId);
         msgMap.put("content", content);
-        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
+        rpcClient.getNettyRpcService().sendMsg(msgMap);
 
         GroupVO vo = new GroupVO();
         vo.setGroupInfo(BeanUtil.copyProperties(groupInfo, GroupInfoVO.class));
@@ -312,7 +312,7 @@ public class GroupMngService {
 
         msgMap.put("groupId", groupId);
         msgMap.put("content", content);
-        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
+        rpcClient.getNettyRpcService().sendMsg(msgMap);
 
         return ResultUtil.success();
     }
@@ -380,7 +380,7 @@ public class GroupMngService {
         msgMap.put("msgType", MsgType.SYS_GROUP_DROP.getNumber());
         msgMap.put("content", content);
         msgMap.put("toAccounts", toAccounts);
-        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
+        rpcClient.getNettyRpcService().sendMsg(msgMap);
 
         return ResultUtil.success();
     }
@@ -431,7 +431,7 @@ public class GroupMngService {
         msgMap.put("msgType", MsgType.SYS_GROUP_ADD_MEMBER.getNumber());
         msgMap.put("groupId", groupId);
         msgMap.put("content", content);
-        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
+        rpcClient.getNettyRpcService().sendMsg(msgMap);
 
         return ResultUtil.success();
     }
@@ -478,7 +478,7 @@ public class GroupMngService {
         msgMap.put("msgType", MsgType.SYS_GROUP_DEL_MEMBER.getNumber());
         msgMap.put("groupId", groupId);
         msgMap.put("content", content);
-        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
+        rpcClient.getNettyRpcService().sendMsg(msgMap);
 
         return ResultUtil.success();
     }
@@ -533,7 +533,7 @@ public class GroupMngService {
         }
         msgMap.put("groupId", groupId);
         msgMap.put("content", content);
-        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
+        rpcClient.getNettyRpcService().sendMsg(msgMap);
 
         return ResultUtil.success();
     }
@@ -608,7 +608,7 @@ public class GroupMngService {
         msgMap.put("groupId", groupId);
         msgMap.put("msgType", MsgType.SYS_GROUP_UPDATE_MEMBER_MUTED.getNumber());
         msgMap.put("content", content);
-        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
+        rpcClient.getNettyRpcService().sendMsg(msgMap);
 
         return ResultUtil.success();
     }
@@ -668,7 +668,7 @@ public class GroupMngService {
         msgMap.put("groupId", groupId);
         msgMap.put("msgType", MsgType.SYS_GROUP_OWNER_TRANSFER.getNumber());
         msgMap.put("content", content);
-        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
+        rpcClient.getNettyRpcService().sendMsg(msgMap);
 
         return ResultUtil.success();
     }
@@ -717,7 +717,7 @@ public class GroupMngService {
         msgMap.put("groupId", groupId);
         msgMap.put("msgType", MsgType.SYS_GROUP_LEAVE.getNumber());
         msgMap.put("content", content);
-        rpcClient.getNettyRpcService().sendSysMsg(msgMap);
+        rpcClient.getNettyRpcService().sendMsg(msgMap);
 
         return ResultUtil.success();
     }

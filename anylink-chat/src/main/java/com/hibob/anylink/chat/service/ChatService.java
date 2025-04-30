@@ -104,13 +104,22 @@ public class ChatService {
         map.put("isGroupChat", dto.getIsGroupChat());
         map.put("remoteId", dto.getRemoteId());
         map.put("revokeMsgId", dto.getRevokeMsgId());
-        rpcClient.getNettyRpcService().sendRevokeMsg(map);
+        rpcClient.getNettyRpcService().sendMsg(map);
 
         return ResultUtil.success();
     }
 
     public ResponseEntity<IMHttpResponse> deleteMsg(DeleteMsgReq dto) {
         sessionMapper.updateForDelMsg(ReqSession.getSession().getAccount(), dto.getSessionId(), dto.getDeleteMsgId());
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("msgType", MsgType.DELETE.getNumber());
+        map.put("fromId", ReqSession.getSession().getAccount());
+        map.put("fromClient", ReqSession.getSession().getClientId());
+        map.put("sessionId", dto.getSessionId());
+        map.put("deleteMsgId", dto.getDeleteMsgId());
+        rpcClient.getNettyRpcService().sendMsg(map);
+
         return ResultUtil.success();
     }
 
