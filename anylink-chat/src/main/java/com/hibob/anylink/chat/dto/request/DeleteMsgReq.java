@@ -6,9 +6,10 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
-@ApiModel("删除某条消息请求的参数")
+@ApiModel("删除消息请求的参数")
 public class DeleteMsgReq {
 
     @NotEmpty
@@ -16,6 +17,6 @@ public class DeleteMsgReq {
     private String sessionId;
 
     @NotNull
-    @ApiModelProperty(value = "删除的msgId")
-    private Long deleteMsgId;
+    @ApiModelProperty(value = "删除的msgId列表")
+    private List<Long> deleteMsgIds;
 }

@@ -65,7 +65,7 @@ public enum ServiceErrorCode {
 
     ERROR_GROUP_MNG_OWNER_TRANSFER(Const.SERVICE_CODE_GROUP_MNG + 6, "群主转让失败"),
 
-    ERROR_GROUP_MNG_NOT_IN_GROUP(Const.SERVICE_CODE_GROUP_MNG + 7, "您已离开该群或群已被解散"),
+    ERROR_GROUP_MNG_NOT_IN_GROUP(Const.SERVICE_CODE_GROUP_MNG + 7, "已离开该群或群已被解散"),
 
     ERROR_MTS_IMAGE_FORMAT_ERROR(Const.SERVICE_CODE_MTS + 1, "图片不在支持格式范围内：jpg, jpeg, png, gif, bmp, webp"),
 

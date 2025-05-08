@@ -11,7 +11,9 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -25,7 +27,10 @@ public class SendMsgDeleteProcessor extends MsgProcessor implements SendMsgProce
         String fromId = (String) msgMap.get("fromId");
         String fromClient = msgMap.get("fromClient").toString();
         String sessionId = msgMap.get("sessionId").toString();
-        String deleteMsgId = msgMap.get("deleteMsgId").toString();
+        List<Long> deleteMsgIds = (List<Long>)msgMap.get("deleteMsgIds");
+        String deleteMsgIdsStr = deleteMsgIds.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(","));
 
         long msgId = refMsgIdConfig.generateMsgId(sessionId);
         Header header = Header.newBuilder()
@@ -38,7 +43,7 @@ public class SendMsgDeleteProcessor extends MsgProcessor implements SendMsgProce
                 .setFromClient(fromClient)
                 .setMsgId(msgId)
                 .setSessionId(sessionId)
-                .setContent(deleteMsgId)
+                .setContent(deleteMsgIdsStr)
                 .build();
         Msg msg = Msg.newBuilder().setHeader(header).setBody(body).build();
         syncOtherClients(msg, msgId); // 扩散给自己的其他客户端

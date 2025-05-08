@@ -159,6 +159,10 @@ public class GroupMngService {
         String account = ReqSession.getSession().getAccount();
         // 1.查询群基本信息
         GroupInfo groupInfo = groupInfoMapper.selectGroupInfoOne(account, groupId);
+        if (groupInfo == null) {
+            return ResultUtil.error(ServiceErrorCode.ERROR_GROUP_MNG_NOT_IN_GROUP);
+        }
+
         // 2.查询群成员列表及成员在群信息
         LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GroupMember::getGroupId, groupId);

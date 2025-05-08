@@ -76,10 +76,13 @@ public interface SessionMapper extends BaseMapper<Session> {
 
     @Update("<script>" +
             " update anylink_chat_session set " +
-            " del_msg_ids = JSON_ARRAY_APPEND(IFNULL(del_msg_ids, '[]'), '$', #{delMsgId}) " +
+            " del_msg_ids = " +
+            "<foreach collection='delMsgIds' item='id' open=\"JSON_MERGE_PRESERVE(IFNULL(del_msg_ids, '[]'), JSON_ARRAY(\" separator=',' close=\"))\">" +
+            " #{id}" +
+            "</foreach> " +
             " where account = #{account} and session_id = #{sessionId} " +
             "</script>")
-    int updateForDelMsg(String account, String sessionId, long delMsgId);
+    int updateForDelMsg(String account, String sessionId, List<Long> delMsgIds);
 
     @Update("<script>" +
             " update anylink_chat_session set leave_time = CASE " +
