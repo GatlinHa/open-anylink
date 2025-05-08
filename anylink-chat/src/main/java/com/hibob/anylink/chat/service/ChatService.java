@@ -331,7 +331,7 @@ public class ChatService {
         // 获取sessionId下面的msgId集合
         String key1 = RedisKey.CHAT_SESSION_MSG_ID + session.getSessionId();
         long max = endMsgId == null ? Long.MAX_VALUE : endMsgId - 1;
-        LinkedHashSet msgIds = (LinkedHashSet)redisTemplate.opsForZSet().reverseRangeByScore(key1, -1, max, 0, pageSize);
+        LinkedHashSet msgIds = (LinkedHashSet)redisTemplate.opsForZSet().reverseRangeByScore(key1, -1, max, 0, 1000);
         if (msgIds == null || msgIds.isEmpty()) {
             return result;
         }
@@ -383,6 +383,10 @@ public class ChatService {
             }
             else {
                 msgIdInMongoDb.add(msgId);
+            }
+
+            if (msgIdInRedis.size() + msgIdInMongoDb.size() >= pageSize) {
+                break;
             }
         }
 
