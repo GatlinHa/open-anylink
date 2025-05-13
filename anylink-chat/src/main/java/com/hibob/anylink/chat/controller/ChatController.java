@@ -74,6 +74,13 @@ public class ChatController {
         return chatService.querySession(dto);
     }
 
+    @ApiOperation(value = "查询某个会话下指定msgId的消息", notes = "查询某个会话下指定msgId的消息")
+    @ApiCommonHeader
+    @GetMapping("/queryMessages")
+    public ResponseEntity<IMHttpResponse> queryMessages(@Validated QueryMessagesReq dto) {
+        return chatService.queryMessages(dto);
+    }
+
     @ApiOperation(value = "创建一个会话记录", notes = "创建一个会话记录")
     @ApiCommonHeader
     @PostMapping("/createSession")

@@ -168,6 +168,36 @@ public class ChatService {
         }
     }
 
+    public ResponseEntity<IMHttpResponse> queryMessages(QueryMessagesReq dto) {
+        String sessionId = dto.getSessionId();
+        List<Long> msgIds = dto.getMsgIds();
+        List<Object> resultRedis = redisTemplate.executePipelined((RedisConnection connection) -> {
+            for (Long msgId : msgIds) {
+                String key2 = RedisKey.CHAT_SESSION_MSG + sessionId + Const.SPLIT_C + msgId;
+                connection.get(key2.getBytes());
+            }
+            return null;
+        });
+
+        List<MsgVO> collect = resultRedis.stream().map(item -> JSON.parseObject((String) item, MsgVO.class)).collect(Collectors.toList());
+        List<Long> msgIdInDb = new ArrayList<>();
+        if (collect.size() < msgIds.size()) {
+            Set<Long> msgIdInRedis = collect.stream().map(MsgVO::getMsgId).collect(Collectors.toSet());
+            for (Long msgId : msgIds) {
+                if (!msgIdInRedis.contains(msgId)) {
+                    msgIdInDb.add(msgId);
+                }
+            }
+        }
+
+        if (!msgIdInDb.isEmpty()) {
+            List<MsgTable> msgTables = getMsgFromDbByIn(sessionId, msgIdInDb);
+            collect.addAll(msgTables.stream().map(item -> BeanUtil.copyProperties(item, MsgVO.class)).collect(Collectors.toList()));
+        }
+
+        return ResultUtil.success(collect);
+    }
+
     public ResponseEntity<IMHttpResponse> createSession(CreateSessionReq dto) {
         ReqSession reqSession = ReqSession.getSession();
         String account = reqSession.getAccount();
@@ -331,6 +361,7 @@ public class ChatService {
         // 获取sessionId下面的msgId集合
         String key1 = RedisKey.CHAT_SESSION_MSG_ID + session.getSessionId();
         long max = endMsgId == null ? Long.MAX_VALUE : endMsgId - 1;
+        // 这里的count=1000是为了尽可能取多一点，保证去除被删除的消息，还有足够的返回给前端
         LinkedHashSet msgIds = (LinkedHashSet)redisTemplate.opsForZSet().reverseRangeByScore(key1, -1, max, 0, 1000);
         if (msgIds == null || msgIds.isEmpty()) {
             return result;
