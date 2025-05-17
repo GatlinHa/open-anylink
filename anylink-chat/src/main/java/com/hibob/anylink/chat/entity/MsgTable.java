@@ -43,6 +43,10 @@ public class MsgTable {
     @Field("content")
     private String content;
 
+    @Field("contentType")
+    @Indexed
+    private int contentType;
+
     @Field("revoke")
     @Indexed
     private boolean revoke;

@@ -44,11 +44,11 @@ public class ChatRpcServiceImpl implements ChatRpcService {
     private int msgCapacityInRedis;
 
     @Override
-    public long refMsgId(String session, int refMsgIdDefault) {
-        RefMsgId refMsgId = selectRefMsgId(session);
+    public long refMsgId(String sessionId, int refMsgIdDefault) {
+        RefMsgId refMsgId = selectRefMsgId(sessionId);
         if (refMsgId == null) {
             // 创建session;
-            createRefMsgId(session, refMsgIdDefault);
+            createRefMsgId(sessionId, refMsgIdDefault);
             return refMsgIdDefault;
         }
 
@@ -56,14 +56,14 @@ public class ChatRpcServiceImpl implements ChatRpcService {
     }
 
     @Override
-    public long updateAndGetRefMsgId(String session, int refMsgIdStep, long curRefMsgId) {
+    public long updateAndGetRefMsgId(String sessionId, int refMsgIdStep, long curRefMsgId) {
         long newRefMsgId = curRefMsgId + refMsgIdStep;
         LambdaUpdateWrapper<RefMsgId> updateWrapper = Wrappers.lambdaUpdate();
-        updateWrapper.eq(RefMsgId::getSessionId, session)
+        updateWrapper.eq(RefMsgId::getSessionId, sessionId)
                 .eq(RefMsgId::getRefMsgId, curRefMsgId) // 乐观锁
                 .set(RefMsgId::getRefMsgId, newRefMsgId);
         refMsgIdMapper.update(updateWrapper);
-        return selectRefMsgId(session).getRefMsgId();
+        return selectRefMsgId(sessionId).getRefMsgId();
     }
 
     @Override
@@ -88,6 +88,7 @@ public class ChatRpcServiceImpl implements ChatRpcService {
         msgTable.setMsgId((long) msg.get("msgId"));
         msgTable.setMsgType((int) msg.get("msgType"));
         msgTable.setContent((String) msg.get("content")); //客户端负责加密内容
+        msgTable.setContentType((int) msg.get("contentType"));
         msgTable.setRevoke(false);
         msgTable.setMsgTime((Date) msg.get("msgTime"));
         msgTable.setCreateTime(new Date());
@@ -113,16 +114,16 @@ public class ChatRpcServiceImpl implements ChatRpcService {
         redisTemplate.opsForValue().set(key2, JSON.toJSONString(value), Duration.ofSeconds(msgTtlInRedis));
     }
 
-    private void createRefMsgId(String session, int refMsgIdDefault) {
+    private void createRefMsgId(String sessionId, int refMsgIdDefault) {
         RefMsgId refMsgId = new RefMsgId();
-        refMsgId.setSessionId(session);
+        refMsgId.setSessionId(sessionId);
         refMsgId.setRefMsgId(refMsgIdDefault);
         refMsgIdMapper.insert(refMsgId);
     }
 
-    private RefMsgId selectRefMsgId(String session) {
+    private RefMsgId selectRefMsgId(String sessionId) {
         LambdaQueryWrapper<RefMsgId> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(RefMsgId::getSessionId, session);
+        queryWrapper.eq(RefMsgId::getSessionId, sessionId);
         List<RefMsgId> refMsgId = refMsgIdMapper.selectList(queryWrapper);
         if (refMsgId.size() > 0) {
             return refMsgId.get(0);

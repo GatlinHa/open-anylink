@@ -130,11 +130,22 @@ public interface BodyOrBuilder extends
       getContentBytes();
 
   /**
+   * <code>optional int32 contentType = 8;</code>
+   * @return Whether the contentType field is set.
+   */
+  boolean hasContentType();
+  /**
+   * <code>optional int32 contentType = 8;</code>
+   * @return The contentType.
+   */
+  int getContentType();
+
+  /**
    * <pre>
    * 客户端生成的序列号ID，会话内唯一，可用于消息去重
    * </pre>
    *
-   * <code>optional string seq = 8;</code>
+   * <code>optional string seq = 9;</code>
    * @return Whether the seq field is set.
    */
   boolean hasSeq();
@@ -143,7 +154,7 @@ public interface BodyOrBuilder extends
    * 客户端生成的序列号ID，会话内唯一，可用于消息去重
    * </pre>
    *
-   * <code>optional string seq = 8;</code>
+   * <code>optional string seq = 9;</code>
    * @return The seq.
    */
   java.lang.String getSeq();
@@ -152,7 +163,7 @@ public interface BodyOrBuilder extends
    * 客户端生成的序列号ID，会话内唯一，可用于消息去重
    * </pre>
    *
-   * <code>optional string seq = 8;</code>
+   * <code>optional string seq = 9;</code>
    * @return The bytes for seq.
    */
   com.google.protobuf.ByteString
@@ -163,7 +174,7 @@ public interface BodyOrBuilder extends
    * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
    * </pre>
    *
-   * <code>optional string sessionId = 9;</code>
+   * <code>optional string sessionId = 10;</code>
    * @return Whether the sessionId field is set.
    */
   boolean hasSessionId();
@@ -172,7 +183,7 @@ public interface BodyOrBuilder extends
    * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
    * </pre>
    *
-   * <code>optional string sessionId = 9;</code>
+   * <code>optional string sessionId = 10;</code>
    * @return The sessionId.
    */
   java.lang.String getSessionId();
@@ -181,7 +192,7 @@ public interface BodyOrBuilder extends
    * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
    * </pre>
    *
-   * <code>optional string sessionId = 9;</code>
+   * <code>optional string sessionId = 10;</code>
    * @return The bytes for sessionId.
    */
   com.google.protobuf.ByteString

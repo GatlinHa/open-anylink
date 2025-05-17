@@ -25,6 +25,9 @@ public class MsgVO {
     @ApiModelProperty(value = "消息内容")
     private String content;
 
+    @ApiModelProperty(value = "内容类型")
+    private int contentType;
+
     @ApiModelProperty(value = "消息时间")
     private Date msgTime;
 

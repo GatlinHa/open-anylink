@@ -17,8 +17,9 @@ package com.hibob.anylink.common.protobuf;
  * | 5 | groupId      |   -  |    -      |    -    |     -     |       M       |        M        |     -    |        M       |    -     |       todo        |         todo        |
  * | 6 | msgId        |   -  |    -      |    -    |     M     |       -       |        M        |     O    |        O       |    M     |       todo        |         todo        |
  * | 7 | content      |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    -     |       todo        |         todo        |
- * | 8 | seq          |   -  |    -      |    M    |     M     |       M       |        M        |     O    |        O       |    M     |       todo        |         todo        |
- * | 9 | sessionId    |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    M     |       todo        |         todo        |
+ * | 8 | contentType  |   -  |    -      |    M    |     M     |       M       |        M        |     -    |        -       |    -     |       todo        |         todo        |
+ * | 9 | seq          |   -  |    -      |    M    |     M     |       M       |        M        |     O    |        O       |    M     |       todo        |         todo        |
+ * |10 | sessionId    |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    M     |       todo        |         todo        |
  * +---+--------------+------+-----------+---------|-----------+---------------+-----------------+----------+----------------+----------+-------------------+---------------------+
  * NO      filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX   AT(up)   AT(down)    REVOKE     DELETE
  * +---+--------------+------------+------------+-------------+------------+---------+---------+-----------+-----------+
@@ -29,8 +30,9 @@ package com.hibob.anylink.common.protobuf;
  * | 5 | groupId      |      -     |      -     |      -      |      M     |    M    |    M    |     o     |     -     |
  * | 6 | msgId        |      -     |      -     |      -      |      M     |    -    |    M    |     M     |     M     |
  * | 7 | content      |      M     |      M     |      M      |      M     |    M    |    M    |     M     |     -     |
- * | 8 | seq          |      -     |      -     |      -      |      -     |    M    |    M    |     -     |     -     |
- * | 9 | sessionId    |      -     |      -     |      -      |      M     |    M    |    M    |     M     |     M     |
+ * | 8 | contentType  |      -     |      -     |      -      |      -     |    -    |    -    |     -     |     -     |
+ * | 9 | seq          |      -     |      -     |      -      |      -     |    M    |    M    |     -     |     -     |
+ * |10 | sessionId    |      -     |      -     |      -      |      M     |    M    |    M    |     M     |     M     |
  * +---+--------------+------------+------------+-------------+------------+---------+---------+-----------+-----------+
  * </pre>
  *
@@ -388,7 +390,26 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int SEQ_FIELD_NUMBER = 8;
+  public static final int CONTENTTYPE_FIELD_NUMBER = 8;
+  private int contentType_ = 0;
+  /**
+   * <code>optional int32 contentType = 8;</code>
+   * @return Whether the contentType field is set.
+   */
+  @java.lang.Override
+  public boolean hasContentType() {
+    return ((bitField0_ & 0x00000080) != 0);
+  }
+  /**
+   * <code>optional int32 contentType = 8;</code>
+   * @return The contentType.
+   */
+  @java.lang.Override
+  public int getContentType() {
+    return contentType_;
+  }
+
+  public static final int SEQ_FIELD_NUMBER = 9;
   @SuppressWarnings("serial")
   private volatile java.lang.Object seq_ = "";
   /**
@@ -396,19 +417,19 @@ private static final long serialVersionUID = 0L;
    * 客户端生成的序列号ID，会话内唯一，可用于消息去重
    * </pre>
    *
-   * <code>optional string seq = 8;</code>
+   * <code>optional string seq = 9;</code>
    * @return Whether the seq field is set.
    */
   @java.lang.Override
   public boolean hasSeq() {
-    return ((bitField0_ & 0x00000080) != 0);
+    return ((bitField0_ & 0x00000100) != 0);
   }
   /**
    * <pre>
    * 客户端生成的序列号ID，会话内唯一，可用于消息去重
    * </pre>
    *
-   * <code>optional string seq = 8;</code>
+   * <code>optional string seq = 9;</code>
    * @return The seq.
    */
   @java.lang.Override
@@ -429,7 +450,7 @@ private static final long serialVersionUID = 0L;
    * 客户端生成的序列号ID，会话内唯一，可用于消息去重
    * </pre>
    *
-   * <code>optional string seq = 8;</code>
+   * <code>optional string seq = 9;</code>
    * @return The bytes for seq.
    */
   @java.lang.Override
@@ -447,7 +468,7 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int SESSIONID_FIELD_NUMBER = 9;
+  public static final int SESSIONID_FIELD_NUMBER = 10;
   @SuppressWarnings("serial")
   private volatile java.lang.Object sessionId_ = "";
   /**
@@ -455,19 +476,19 @@ private static final long serialVersionUID = 0L;
    * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
    * </pre>
    *
-   * <code>optional string sessionId = 9;</code>
+   * <code>optional string sessionId = 10;</code>
    * @return Whether the sessionId field is set.
    */
   @java.lang.Override
   public boolean hasSessionId() {
-    return ((bitField0_ & 0x00000100) != 0);
+    return ((bitField0_ & 0x00000200) != 0);
   }
   /**
    * <pre>
    * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
    * </pre>
    *
-   * <code>optional string sessionId = 9;</code>
+   * <code>optional string sessionId = 10;</code>
    * @return The sessionId.
    */
   @java.lang.Override
@@ -488,7 +509,7 @@ private static final long serialVersionUID = 0L;
    * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
    * </pre>
    *
-   * <code>optional string sessionId = 9;</code>
+   * <code>optional string sessionId = 10;</code>
    * @return The bytes for sessionId.
    */
   @java.lang.Override
@@ -542,10 +563,13 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.GeneratedMessage.writeString(output, 7, content_);
     }
     if (((bitField0_ & 0x00000080) != 0)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 8, seq_);
+      output.writeInt32(8, contentType_);
     }
     if (((bitField0_ & 0x00000100) != 0)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 9, sessionId_);
+      com.google.protobuf.GeneratedMessage.writeString(output, 9, seq_);
+    }
+    if (((bitField0_ & 0x00000200) != 0)) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 10, sessionId_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -579,10 +603,14 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.GeneratedMessage.computeStringSize(7, content_);
     }
     if (((bitField0_ & 0x00000080) != 0)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(8, seq_);
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(8, contentType_);
     }
     if (((bitField0_ & 0x00000100) != 0)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(9, sessionId_);
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(9, seq_);
+    }
+    if (((bitField0_ & 0x00000200) != 0)) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(10, sessionId_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -634,6 +662,11 @@ private static final long serialVersionUID = 0L;
       if (!getContent()
           .equals(other.getContent())) return false;
     }
+    if (hasContentType() != other.hasContentType()) return false;
+    if (hasContentType()) {
+      if (getContentType()
+          != other.getContentType()) return false;
+    }
     if (hasSeq() != other.hasSeq()) return false;
     if (hasSeq()) {
       if (!getSeq()
@@ -683,6 +716,10 @@ private static final long serialVersionUID = 0L;
     if (hasContent()) {
       hash = (37 * hash) + CONTENT_FIELD_NUMBER;
       hash = (53 * hash) + getContent().hashCode();
+    }
+    if (hasContentType()) {
+      hash = (37 * hash) + CONTENTTYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getContentType();
     }
     if (hasSeq()) {
       hash = (37 * hash) + SEQ_FIELD_NUMBER;
@@ -802,8 +839,9 @@ private static final long serialVersionUID = 0L;
    * | 5 | groupId      |   -  |    -      |    -    |     -     |       M       |        M        |     -    |        M       |    -     |       todo        |         todo        |
    * | 6 | msgId        |   -  |    -      |    -    |     M     |       -       |        M        |     O    |        O       |    M     |       todo        |         todo        |
    * | 7 | content      |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    -     |       todo        |         todo        |
-   * | 8 | seq          |   -  |    -      |    M    |     M     |       M       |        M        |     O    |        O       |    M     |       todo        |         todo        |
-   * | 9 | sessionId    |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    M     |       todo        |         todo        |
+   * | 8 | contentType  |   -  |    -      |    M    |     M     |       M       |        M        |     -    |        -       |    -     |       todo        |         todo        |
+   * | 9 | seq          |   -  |    -      |    M    |     M     |       M       |        M        |     O    |        O       |    M     |       todo        |         todo        |
+   * |10 | sessionId    |   -  |    -      |    M    |     M     |       M       |        M        |     M    |        M       |    M     |       todo        |         todo        |
    * +---+--------------+------+-----------+---------|-----------+---------------+-----------------+----------+----------------+----------+-------------------+---------------------+
    * NO      filed      STATUS_REQ   STATUS_RES   STATUS_SYNC  SYS_GROUP_XXX   AT(up)   AT(down)    REVOKE     DELETE
    * +---+--------------+------------+------------+-------------+------------+---------+---------+-----------+-----------+
@@ -814,8 +852,9 @@ private static final long serialVersionUID = 0L;
    * | 5 | groupId      |      -     |      -     |      -      |      M     |    M    |    M    |     o     |     -     |
    * | 6 | msgId        |      -     |      -     |      -      |      M     |    -    |    M    |     M     |     M     |
    * | 7 | content      |      M     |      M     |      M      |      M     |    M    |    M    |     M     |     -     |
-   * | 8 | seq          |      -     |      -     |      -      |      -     |    M    |    M    |     -     |     -     |
-   * | 9 | sessionId    |      -     |      -     |      -      |      M     |    M    |    M    |     M     |     M     |
+   * | 8 | contentType  |      -     |      -     |      -      |      -     |    -    |    -    |     -     |     -     |
+   * | 9 | seq          |      -     |      -     |      -      |      -     |    M    |    M    |     -     |     -     |
+   * |10 | sessionId    |      -     |      -     |      -      |      M     |    M    |    M    |     M     |     M     |
    * +---+--------------+------------+------------+-------------+------------+---------+---------+-----------+-----------+
    * </pre>
    *
@@ -859,6 +898,7 @@ private static final long serialVersionUID = 0L;
       groupId_ = "";
       msgId_ = 0L;
       content_ = "";
+      contentType_ = 0;
       seq_ = "";
       sessionId_ = "";
       return this;
@@ -924,12 +964,16 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000040;
       }
       if (((from_bitField0_ & 0x00000080) != 0)) {
-        result.seq_ = seq_;
+        result.contentType_ = contentType_;
         to_bitField0_ |= 0x00000080;
       }
       if (((from_bitField0_ & 0x00000100) != 0)) {
-        result.sessionId_ = sessionId_;
+        result.seq_ = seq_;
         to_bitField0_ |= 0x00000100;
+      }
+      if (((from_bitField0_ & 0x00000200) != 0)) {
+        result.sessionId_ = sessionId_;
+        to_bitField0_ |= 0x00000200;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -979,14 +1023,17 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000040;
         onChanged();
       }
+      if (other.hasContentType()) {
+        setContentType(other.getContentType());
+      }
       if (other.hasSeq()) {
         seq_ = other.seq_;
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000100;
         onChanged();
       }
       if (other.hasSessionId()) {
         sessionId_ = other.sessionId_;
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000200;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -1050,16 +1097,21 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000040;
               break;
             } // case 58
-            case 66: {
-              seq_ = input.readStringRequireUtf8();
+            case 64: {
+              contentType_ = input.readInt32();
               bitField0_ |= 0x00000080;
               break;
-            } // case 66
+            } // case 64
             case 74: {
-              sessionId_ = input.readStringRequireUtf8();
+              seq_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000100;
               break;
             } // case 74
+            case 82: {
+              sessionId_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000200;
+              break;
+            } // case 82
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1607,24 +1659,64 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private int contentType_ ;
+    /**
+     * <code>optional int32 contentType = 8;</code>
+     * @return Whether the contentType field is set.
+     */
+    @java.lang.Override
+    public boolean hasContentType() {
+      return ((bitField0_ & 0x00000080) != 0);
+    }
+    /**
+     * <code>optional int32 contentType = 8;</code>
+     * @return The contentType.
+     */
+    @java.lang.Override
+    public int getContentType() {
+      return contentType_;
+    }
+    /**
+     * <code>optional int32 contentType = 8;</code>
+     * @param value The contentType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setContentType(int value) {
+
+      contentType_ = value;
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional int32 contentType = 8;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearContentType() {
+      bitField0_ = (bitField0_ & ~0x00000080);
+      contentType_ = 0;
+      onChanged();
+      return this;
+    }
+
     private java.lang.Object seq_ = "";
     /**
      * <pre>
      * 客户端生成的序列号ID，会话内唯一，可用于消息去重
      * </pre>
      *
-     * <code>optional string seq = 8;</code>
+     * <code>optional string seq = 9;</code>
      * @return Whether the seq field is set.
      */
     public boolean hasSeq() {
-      return ((bitField0_ & 0x00000080) != 0);
+      return ((bitField0_ & 0x00000100) != 0);
     }
     /**
      * <pre>
      * 客户端生成的序列号ID，会话内唯一，可用于消息去重
      * </pre>
      *
-     * <code>optional string seq = 8;</code>
+     * <code>optional string seq = 9;</code>
      * @return The seq.
      */
     public java.lang.String getSeq() {
@@ -1644,7 +1736,7 @@ private static final long serialVersionUID = 0L;
      * 客户端生成的序列号ID，会话内唯一，可用于消息去重
      * </pre>
      *
-     * <code>optional string seq = 8;</code>
+     * <code>optional string seq = 9;</code>
      * @return The bytes for seq.
      */
     public com.google.protobuf.ByteString
@@ -1665,7 +1757,7 @@ private static final long serialVersionUID = 0L;
      * 客户端生成的序列号ID，会话内唯一，可用于消息去重
      * </pre>
      *
-     * <code>optional string seq = 8;</code>
+     * <code>optional string seq = 9;</code>
      * @param value The seq to set.
      * @return This builder for chaining.
      */
@@ -1673,7 +1765,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       seq_ = value;
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000100;
       onChanged();
       return this;
     }
@@ -1682,12 +1774,12 @@ private static final long serialVersionUID = 0L;
      * 客户端生成的序列号ID，会话内唯一，可用于消息去重
      * </pre>
      *
-     * <code>optional string seq = 8;</code>
+     * <code>optional string seq = 9;</code>
      * @return This builder for chaining.
      */
     public Builder clearSeq() {
       seq_ = getDefaultInstance().getSeq();
-      bitField0_ = (bitField0_ & ~0x00000080);
+      bitField0_ = (bitField0_ & ~0x00000100);
       onChanged();
       return this;
     }
@@ -1696,7 +1788,7 @@ private static final long serialVersionUID = 0L;
      * 客户端生成的序列号ID，会话内唯一，可用于消息去重
      * </pre>
      *
-     * <code>optional string seq = 8;</code>
+     * <code>optional string seq = 9;</code>
      * @param value The bytes for seq to set.
      * @return This builder for chaining.
      */
@@ -1705,7 +1797,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       seq_ = value;
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000100;
       onChanged();
       return this;
     }
@@ -1716,18 +1808,18 @@ private static final long serialVersionUID = 0L;
      * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
      * </pre>
      *
-     * <code>optional string sessionId = 9;</code>
+     * <code>optional string sessionId = 10;</code>
      * @return Whether the sessionId field is set.
      */
     public boolean hasSessionId() {
-      return ((bitField0_ & 0x00000100) != 0);
+      return ((bitField0_ & 0x00000200) != 0);
     }
     /**
      * <pre>
      * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
      * </pre>
      *
-     * <code>optional string sessionId = 9;</code>
+     * <code>optional string sessionId = 10;</code>
      * @return The sessionId.
      */
     public java.lang.String getSessionId() {
@@ -1747,7 +1839,7 @@ private static final long serialVersionUID = 0L;
      * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
      * </pre>
      *
-     * <code>optional string sessionId = 9;</code>
+     * <code>optional string sessionId = 10;</code>
      * @return The bytes for sessionId.
      */
     public com.google.protobuf.ByteString
@@ -1768,7 +1860,7 @@ private static final long serialVersionUID = 0L;
      * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
      * </pre>
      *
-     * <code>optional string sessionId = 9;</code>
+     * <code>optional string sessionId = 10;</code>
      * @param value The sessionId to set.
      * @return This builder for chaining.
      */
@@ -1776,7 +1868,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       sessionId_ = value;
-      bitField0_ |= 0x00000100;
+      bitField0_ |= 0x00000200;
       onChanged();
       return this;
     }
@@ -1785,12 +1877,12 @@ private static final long serialVersionUID = 0L;
      * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
      * </pre>
      *
-     * <code>optional string sessionId = 9;</code>
+     * <code>optional string sessionId = 10;</code>
      * @return This builder for chaining.
      */
     public Builder clearSessionId() {
       sessionId_ = getDefaultInstance().getSessionId();
-      bitField0_ = (bitField0_ & ~0x00000100);
+      bitField0_ = (bitField0_ & ~0x00000200);
       onChanged();
       return this;
     }
@@ -1799,7 +1891,7 @@ private static final long serialVersionUID = 0L;
      * MsgType=SENDER_SYNC需带上该字段，因为此时fromId和toId都是发送端的账号，无法识别是哪个session
      * </pre>
      *
-     * <code>optional string sessionId = 9;</code>
+     * <code>optional string sessionId = 10;</code>
      * @param value The bytes for sessionId to set.
      * @return This builder for chaining.
      */
@@ -1808,7 +1900,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       sessionId_ = value;
-      bitField0_ |= 0x00000100;
+      bitField0_ |= 0x00000200;
       onChanged();
       return this;
     }
