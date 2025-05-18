@@ -3,7 +3,7 @@ package com.hibob.anylink.mts.enums;
 import java.util.Arrays;
 
 public enum FileType {
-    IMAGE("image/", "jpg", "jpeg", "png", "gif", "bmp", "webp", "tiff", "ico", "jfif"),
+    IMAGE("image/", "jpg", "jpeg", "png", "gif", "bmp", "webp", "tiff", "ico", "jfif", "svg"),
     AUDIO("audio/", "mp3", "wav", "aac", "flac", "ogg", "webm", "m4a", "wma", "amr"),
     VIDEO("video/", "mp4", "avi", "mkv", "mov", "flv", "webm", "wmv", "mpeg", "3gp", "m4v"),
     DOCUMENT("application/"),
