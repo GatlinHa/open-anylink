@@ -65,11 +65,16 @@ public class ChatService {
 
     public ResponseEntity<IMHttpResponse> history(ChatHistoryReq dto) {
         String sessionId = dto.getSessionId();
-        Date startTime = new Date(dto.getStartTime());
-        Date endTime = new Date(dto.getEndTime());
         int pageSize = dto.getPageSize();
         Session session = sessionMapper.selectSession(ReqSession.getSession().getAccount(), sessionId);
-        return ResultUtil.success(getMsgFromDB(session, startTime, endTime, 0, pageSize));
+        return ResultUtil.success(getMsgFromDb(session,
+                dto.getContentTypes(),
+                dto.getStartTime(),
+                dto.getEndTime(),
+                dto.getEndMsgId(),
+                pageSize,
+                ReqSession.getSession().getAccount()));
+
     }
 
     public ResponseEntity<IMHttpResponse> revokeMsg(RevokeMsgReq dto) {
@@ -547,29 +552,64 @@ public class ChatService {
         Query query = new Query();
         query.addCriteria(Criteria.where("sessionId").is(sessionId).and("msgId").in(msgIds));
         query.with(Sort.by(Sort.Order.asc("msgId")));
-        List<MsgTable> msgList = mongoTemplate.find(query, MsgTable.class);
-        return msgList;
+        return mongoTemplate.find(query, MsgTable.class);
     }
 
-    private ChatMessageVO getMsgFromDB(Session session, Date startTime, Date endTime, long lastMsgId, int pageSize) {
+    private ChatMessageVO getMsgFromDb(Session session,
+                                       List<Integer> contentTypes,
+                                       Long startTime,
+                                       Long endTime,
+                                       Long endMsgId,
+                                       int pageSize,
+                                       String account) {
         Query query = new Query();
         Criteria criteria = Criteria
-                .where("sessionId").is(session.getSessionId())
-                .and("msgTime").gte(startTime).lt(endTime);
+                .where("sessionId").is(session.getSessionId());
+
+        if (startTime != null && endTime != null) {
+            criteria.and("msgTime").gte(new Date(startTime)).lte(new Date(endTime));
+        }
+
+        if (contentTypes != null && contentTypes.size() > 0) {
+            if (contentTypes.contains(8)) {
+                // 对于@我的消息，要特殊处理
+                Criteria c = Criteria
+                        .where("sessionId").is(session.getSessionId())
+                        .and("toId").is(account);
+
+                if (endMsgId != null) {
+                    c.and("referMsgId").lt(endMsgId);
+                }
+
+                List<Long> msgIds = mongoTemplate.find(new Query(c), AtTable.class)
+                        .stream()
+                        .map(item -> item.getReferMsgId())
+                        .collect(Collectors.toList());
+                criteria.and("msgId").in(msgIds);
+            } else {
+                criteria.and("contentType").in(contentTypes);
+                if (endMsgId != null) {
+                    criteria.and("msgId").lt(endMsgId);
+                }
+            }
+        } else  {
+            if (endMsgId != null) {
+                criteria.and("msgId").lt(endMsgId);
+            }
+        }
 
         List<Long> delMsgIds = session.getDelMsgIds();
-        Criteria msgIdCondition = new Criteria().and("msgId").gt(lastMsgId);
         if (delMsgIds != null && !delMsgIds.isEmpty()) {
-            msgIdCondition.andOperator(Criteria.where("msgId").nin(delMsgIds));
+            criteria.andOperator(new Criteria().and("msgId").nin(delMsgIds));
         }
-        criteria.andOperator(msgIdCondition);
         query.addCriteria(criteria);
 
         long count = mongoTemplate.count(query, MsgTable.class);
-        query.with(Sort.by(Sort.Order.asc("msgId")));
+        query.with(Sort.by(Sort.Order.desc("msgId")));
         query.limit(pageSize);
         List<MsgVO> msgList = mongoTemplate.find(query, MsgTable.class)
                 .stream().map(item -> BeanUtil.copyProperties(item, MsgVO.class)).collect(Collectors.toList());
+        long lastMsgId = 0;
         if (!msgList.isEmpty()) {
             lastMsgId = msgList.get(msgList.size() - 1).getMsgId();  //lastMsgId更新
         }

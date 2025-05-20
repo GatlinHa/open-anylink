@@ -43,7 +43,7 @@ public class MsgTable {
     @Field("content")
     private String content;
 
-    @Field("contentType")
+    @Field("content_type")
     @Indexed
     private int contentType;
 
