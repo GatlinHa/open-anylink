@@ -36,6 +36,7 @@ usage() {
 
 #检查程序是否在运行
 is_exist(){
+  # 如果在一台服务器上起多个实例，这里需要增加参数识别： |grep "--server.port=800x"
   pid=`ps -ef|grep $JAR_NAME|grep -v grep|awk '{print $2}' `
   #如果不存在返回1，存在返回0
   if [ -z "${pid}" ]; then
@@ -51,6 +52,7 @@ start(){
   if [ $? -eq "0" ]; then
     echo ">>> ${JAR_NAME} is already running PID=${pid} <<<"
   else
+    # 如果在一台服务器上起多个实例，这里需要增加参数：  --server.port=800x --websocket.port=810x
     nohup java -Xms512m -Xmx512m -jar $JAR_NAME --spring.profiles.active=$SPRING_PROFILES_ACTIVE --spring.cloud.nacos.config.namespace=$NACOS_CONFIG_NAMESPACE --dubbo.registry.parameters.namespace=$DUBBO_REGISTRY_PARAMETERS_NAMESPACE --spring.cloud.nacos.discovery.namespace=$NACOS_DISCOVERY_NAMESPACE --spring.cloud.nacos.config.server-addr=$NACOS_CONFIG_SERVER_ADDR --spring.cloud.nacos.discovery.server-addr=$NACOS_DISCOVERY_SERVER_ADDR --dubbo.registry.address=$DUBBO_REGISTRY_ADDRESS >/dev/null 2>&1 &
     echo $! > $PID
     echo ">>> starting $JAR_NAME, PID=$! <<<"
