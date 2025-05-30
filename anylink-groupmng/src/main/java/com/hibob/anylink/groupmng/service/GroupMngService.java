@@ -131,13 +131,15 @@ public class GroupMngService {
         List<Long> avatarIds = groupInfos.stream().map(GroupInfo::getAvatarId).collect(Collectors.toList());
         Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(avatarIds);
         List<GroupInfoVO> result = groupInfos.stream().map(item -> {
-            long avatarId = item.getAvatarId();
+            Long avatarId = item.getAvatarId();
             String avatar = "";
             String avatarThumb = "";
-            Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
-            if (objectMap != null) {
-                avatar = objectMap.get("originUrl").toString();
-                avatarThumb = objectMap.get("thumbUrl").toString();
+            if (avatarId != null) {
+                Map<String, Object> objectMap = mapMap.get(avatarId.toString());
+                if (objectMap != null) {
+                    avatar = objectMap.get("originUrl").toString();
+                    avatarThumb = objectMap.get("thumbUrl").toString();
+                }
             }
             GroupInfoVO groupInfoVO = BeanUtil.copyProperties(item, GroupInfoVO.class);
             groupInfoVO.setAvatarId(avatarId);
@@ -177,14 +179,16 @@ public class GroupMngService {
             usersMap.get(member.getAccount()).put("inStatus", member.getInStatus());
         }
 
-        long avatarId = groupInfo.getAvatarId();
+        Long avatarId = groupInfo.getAvatarId();
         String avatar = "";
         String avatarThumb = "";
-        Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(Arrays.asList(avatarId));
-        Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
-        if (objectMap != null) {
-            avatar = objectMap.get("originUrl").toString();
-            avatarThumb = objectMap.get("thumbUrl").toString();
+        if (avatarId != null) {
+            Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(Arrays.asList(avatarId));
+            Map<String, Object> objectMap = mapMap.get(avatarId.toString());
+            if (objectMap != null) {
+                avatar = objectMap.get("originUrl").toString();
+                avatarThumb = objectMap.get("thumbUrl").toString();
+            }
         }
         GroupVO vo = new GroupVO();
         GroupInfoVO groupInfoVO = BeanUtil.copyProperties(groupInfo, GroupInfoVO.class);
@@ -222,13 +226,15 @@ public class GroupMngService {
         List<Long> avatarIds = groupInfos.stream().map(GroupInfo::getAvatarId).collect(Collectors.toList());
         Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(avatarIds);
         List<GroupInfoVO> result = groupInfos.stream().map(item -> {
-            long avatarId = item.getAvatarId();
+            Long avatarId = item.getAvatarId();
             String avatar = "";
             String avatarThumb = "";
-            Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
-            if (objectMap != null) {
-                avatar = objectMap.get("originUrl").toString();
-                avatarThumb = objectMap.get("thumbUrl").toString();
+            if (avatarId != null) {
+                Map<String, Object> objectMap = mapMap.get(avatarId.toString());
+                if (objectMap != null) {
+                    avatar = objectMap.get("originUrl").toString();
+                    avatarThumb = objectMap.get("thumbUrl").toString();
+                }
             }
             GroupInfoVO groupInfoVO = BeanUtil.copyProperties(item, GroupInfoVO.class);
             groupInfoVO.setAvatarId(avatarId);

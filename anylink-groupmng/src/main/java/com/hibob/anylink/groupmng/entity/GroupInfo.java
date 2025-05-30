@@ -25,7 +25,7 @@ public class GroupInfo {
     private String announcement;
 
     @TableField(value = "avatar_id")
-    private long avatarId;
+    private Long avatarId;
 
     @TableField(value = "history_browse")
     private boolean historyBrowse;

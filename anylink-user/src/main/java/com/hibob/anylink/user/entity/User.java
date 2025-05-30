@@ -25,7 +25,7 @@ public class User extends Model<User> {
     private String nickName;
 
     @TableField("avatar_id")
-    private long avatarId;
+    private Long avatarId;
 
     @TableField("password")
     private String password;

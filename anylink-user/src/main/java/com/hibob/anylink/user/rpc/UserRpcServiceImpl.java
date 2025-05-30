@@ -54,14 +54,16 @@ public class UserRpcServiceImpl implements UserRpcService {
         if (users.size() > 0) {
             try {
                 User user = users.get(0);
-                long avatarId = user.getAvatarId();
+                Long avatarId = user.getAvatarId();
                 String avatar = "";
                 String avatarThumb = "";
-                Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(Arrays.asList(avatarId));
-                Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
-                if (objectMap != null) {
-                    avatar = objectMap.get("originUrl").toString();
-                    avatarThumb = objectMap.get("thumbUrl").toString();
+                if (avatarId != null) {
+                    Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(Arrays.asList(avatarId));
+                    Map<String, Object> objectMap = mapMap.get(avatarId.toString());
+                    if (objectMap != null) {
+                        avatar = objectMap.get("originUrl").toString();
+                        avatarThumb = objectMap.get("thumbUrl").toString();
+                    }
                 }
                 UserStatus userStatus = userStatusMapper.queryStatus(account);
                 user.setStatus(userStatus == null ? ConnectStatus.OFFLINE.getValue() : userStatus.getStatus());
@@ -100,15 +102,16 @@ public class UserRpcServiceImpl implements UserRpcService {
                     user.setStatus(statusMap.get(user.getAccount()));
                 }
 
-                long avatarId = user.getAvatarId();
+                Long avatarId = user.getAvatarId();
                 String avatar = "";
                 String avatarThumb = "";
-                Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
-                if (objectMap != null) {
-                    avatar = objectMap.get("originUrl").toString();
-                    avatarThumb = objectMap.get("thumbUrl").toString();
+                if (avatarId != null) {
+                    Map<String, Object> objectMap = mapMap.get(avatarId.toString());
+                    if (objectMap != null) {
+                        avatar = objectMap.get("originUrl").toString();
+                        avatarThumb = objectMap.get("thumbUrl").toString();
+                    }
                 }
-
                 // 把User对象转成返回对象
                 UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
                 vo.setAvatarId(avatarId);

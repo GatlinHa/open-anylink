@@ -421,14 +421,16 @@ public class UserService extends ServiceImpl<UserMapper, User> {
                 ? ConnectStatus.ONLINE.getValue() : userStatus.getStatus();
         user.setStatus(status);
 
-        long avatarId = user.getAvatarId();
+        Long avatarId = user.getAvatarId();
         String avatar = "";
         String avatarThumb = "";
-        Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(Arrays.asList(avatarId));
-        Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
-        if (objectMap != null) {
-            avatar = objectMap.get("originUrl").toString();
-            avatarThumb = objectMap.get("thumbUrl").toString();
+        if (avatarId != null) {
+            Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(Arrays.asList(avatarId));
+            Map<String, Object> objectMap = mapMap.get(avatarId.toString());
+            if (objectMap != null) {
+                avatar = objectMap.get("originUrl").toString();
+                avatarThumb = objectMap.get("thumbUrl").toString();
+            }
         }
 
         // 把User对象转成返回对象
@@ -484,14 +486,16 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         UserStatus userStatus = userStatusMapper.queryStatus(dto.getAccount());
         user.setStatus(userStatus == null ? ConnectStatus.OFFLINE.getValue() : userStatus.getStatus());
 
-        long avatarId = user.getAvatarId();
+        Long avatarId = user.getAvatarId();
         String avatar = "";
         String avatarThumb = "";
-        Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(Arrays.asList(avatarId));
-        Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
-        if (objectMap != null) {
-            avatar = objectMap.get("originUrl").toString();
-            avatarThumb = objectMap.get("thumbUrl").toString();
+        if (avatarId != null) {
+            Map<String, Map<String, Object>> mapMap = rpcClient.getMtsRpcService().queryImageSignUrl(Arrays.asList(avatarId));
+            Map<String, Object> objectMap = mapMap.get(avatarId.toString());
+            if (objectMap != null) {
+                avatar = objectMap.get("originUrl").toString();
+                avatarThumb = objectMap.get("thumbUrl").toString();
+            }
         }
 
         // 把User对象转成返回对象
@@ -536,13 +540,15 @@ public class UserService extends ServiceImpl<UserMapper, User> {
                 user.setStatus(statusMap.get(user.getAccount()));
             }
 
-            long avatarId = user.getAvatarId();
+            Long avatarId = user.getAvatarId();
             String avatar = "";
             String avatarThumb = "";
-            Map<String, Object> objectMap = mapMap.get(Long.toString(avatarId));
-            if (objectMap != null) {
-                avatar = objectMap.get("originUrl").toString();
-                avatarThumb = objectMap.get("thumbUrl").toString();
+            if (avatarId != null) {
+                Map<String, Object> objectMap = mapMap.get(avatarId.toString());
+                if (objectMap != null) {
+                    avatar = objectMap.get("originUrl").toString();
+                    avatarThumb = objectMap.get("thumbUrl").toString();
+                }
             }
 
             UserVO vo = BeanUtil.copyProperties(user, UserVO.class);
